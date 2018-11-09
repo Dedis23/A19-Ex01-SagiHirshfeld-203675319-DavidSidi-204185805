@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders.Content
 {
-    class Spaceship : GameComponent
+    class Spaceship : DrawableGameComponent
     {
+
         public Spaceship(Game game) : base(game)
         {
         }
