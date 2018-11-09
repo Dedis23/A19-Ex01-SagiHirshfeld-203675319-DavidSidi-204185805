@@ -16,9 +16,6 @@ namespace SpaceInvaders
         {
             using (var game = new Game1())
                 game.Run();
-
-            // Hello Dedi, this is Sagi's GIT test!
-            // Hi Sagi, this is Boaz. do you even calculus bro?
         }
     }
 #endif
