@@ -9,46 +9,17 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    class Background : DrawableGameComponent
+    class Background : Drawable2DGameComponent
     {
-        Texture2D m_Texure;
-        Vector2 m_Position;
-        Color m_Tint;
-        SpriteBatch m_SpriteBatch;
+        private static readonly String sr_SourceFileURL = @"Backgrounds\BG_Space01_1024x768";
 
-        public Background(Game game) : base(game)
-        {
-            m_Position = Vector2.Zero;
-            m_Tint = Color.White;   
+        public Background(Game game) : base(game, sr_SourceFileURL)
+        {   
         }
 
-        public override void Initialize()
+        protected override Vector2 GetDefaultPosition()
         {
-            base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            m_Texure = Game.Content.Load<Texture2D>(@"Backgrounds\BG_Space01_1024x768");
-            m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            m_SpriteBatch.Begin();
-            m_SpriteBatch.Draw(m_Texure, m_Position, m_Tint);
-            m_SpriteBatch.End();
-            base.Draw(gameTime);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
+            return Vector2.Zero;
         }
     }
 }

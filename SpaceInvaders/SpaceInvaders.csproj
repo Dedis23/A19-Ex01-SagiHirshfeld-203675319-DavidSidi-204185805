@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Background.cs" />
+    <Compile Include="Drawable2DGameComponent.cs" />
     <Compile Include="Spaceship.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

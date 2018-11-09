@@ -4,35 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-namespace SpaceInvaders.Content
+namespace SpaceInvaders
 {
-    class Spaceship : DrawableGameComponent
+    class Spaceship : Drawable2DGameComponent
     {
+        private static readonly String sr_SourceFileURL = @"Sprites\Ship01_32x32";
 
-        public Spaceship(Game game) : base(game)
+        public Spaceship(Game i_Game) : base(i_Game, sr_SourceFileURL)
         {
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
 
         public override void Initialize()
-        {
-            
+        {            
             base.Initialize();
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
         }
 
         public override void Update(GameTime gameTime)
@@ -40,19 +27,20 @@ namespace SpaceInvaders.Content
             base.Update(gameTime);
         }
 
-        protected override void Dispose(bool disposing)
+        protected override Vector2 GetDefaultPosition()
         {
-            base.Dispose(disposing);
-        }
+            // Get the bottom and center:
+            float x = (float)GraphicsDevice.Viewport.Width / 2;
+            float y = (float)GraphicsDevice.Viewport.Height;
 
-        protected override void OnEnabledChanged(object sender, EventArgs args)
-        {
-            base.OnEnabledChanged(sender, args);
-        }
+            // Offset:
+            x -= Texture.Width / 2;
+            y -= Texture.Height / 2;
 
-        protected override void OnUpdateOrderChanged(object sender, EventArgs args)
-        {
-            base.OnUpdateOrderChanged(sender, args);
+            // Put it a little bit higher:
+            y -= 30;
+
+            return new Vector2(x, y);
         }
     }
 }

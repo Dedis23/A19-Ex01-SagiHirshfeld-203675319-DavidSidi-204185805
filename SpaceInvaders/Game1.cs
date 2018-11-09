@@ -10,14 +10,15 @@ namespace SpaceInvaders
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;        
+        SpriteBatch spriteBatch;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            Components.Add(new Background(this));            
+            Components.Add(new Background(this));
+            Components.Add(new Spaceship(this));            
         }
 
         /// <summary>
@@ -41,9 +42,7 @@ namespace SpaceInvaders
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
-            
         }
 
         /// <summary>
