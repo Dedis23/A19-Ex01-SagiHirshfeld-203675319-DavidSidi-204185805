@@ -72,8 +72,9 @@ namespace SpaceInvaders
         private bool tryToSpawnTheMothership(GameTime i_GameTime)
         {
             bool didMotherShipSpawned = false;
-            // To make the roll question tied to time and to the framerate we use m_RemainingDelay and k_DelayBetweenRolls
-            // this way, we make sure we try to spawn the MotherShip at a fixed delay time
+            // To make the rolling based on fixed time and not make it tied to the framerate,
+            // we use m_RemainingDelay and k_DelayBetweenRolls
+            // this way, we make sure we try to spawn the MotherShip at a fixed delay time no matter the frame rate
             // Currently it is set to 10% chance and we roll each second
             m_RemainingDelay -= (float)i_GameTime.ElapsedGameTime.TotalSeconds;
             if (m_RemainingDelay < 0)
