@@ -13,8 +13,8 @@ namespace SpaceInvaders
     {        
         SpriteBatch m_SpriteBatch;
 
-        public Color Tint { get; set; } = Color.White;        
-        public Vector2 Position { get; set; } = Vector2.Zero;
+        public Color Tint { get; set; } = Color.White;
+        public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
         readonly private String r_SourceFileURL;
 
