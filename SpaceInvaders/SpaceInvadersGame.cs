@@ -7,18 +7,19 @@ namespace SpaceInvaders
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class SpaceInvadersGame : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public Game1()
+        public SpaceInvadersGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             Components.Add(new Background(this));
-            Components.Add(new Spaceship(this));            
+            Components.Add(new Spaceship(this));
+            Components.Add(new MotherShip(this));
         }
 
         /// <summary>

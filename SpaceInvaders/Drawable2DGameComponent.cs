@@ -16,6 +16,7 @@ namespace SpaceInvaders
         public Color Tint { get; set; } = Color.White;        
         public Vector2 Position { get; set; } = Vector2.Zero;
         public Texture2D Texture { get; set; }
+        public int Velocity { get; set; }
         readonly private String r_SourceFileURL;
 
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
