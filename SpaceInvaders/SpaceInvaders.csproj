@@ -41,10 +41,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Background.cs" />
+    <Compile Include="Backgrounds\Background.cs" />
+    <Compile Include="Drawable Objects\MotherShip.cs" />
     <Compile Include="Drawable2DGameComponent.cs" />
-    <Compile Include="Spaceship.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="Drawable Objects\Spaceship.cs" />
+    <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
