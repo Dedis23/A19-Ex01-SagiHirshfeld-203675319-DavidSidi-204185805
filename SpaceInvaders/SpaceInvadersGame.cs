@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,15 +12,20 @@ namespace SpaceInvaders
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        MotherShipSpawner m_MotherShipSpawner;
 
         public SpaceInvadersGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            m_MotherShipSpawner = new MotherShipSpawner(this);
+            m_MotherShipSpawner.MotherShipSpawned += OnMotherShipSpawned;
+            m_MotherShipSpawner.MotherShipDeSpawned += OnMotherShipDeSpawned;
+
             Components.Add(new Background(this));
             Components.Add(new Spaceship(this));
-            Components.Add(new MotherShip(this));
+            Components.Add(m_MotherShipSpawner);
         }
 
         /// <summary>
@@ -65,9 +71,16 @@ namespace SpaceInvaders
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
+        }
+
+        public void OnMotherShipSpawned(object i_Source, MotherShipEventArgs i_MotherShipArgs)
+        {
+            Components.Add(i_MotherShipArgs.MotherShip);
+        }
+        public void OnMotherShipDeSpawned(object i_Source, MotherShipEventArgs i_MotherShipArgs)
+        {
+            Components.Remove(i_MotherShipArgs.MotherShip);
         }
 
         /// <summary>
