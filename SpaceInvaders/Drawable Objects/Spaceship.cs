@@ -24,7 +24,6 @@ namespace SpaceInvaders
 
         public override void Update(GameTime gameTime)
         {
-            Mouse
             base.Update(gameTime);
         }
 
