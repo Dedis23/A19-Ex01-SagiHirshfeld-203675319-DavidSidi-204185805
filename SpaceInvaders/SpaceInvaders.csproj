@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Backgrounds\Background.cs" />
+    <Compile Include="Drawable Objects\InputManager.cs" />
     <Compile Include="Drawable Objects\MotherShip.cs" />
     <Compile Include="Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship.cs" />
