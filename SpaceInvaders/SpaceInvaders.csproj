@@ -42,9 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Backgrounds\Background.cs" />
-    <Compile Include="Drawable Objects\MotherShip.cs" />
+    <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />
     <Compile Include="Drawable2DGameComponent.cs" />
-    <Compile Include="Drawable Objects\Spaceship.cs" />
+    <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
+    <Compile Include="Drawable Objects\MotherShip\MotherShipEventArgs.cs" />
+    <Compile Include="RandomSpawners\MotherShipSpawner.cs" />
+    <Compile Include="RandomSpawners\RandomSpawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
