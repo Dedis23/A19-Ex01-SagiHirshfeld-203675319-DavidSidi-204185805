@@ -12,39 +12,48 @@ namespace SpaceInvaders
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        InputManager m_InputManager;
         MotherShipSpawner m_MotherShipSpawner;
+        Spaceship m_Spaceship;
 
         public SpaceInvadersGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            Components.Add(new Background(this));
+
+            m_InputManager = new InputManager(this);
+            Components.Add(m_InputManager);
+
             m_MotherShipSpawner = new MotherShipSpawner(this);
             m_MotherShipSpawner.MotherShipSpawned += OnMotherShipSpawned;
             m_MotherShipSpawner.MotherShipDeSpawned += OnMotherShipDeSpawned;
-
-            Components.Add(new Background(this));
-            Components.Add(new Spaceship(this));
             Components.Add(m_MotherShipSpawner);
+
+            m_Spaceship = new Spaceship(this);
+            Components.Add(m_Spaceship);
+
+            this.IsMouseVisible = true;
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            setupInputBindings();
 
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
+        private void setupInputBindings()
+        {
+            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveLeft, Keys.Left);
+            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveRight, Keys.Right);
+            m_InputManager.RegisterKeyboardKeyBinding(this.Exit, Keys.Escape);
+
+            m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
+            m_InputManager.MouseLeftButtonPressed += m_Spaceship.FireBullet;
+        } 
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -61,16 +70,8 @@ namespace SpaceInvaders
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             base.Update(gameTime);
         }
 
@@ -83,15 +84,10 @@ namespace SpaceInvaders
             Components.Remove(i_MotherShipArgs.MotherShip);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);            
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
             base.Draw(gameTime);
         }
     }

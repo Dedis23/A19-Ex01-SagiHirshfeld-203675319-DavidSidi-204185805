@@ -46,6 +46,7 @@
     <Compile Include="Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Drawable Objects\MotherShip\MotherShipEventArgs.cs" />
+    <Compile Include="InputManager.cs" />
     <Compile Include="RandomSpawners\MotherShipSpawner.cs" />
     <Compile Include="RandomSpawners\RandomSpawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

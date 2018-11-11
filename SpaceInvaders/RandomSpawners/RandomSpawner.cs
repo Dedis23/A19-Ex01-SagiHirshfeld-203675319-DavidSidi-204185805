@@ -39,6 +39,7 @@ namespace SpaceInvaders
                         ObjectSpawned(this, EventArgs.Empty);
                     }
                 }
+
                 m_RemainingDelay = 0;
             }
         }

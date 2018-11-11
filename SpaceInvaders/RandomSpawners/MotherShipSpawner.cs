@@ -44,6 +44,7 @@ namespace SpaceInvaders
             m_CurrentMotherShip.MotherShipLeftTheScreen += OnMotherShipLeftTheScreen;
             m_CurrentMotherShip.MotherShipDestroyed += OnMotherShipDestroyed;
             // Calling listeners to let them know about the new MotherShip
+
             if (MotherShipSpawned != null)
             {
                 MotherShipSpawned(this, new MotherShipEventArgs { MotherShip = m_CurrentMotherShip });
