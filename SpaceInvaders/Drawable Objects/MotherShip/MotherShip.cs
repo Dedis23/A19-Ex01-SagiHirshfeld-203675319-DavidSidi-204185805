@@ -43,10 +43,10 @@ namespace SpaceInvaders
                         MotherShipLeftTheScreen(this, EventArgs.Empty);
                     }
                 }
+
                 else
                 {
-                    this.Position = new Vector2(this.Position.X + (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity,
-                        this.Position.Y);
+                    m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
                 }
             }
         }

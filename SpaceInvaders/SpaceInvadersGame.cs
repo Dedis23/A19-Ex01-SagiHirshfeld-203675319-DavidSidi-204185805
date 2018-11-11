@@ -39,7 +39,7 @@ namespace SpaceInvaders
 
         protected override void Initialize()
         {
-            setupInputBindings();
+            setupInputBindings();            
 
             base.Initialize();
         }
@@ -48,11 +48,17 @@ namespace SpaceInvaders
         {
             m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveLeft, Keys.Left);
             m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveRight, Keys.Right);
-            m_InputManager.RegisterKeyboardKeyBinding(this.Exit, Keys.Escape);
+            m_InputManager.RegisterKeyboardKeyBinding(Exit, Keys.Escape);
 
             m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
             m_InputManager.MouseLeftButtonPressed += m_Spaceship.FireBullet;
-        } 
+        }
+
+        // Overriden to enable keybind registration
+        public void Exit(GameTime i_GameTime)
+        {
+            Exit();
+        }
 
         protected override void LoadContent()
         {

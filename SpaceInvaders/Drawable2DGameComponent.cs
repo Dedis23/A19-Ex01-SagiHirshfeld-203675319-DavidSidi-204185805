@@ -10,14 +10,23 @@ using Microsoft.Xna.Framework.Input;
 namespace SpaceInvaders
 {
     public abstract class Drawable2DGameComponent : DrawableGameComponent
-    {        
-        SpriteBatch m_SpriteBatch;
+    {
+        readonly private String r_SourceFileURL;
+        protected Vector2 m_Position;
 
         public Color Tint { get; set; } = Color.White;
-        public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
         public int Velocity { get; set; }
-        readonly private String r_SourceFileURL;
+        public Vector2 Position
+        {
+            get { return m_Position;  }
+            private set { m_Position = value; }
+        }
+
+        private SpriteBatch m_SpriteBatch;
+
+
+        public Point Point2D { get; set; }
 
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
         {
