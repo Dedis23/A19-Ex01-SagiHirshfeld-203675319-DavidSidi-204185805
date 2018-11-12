@@ -11,9 +11,7 @@ namespace SpaceInvaders
 {
     class Spaceship : Drawable2DGameComponent
     {
-        private static readonly String sr_SourceFileURL = @"Sprites\Ship01_32x32";
-
-        public Spaceship(Game i_Game) : base(i_Game, sr_SourceFileURL)
+        public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             Velocity = 120;
         }

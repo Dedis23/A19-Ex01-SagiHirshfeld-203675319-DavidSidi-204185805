@@ -11,11 +11,10 @@ namespace SpaceInvaders
 {
     public class MotherShip : Drawable2DGameComponent
     {
-        private static readonly String sr_SourceFileURL = @"Sprites\MotherShip_32x120";
         public event EventHandler MotherShipLeftTheScreen;
         public event EventHandler MotherShipDestroyed;
 
-        public MotherShip(Game i_Game) : base(i_Game, sr_SourceFileURL)
+        public MotherShip(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             this.Tint = Color.Red;
             this.Velocity = 110;
@@ -38,10 +37,7 @@ namespace SpaceInvaders
             {
                 if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
                 {
-                    if (MotherShipLeftTheScreen != null)
-                    {
-                        MotherShipLeftTheScreen(this, EventArgs.Empty);
-                    }
+                    MotherShipLeftTheScreen?.Invoke(this, EventArgs.Empty);
                 }
 
                 else

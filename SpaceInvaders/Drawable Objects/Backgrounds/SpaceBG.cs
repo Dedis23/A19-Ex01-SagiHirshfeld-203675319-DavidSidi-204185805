@@ -9,11 +9,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    class Background : Drawable2DGameComponent
+    public class SpaceBG : Drawable2DGameComponent
     {
-        private static readonly String sr_SourceFileURL = @"Backgrounds\BG_Space01_1024x768";
-
-        public Background(Game game) : base(game, sr_SourceFileURL)
+        public SpaceBG(Game game, string i_SourceFileURL) : base(game, i_SourceFileURL)
         {   
         }
 

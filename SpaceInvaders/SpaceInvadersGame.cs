@@ -13,15 +13,15 @@ namespace SpaceInvaders
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager m_InputManager;
-        MotherShipSpawner m_MotherShipSpawner;
         Spaceship m_Spaceship;
+        MotherShipSpawner m_MotherShipSpawner;
 
         public SpaceInvadersGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            Components.Add(new Background(this));
+            Components.Add(DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG));
 
             m_InputManager = new InputManager(this);
             Components.Add(m_InputManager);
@@ -31,7 +31,7 @@ namespace SpaceInvaders
             m_MotherShipSpawner.MotherShipDeSpawned += OnMotherShipDeSpawned;
             Components.Add(m_MotherShipSpawner);
 
-            m_Spaceship = new Spaceship(this);
+            m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceShip) as Spaceship;
             Components.Add(m_Spaceship);
 
             this.IsMouseVisible = true;
@@ -46,10 +46,11 @@ namespace SpaceInvaders
 
         private void setupInputBindings()
         {
+            // Keyboard
             m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveLeft, Keys.Left);
             m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveRight, Keys.Right);
             m_InputManager.RegisterKeyboardKeyBinding(Exit, Keys.Escape);
-
+            // Mouse
             m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
             m_InputManager.MouseLeftButtonPressed += m_Spaceship.FireBullet;
         }
@@ -81,13 +82,13 @@ namespace SpaceInvaders
             base.Update(gameTime);
         }
 
-        public void OnMotherShipSpawned(object i_Source, MotherShipEventArgs i_MotherShipArgs)
+        private void OnMotherShipSpawned(MotherShip i_SpawnedMotherShip)
         {
-            Components.Add(i_MotherShipArgs.MotherShip);
+            Components.Add(i_SpawnedMotherShip);
         }
-        public void OnMotherShipDeSpawned(object i_Source, MotherShipEventArgs i_MotherShipArgs)
+        private void OnMotherShipDeSpawned(MotherShip i_DeSpawnedMotherShip)
         {
-            Components.Remove(i_MotherShipArgs.MotherShip);
+            Components.Remove(i_DeSpawnedMotherShip);
         }
 
         protected override void Draw(GameTime gameTime)

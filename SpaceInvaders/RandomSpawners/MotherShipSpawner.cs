@@ -11,14 +11,14 @@ namespace SpaceInvaders
 {
     public class MotherShipSpawner : GameComponent
     {
-        private RandomSpawner m_RandomSpawner;
         private const int k_ChanceToSpawn = 10;
         private const float k_TimeBetweenRolls = 1;
+        private RandomSpawner m_RandomSpawner;
         private MotherShip m_CurrentMotherShip;
         private Game m_CurrentGame;
         public bool Active { get; private set; }
-        public event EventHandler<MotherShipEventArgs> MotherShipSpawned;
-        public event EventHandler<MotherShipEventArgs> MotherShipDeSpawned;
+        public event Action<MotherShip> MotherShipSpawned;
+        public event Action<MotherShip> MotherShipDeSpawned;
 
         public MotherShipSpawner(Game i_Game) : base(i_Game)
         {
@@ -40,15 +40,11 @@ namespace SpaceInvaders
         {
             // Its time to create the mothership
             Active = false;
-            m_CurrentMotherShip = new MotherShip(m_CurrentGame);
+            m_CurrentMotherShip = DrawableObjectsFactory.Create(m_CurrentGame, DrawableObjectsFactory.eSpriteType.MotherShip) as MotherShip;
             m_CurrentMotherShip.MotherShipLeftTheScreen += OnMotherShipLeftTheScreen;
             m_CurrentMotherShip.MotherShipDestroyed += OnMotherShipDestroyed;
-            // Calling listeners to let them know about the new MotherShip
-
-            if (MotherShipSpawned != null)
-            {
-                MotherShipSpawned(this, new MotherShipEventArgs { MotherShip = m_CurrentMotherShip });
-            }
+            // Calling listeners to let them know about the new
+            MotherShipSpawned?.Invoke(m_CurrentMotherShip);
         }
 
         public void OnMotherShipLeftTheScreen(object i_Source, EventArgs i_EventArgs)
@@ -65,10 +61,7 @@ namespace SpaceInvaders
         private void killMotherShipAndNotify()
         {
             // Calling listeners to let them know that the MotherShip is gone
-            if (MotherShipDeSpawned != null)
-            {
-                MotherShipDeSpawned(this, new MotherShipEventArgs { MotherShip = m_CurrentMotherShip });
-            }
+            MotherShipDeSpawned?.Invoke(m_CurrentMotherShip);
             // Reactivating the RandomSpawner
             m_CurrentMotherShip = null;
             Active = true;
