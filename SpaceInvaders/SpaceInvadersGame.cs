@@ -87,7 +87,6 @@ namespace SpaceInvaders
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            this.Window.Title = m_EnemiesMatrix.Debug.ToString();
         }
 
         private void OnMotherShipSpawned(MotherShip i_SpawnedMotherShip)

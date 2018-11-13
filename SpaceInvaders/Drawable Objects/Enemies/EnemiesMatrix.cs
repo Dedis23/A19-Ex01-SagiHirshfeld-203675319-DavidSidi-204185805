@@ -95,39 +95,8 @@ namespace SpaceInvaders
             }
         }
 
-        // DEBUG
-        public float Debug { get; set; }
-        public int Debug2 { get; set; }
         public override void Update(GameTime i_GameTime)
         {
-            Debug = m_CurrentDelayBetweenJumps;
-            Debug2++;
-            if (Debug2 == 599)
-            {
-                killEnemy(0, 8);
-                killEnemy(1, 8);
-                killEnemy(2, 8);
-                killEnemy(3, 8);
-            }
-            if (Debug2 == 2399)
-            {
-                killEnemy(0, 0);
-                killEnemy(1, 0);
-                killEnemy(2, 0);
-                killEnemy(3, 0);
-                killEnemy(4, 0);
-            }
-            if (Debug2 == 3599)
-            {
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-                killEnemy(4, 0);
-            }
             handleEnemiesMatrixJumps(i_GameTime);
             base.Update(i_GameTime);
         }
