@@ -11,13 +11,17 @@ namespace SpaceInvaders
 {
     public class MotherShip : Drawable2DGameComponent
     {
-        public event EventHandler MotherShipLeftTheScreen;
-        public event EventHandler MotherShipDestroyed;
+        private const int k_MotherShipVelocity = 110;
+        private const int k_MotherShipPointsValue = 850;
+        public int PointsValue { get; set; }
+        public event Action MotherShipLeftTheScreen;
+        public event Action MotherShipDestroyed;
 
         public MotherShip(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             this.Tint = Color.Red;
-            this.Velocity = 110;
+            this.Velocity = k_MotherShipVelocity;
+            PointsValue = k_MotherShipPointsValue;
         }
 
         public override void Initialize()
@@ -33,27 +37,23 @@ namespace SpaceInvaders
 
         private void moveMotherShip(GameTime i_GameTime)
         {
-            if (this.Visible == true)
+            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
             {
-                if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
-                {
-                    MotherShipLeftTheScreen?.Invoke(this, EventArgs.Empty);
-                }
-
-                else
-                {
-                    m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
-                }
+                MotherShipLeftTheScreen?.Invoke();
+            }
+            else
+            {
+                Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
             }
         }
 
-        protected override Vector2 GetDefaultPosition()
+        public void setDefaultPosition()
         {
             // Default MotherShip position (coming from the left of the screen)
             float x = -(float)this.Texture.Width;
             float y = (float)this.Texture.Height;
 
-            return new Vector2(x, y);
+            Position = new Vector2(x, y);
         }
     }
 }

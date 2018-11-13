@@ -15,7 +15,6 @@ namespace SpaceInvaders
         private const float k_TimeBetweenRolls = 1;
         private RandomSpawner m_RandomSpawner;
         private MotherShip m_CurrentMotherShip;
-        private Game m_CurrentGame;
         public bool Active { get; private set; }
         public event Action<MotherShip> MotherShipSpawned;
         public event Action<MotherShip> MotherShipDeSpawned;
@@ -24,7 +23,6 @@ namespace SpaceInvaders
         {
             m_RandomSpawner = new RandomSpawner(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);
             m_RandomSpawner.ObjectSpawned += OnObjectSpawned;
-            m_CurrentGame = i_Game;
             Active = true;
         }
 
@@ -36,23 +34,23 @@ namespace SpaceInvaders
             }
         }
 
-        public void OnObjectSpawned(object i_Source, EventArgs i_EventArgs)
+        public void OnObjectSpawned()
         {
             // Its time to create the mothership
             Active = false;
-            m_CurrentMotherShip = DrawableObjectsFactory.Create(m_CurrentGame, DrawableObjectsFactory.eSpriteType.MotherShip) as MotherShip;
+            m_CurrentMotherShip = DrawableObjectsFactory.Create(Game, DrawableObjectsFactory.eSpriteType.MotherShip) as MotherShip;
             m_CurrentMotherShip.MotherShipLeftTheScreen += OnMotherShipLeftTheScreen;
             m_CurrentMotherShip.MotherShipDestroyed += OnMotherShipDestroyed;
             // Calling listeners to let them know about the new
             MotherShipSpawned?.Invoke(m_CurrentMotherShip);
         }
 
-        public void OnMotherShipLeftTheScreen(object i_Source, EventArgs i_EventArgs)
+        public void OnMotherShipLeftTheScreen()
         {
             killMotherShipAndNotify();
         }
 
-        public void OnMotherShipDestroyed(object i_Source, EventArgs i_EventArgs)
+        public void OnMotherShipDestroyed()
         {
             killMotherShipAndNotify();
             // TO DO MORE (for example, add points to player)

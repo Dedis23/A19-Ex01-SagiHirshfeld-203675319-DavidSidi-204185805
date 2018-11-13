@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
+    <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
+    <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
     <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />
     <Compile Include="Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
@@ -58,6 +60,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +70,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

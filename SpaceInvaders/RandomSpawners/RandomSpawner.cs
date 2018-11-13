@@ -15,7 +15,7 @@ namespace SpaceInvaders
         private float m_TimeBetweenRollsInSeconds;
         private float m_RemainingDelay;
         private Random m_RandomGenerator;
-        public event EventHandler ObjectSpawned;
+        public event Action ObjectSpawned;
 
         public RandomSpawner(Game i_Game, int i_ChanceToSpawn, float i_TimeBetweenRollsInSeconds)
         {
@@ -34,10 +34,7 @@ namespace SpaceInvaders
             {
                 if ((m_RandomGenerator.Next(100) + 1) <= m_ChanceToSpawn)
                 {
-                    if (ObjectSpawned != null)
-                    {
-                        ObjectSpawned(this, EventArgs.Empty);
-                    }
+                    ObjectSpawned?.Invoke();
                 }
 
                 m_RemainingDelay = 0;

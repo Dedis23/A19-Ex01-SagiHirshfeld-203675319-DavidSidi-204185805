@@ -12,21 +12,12 @@ namespace SpaceInvaders
     public abstract class Drawable2DGameComponent : DrawableGameComponent
     {
         readonly private String r_SourceFileURL;
-        protected Vector2 m_Position;
-
+        public Vector2 Position;
         public Color Tint { get; set; } = Color.White;
         public Texture2D Texture { get; set; }
         public int Velocity { get; set; }
-        public Vector2 Position
-        {
-            get { return m_Position;  }
-            private set { m_Position = value; }
-        }
 
         private SpriteBatch m_SpriteBatch;
-
-
-        public Point Point2D { get; set; }
 
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
         {
@@ -34,7 +25,7 @@ namespace SpaceInvaders
         }
 
         public override void Draw(GameTime gameTime)
-        {            
+        {
             m_SpriteBatch.Begin();
             m_SpriteBatch.Draw(Texture, Position, Tint);
             m_SpriteBatch.End();
@@ -48,11 +39,8 @@ namespace SpaceInvaders
         {
             m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);
-            Position = GetDefaultPosition();
 
             base.LoadContent();
         }
-
-        protected abstract Vector2 GetDefaultPosition();
     }
 }

@@ -11,17 +11,18 @@ namespace SpaceInvaders
 {
     class Spaceship : Drawable2DGameComponent
     {
+        private const int k_SpaceShipVelocity = 120;
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
-            Velocity = 120;
+            Velocity = k_SpaceShipVelocity;
         }
 
         public override void Initialize()
-        {            
+        {
             base.Initialize();
         }
 
-        protected override Vector2 GetDefaultPosition()
+        public void SetDefaultPosition()
         {
             // Get the bottom and center:
             float x = (float)GraphicsDevice.Viewport.Width / 2;
@@ -32,32 +33,32 @@ namespace SpaceInvaders
             y -= Texture.Height / 2;
 
             // Put it a little bit higher:
-            y -= 30;
+            y -= 32;
 
-            return new Vector2(x, y);
+            Position = new Vector2(x, y);
         }
-        
+
         public override void Update(GameTime i_GameTime)
         {
             // Clamp the position between screen boundries:
-            m_Position.X = MathHelper.Clamp(m_Position.X, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
+            Position.X = MathHelper.Clamp(Position.X, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
 
             base.Update(i_GameTime);
         }
 
         public void MoveRight(GameTime i_GameTime)
         {
-            m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
         }
 
         public void MoveLeft(GameTime i_GameTime)
         {
-            m_Position.X -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Position.X -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
         }
 
         public void MoveAccordingToMousePositionDelta(GameTime i_GameTime, Vector2 i_MousePositionDelta)
         {
-            m_Position.X += i_MousePositionDelta.X;
+            Position.X += i_MousePositionDelta.X;
         }
 
         public void FireBullet(GameTime i_GameTime)

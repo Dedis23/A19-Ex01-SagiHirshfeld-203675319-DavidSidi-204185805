@@ -17,13 +17,19 @@ namespace SpaceInvaders
             MotherShip,
             SpaceShip,
             EnemyPink,
-            EnemyYellow,
             EnemyLightBlue,
+            EnemyLightYellow,
         }
 
         private const string k_MotherShipURL = @"Sprites\MotherShip_32x120";
         private const string k_SpaceShipURL = @"Sprites\Ship01_32x32";
         private const string k_SpaceBGURL = @"Backgrounds\BG_Space01_1024x768";
+        private const string k_EnemyPink = @"Sprites\Enemy0101_32x32";
+        private const string k_EnemyLightBlue = @"Sprites\Enemy0201_32x32";
+        private const string k_EnemyLightYellow = @"Sprites\Enemy0301_32x32";
+        private const int k_EnemyPinkPointsValue = 260;
+        private const int k_EnemyLightBluePointsValue = 140;
+        private const int k_EnemyLightYellowPointsValue = 110;
 
         public static Drawable2DGameComponent Create(Game i_Game, eSpriteType i_ObjectType)
         {
@@ -38,6 +44,15 @@ namespace SpaceInvaders
                     break;
                 case eSpriteType.MotherShip:
                     objectToReturn = new MotherShip(i_Game, k_MotherShipURL);
+                    break;
+                case eSpriteType.EnemyPink:
+                    objectToReturn = new Enemy(i_Game, k_EnemyPink, Color.Pink, k_EnemyPinkPointsValue);
+                    break;
+                case eSpriteType.EnemyLightBlue:
+                    objectToReturn = new Enemy(i_Game, k_EnemyLightBlue, Color.LightBlue, k_EnemyLightBluePointsValue);
+                    break;
+                case eSpriteType.EnemyLightYellow:
+                    objectToReturn = new Enemy(i_Game, k_EnemyLightYellow, Color.LightYellow, k_EnemyLightYellowPointsValue);
                     break;
             }
             return objectToReturn;

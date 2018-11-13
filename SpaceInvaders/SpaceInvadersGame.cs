@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -15,13 +14,19 @@ namespace SpaceInvaders
         InputManager m_InputManager;
         Spaceship m_Spaceship;
         MotherShipSpawner m_MotherShipSpawner;
+        EnemiesMatrix m_EnemiesMatrix;
 
         public SpaceInvadersGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
 
-            Components.Add(DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG));
+            // need to remove this from here and make this not hard-coded
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
+            graphics.ApplyChanges();
+
+            Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
 
             m_InputManager = new InputManager(this);
             Components.Add(m_InputManager);
@@ -31,17 +36,20 @@ namespace SpaceInvaders
             m_MotherShipSpawner.MotherShipDeSpawned += OnMotherShipDeSpawned;
             Components.Add(m_MotherShipSpawner);
 
+            Components.Add(DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG));
+
+            m_EnemiesMatrix = new EnemiesMatrix(this);
+            m_EnemiesMatrix.enemiesMatrixReachedBottomScreen += OnEnemiesMatrixReachedBottomScreen;
+            Components.Add(m_EnemiesMatrix);
+
             m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceShip) as Spaceship;
             Components.Add(m_Spaceship);
-
-            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            setupInputBindings();            
-
             base.Initialize();
+            setupInputBindings();
         }
 
         private void setupInputBindings()
@@ -65,7 +73,6 @@ namespace SpaceInvaders
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -80,15 +87,29 @@ namespace SpaceInvaders
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            this.Window.Title = m_EnemiesMatrix.Debug.ToString();
         }
 
         private void OnMotherShipSpawned(MotherShip i_SpawnedMotherShip)
         {
             Components.Add(i_SpawnedMotherShip);
+            i_SpawnedMotherShip.setDefaultPosition();
         }
         private void OnMotherShipDeSpawned(MotherShip i_DeSpawnedMotherShip)
         {
             Components.Remove(i_DeSpawnedMotherShip);
+        }
+        
+        private void OnEnemiesMatrixReachedBottomScreen()
+        {
+            gameOver();
+        }
+
+        private void gameOver()
+        {
+            // TO DO
+            System.Windows.Forms.MessageBox.Show("It's GG", "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+            Exit();
         }
 
         protected override void Draw(GameTime gameTime)

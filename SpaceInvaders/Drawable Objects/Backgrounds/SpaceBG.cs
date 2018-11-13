@@ -12,12 +12,13 @@ namespace SpaceInvaders
     public class SpaceBG : Drawable2DGameComponent
     {
         public SpaceBG(Game game, string i_SourceFileURL) : base(game, i_SourceFileURL)
-        {   
+        {
+            setDefaultPosition();
         }
 
-        protected override Vector2 GetDefaultPosition()
+        public void setDefaultPosition()
         {
-            return Vector2.Zero;
+            Position = Vector2.Zero;
         }
     }
 }
