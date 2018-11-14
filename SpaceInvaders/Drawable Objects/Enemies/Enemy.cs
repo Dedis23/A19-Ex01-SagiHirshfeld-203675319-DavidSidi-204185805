@@ -14,7 +14,6 @@ namespace SpaceInvaders
         public int PointsValue { get; set; }
         
         private Gun m_Gun;
-        private const int k_BulletsVelocity = 120;
         private const float k_ChanceToShoot = 10;
         private const float k_TimeBetweenRollsInSeconds = 1;
         private float m_RemainingDelay;
@@ -52,7 +51,7 @@ namespace SpaceInvaders
         public void Shoot()
         {
             Vector2 positionToShootFrom = new Vector2(this.Position.X + 0.5f * this.Width, this.Bottom + 1);
-            m_Gun.Shoot(positionToShootFrom, eShootingDirection.Down, k_BulletsVelocity, Color.Blue);
+            m_Gun.Shoot(positionToShootFrom, eShootingDirection.Down, Color.Blue);
         }
     }
 }

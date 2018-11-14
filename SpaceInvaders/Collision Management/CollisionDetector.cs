@@ -24,7 +24,7 @@ namespace SpaceInvaders
         {
             var collideableGameContent = from gameComponent in this.Game.Components
                                          where gameComponent is ICollideable
-                                         select gameComponent;
+                                         select gameComponent;            
 
             HashSet<ICollideable> checkedContent = new HashSet<ICollideable>();
             foreach (ICollideable collideableA in collideableGameContent)

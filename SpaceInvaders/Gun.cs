@@ -11,11 +11,11 @@ namespace SpaceInvaders
         {
         }
 
-        public void Shoot(Vector2 i_From, eShootingDirection i_Direction, int i_Velocity, Color i_BulletColor)
+        public void Shoot(Vector2 i_From, eShootingDirection i_Direction, Color i_BulletColor)
         {
             Bullet newBullet = DrawableObjectsFactory.Create(this.Game, DrawableObjectsFactory.eSpriteType.Bullet) as Bullet;
-            newBullet.Position = getCentralizedShootingPosition(newBullet, i_From, i_Direction);           
-            newBullet.Velocity = i_Velocity;
+            newBullet.Position = getCentralizedShootingPosition(newBullet, i_From, i_Direction);          
+
             newBullet.Tint = i_BulletColor;
             newBullet.Direction = i_Direction;
             this.Game.Components.Add(newBullet);
