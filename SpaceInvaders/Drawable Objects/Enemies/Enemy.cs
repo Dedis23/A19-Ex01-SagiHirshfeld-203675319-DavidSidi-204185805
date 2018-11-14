@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    public class Enemy : Drawable2DGameComponent
+    public class Enemy : Drawable2DGameComponent, ICollideable
     {
         public int PointsValue { get; set; }
         public Enemy(Game i_Game, string i_SourceFileURL, Color i_Tint, int i_PointsValue) : base(i_Game, i_SourceFileURL)

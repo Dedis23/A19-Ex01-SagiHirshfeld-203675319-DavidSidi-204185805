@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    public class MotherShip : Drawable2DGameComponent
+    public class MotherShip : Drawable2DGameComponent, ICollideable
     {
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
@@ -37,13 +37,13 @@ namespace SpaceInvaders
 
         private void moveMotherShip(GameTime i_GameTime)
         {
-            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            if (this.m_Position.X >= this.GraphicsDevice.Viewport.Width)
             {
                 MotherShipLeftTheScreen?.Invoke();
             }
             else
             {
-                Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+                m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
             }
         }
 
@@ -53,7 +53,7 @@ namespace SpaceInvaders
             float x = -(float)this.Texture.Width;
             float y = (float)this.Texture.Height;
 
-            Position = new Vector2(x, y);
+            m_Position = new Vector2(x, y);
         }
     }
 }

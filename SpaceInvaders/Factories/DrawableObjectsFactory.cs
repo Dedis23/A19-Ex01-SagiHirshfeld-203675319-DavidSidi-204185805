@@ -24,9 +24,10 @@ namespace SpaceInvaders
         private const string k_MotherShipURL = @"Sprites\MotherShip_32x120";
         private const string k_SpaceShipURL = @"Sprites\Ship01_32x32";
         private const string k_SpaceBGURL = @"Backgrounds\BG_Space01_1024x768";
-        private const string k_EnemyPink = @"Sprites\Enemy0101_32x32";
-        private const string k_EnemyLightBlue = @"Sprites\Enemy0201_32x32";
-        private const string k_EnemyLightYellow = @"Sprites\Enemy0301_32x32";
+        private const string k_EnemyPinkURL = @"Sprites\Enemy0101_32x32";
+        private const string k_EnemyLightBlueURL = @"Sprites\Enemy0201_32x32";
+        private const string k_EnemyLightYellowURL = @"Sprites\Enemy0301_32x32";
+        private const string k_BulletURL = @"Sprites\Bullet";
         private const int k_EnemyPinkPointsValue = 260;
         private const int k_EnemyLightBluePointsValue = 140;
         private const int k_EnemyLightYellowPointsValue = 110;
@@ -46,13 +47,13 @@ namespace SpaceInvaders
                     objectToReturn = new MotherShip(i_Game, k_MotherShipURL);
                     break;
                 case eSpriteType.EnemyPink:
-                    objectToReturn = new Enemy(i_Game, k_EnemyPink, Color.Pink, k_EnemyPinkPointsValue);
+                    objectToReturn = new Enemy(i_Game, k_EnemyPinkURL, Color.Pink, k_EnemyPinkPointsValue);
                     break;
                 case eSpriteType.EnemyLightBlue:
-                    objectToReturn = new Enemy(i_Game, k_EnemyLightBlue, Color.LightBlue, k_EnemyLightBluePointsValue);
+                    objectToReturn = new Enemy(i_Game, k_EnemyLightBlueURL, Color.LightBlue, k_EnemyLightBluePointsValue);
                     break;
                 case eSpriteType.EnemyLightYellow:
-                    objectToReturn = new Enemy(i_Game, k_EnemyLightYellow, Color.LightYellow, k_EnemyLightYellowPointsValue);
+                    objectToReturn = new Enemy(i_Game, k_EnemyLightYellowURL, Color.LightYellow, k_EnemyLightYellowPointsValue);
                     break;
             }
             return objectToReturn;

@@ -18,7 +18,7 @@ namespace SpaceInvaders
 
         public void setDefaultPosition()
         {
-            Position = Vector2.Zero;
+            m_Position = Vector2.Zero;
         }
     }
 }

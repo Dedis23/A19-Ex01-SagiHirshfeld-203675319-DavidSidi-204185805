@@ -75,7 +75,7 @@ namespace SpaceInvaders
                 {
                     throw new ArgumentException("Incorrect Enemy Sprite Type");
                 }
-                currentEnemy.Position = currentEnemyPosition;
+                currentEnemy.m_Position = currentEnemyPosition;
                 currentEnemyPosition.X += k_DefaultEnemyWidth + (k_DefaultEnemyWidth * k_DistanceBetweenEachEnemy);
                 Game.Components.Add(currentEnemy);
                 rowOfEnemies.Add(currentEnemy);
@@ -169,7 +169,7 @@ namespace SpaceInvaders
             {
                 foreach (Enemy enemy in rowOfEnemies)
                 {
-                    enemy.Position.X += i_JumpAmount * m_JumpDirection;
+                    enemy.m_Position.X += i_JumpAmount * m_JumpDirection;
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace SpaceInvaders
                     if (rowOfEnemies.Count > 0)
                     {
                         enemyInTheEdge = rowOfEnemies[rowOfEnemies.Count - 1];
-                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.Position.X);
+                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.m_Position.X);
                     }
                 }
             }
@@ -196,7 +196,7 @@ namespace SpaceInvaders
                     if (rowOfEnemies.Count > 0)
                     {
                         enemyInTheEdge = rowOfEnemies[0];
-                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.Position.X);
+                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.m_Position.X);
                     }
                 }
             }
@@ -209,7 +209,7 @@ namespace SpaceInvaders
             {
                 foreach (Enemy enemy in rowOfEnemies)
                 {
-                    enemy.Position.Y += m_JumpDistance;
+                    enemy.m_Position.Y += m_JumpDistance;
                 }
             }
         }
@@ -221,7 +221,7 @@ namespace SpaceInvaders
             {
                 foreach (Enemy enemy in rowOfEnemies)
                 {
-                    if (enemy.Position.Y + k_DefaultEnemyHeight >= Game.GraphicsDevice.Viewport.Height)
+                    if (enemy.m_Position.Y + k_DefaultEnemyHeight >= Game.GraphicsDevice.Viewport.Height)
                     {
                         matrixReachedBottomScreen = true;
                     }

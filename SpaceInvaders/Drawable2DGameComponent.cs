@@ -12,14 +12,26 @@ namespace SpaceInvaders
     public abstract class Drawable2DGameComponent : DrawableGameComponent
     {
         readonly private String r_SourceFileURL;
-        public Vector2 Position;
+        public Vector2 m_Position;
         public Color Tint { get; set; } = Color.White;
         public Texture2D Texture { get; set; }
         public int Velocity { get; set; }
-
         private SpriteBatch m_SpriteBatch;
 
-        public float Width
+        public Vector2 Position
+        {
+            get
+            {
+                return m_Position;
+            }
+
+            set
+            {
+                m_Position = value;
+            }
+        }
+
+        public int Width
         {
             get
             {
@@ -27,7 +39,7 @@ namespace SpaceInvaders
             }
         }
 
-        public float Height
+        public int Height
         {
             get
             {
@@ -35,35 +47,35 @@ namespace SpaceInvaders
             }
         }
 
-        public float Top
+        public int Top
         {
             get
             {
-                return Position.Y;
+                return (int)Math.Floor(m_Position.Y);
             }
         }
 
-        public float Bottom
+        public int Bottom
         {
             get
             {
-                return Position.Y + this.Height;
+                return (int)Math.Floor(m_Position.Y) + this.Height;
             }
         }
 
-        public float Left
+        public int Left
         {
             get
             {
-                return Position.X;
+                return (int)Math.Floor(m_Position.X);
             }
         }
 
-        public float Right
+        public int Right
         {
             get
             {
-                return Position.X + this.Width; ;
+                return (int)Math.Floor(m_Position.X) + this.Width;
             }
         }
 
@@ -77,7 +89,7 @@ namespace SpaceInvaders
         public override void Draw(GameTime gameTime)
         {
             m_SpriteBatch.Begin();
-            m_SpriteBatch.Draw(Texture, Position, Tint);
+            m_SpriteBatch.Draw(Texture, m_Position, Tint);
             m_SpriteBatch.End();
             base.Draw(gameTime);
         }

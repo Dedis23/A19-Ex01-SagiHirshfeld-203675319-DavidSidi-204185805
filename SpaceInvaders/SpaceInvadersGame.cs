@@ -13,6 +13,7 @@ namespace SpaceInvaders
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager m_InputManager;
+        CollisionDetector m_CollisionDetector;
         Spaceship m_Spaceship;
         MotherShipSpawner m_MotherShipSpawner;
         EnemiesMatrix m_EnemiesMatrix;
@@ -30,9 +31,36 @@ namespace SpaceInvaders
             m_InputManager = new InputManager(this);
             Components.Add(m_InputManager);
 
-            base.Initialize();            
+            m_CollisionDetector = new CollisionDetector(this);
+            m_CollisionDetector.CollisionDetected += onCollision;
+            Components.Add(m_CollisionDetector);
+
+            base.Initialize();
         }
 
+        private void onCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
+        {
+            /// FOR TESTING ///            
+            if (i_CollideableA is Spaceship && i_CollideableB is Enemy)                
+            {
+                flipSpaceshipColor(i_CollideableA as Spaceship);
+            }
+
+            if (i_CollideableB is Spaceship && i_CollideableA is Enemy)
+            {
+                flipSpaceshipColor(i_CollideableB as Spaceship);
+            }
+            /// FOR TESTING ///
+
+            // TODO: pass to CollisionHandler?
+        }
+
+        /// FOR TESTING ///
+        private void flipSpaceshipColor(Spaceship i_Spaceship)
+        {
+            i_Spaceship.Tint = i_Spaceship.Tint == Color.Black ? Color.White : Color.Black;
+        }
+        
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -110,8 +138,13 @@ namespace SpaceInvaders
             // Mouse
             m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
             m_InputManager.MouseLeftButtonPressed += m_Spaceship.FireBullet;
+
+            /// FOR TESTING ///
+            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveUp, Keys.Up);
+            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveDown, Keys.Down);
+            /// FOR TESTING ///
         }
-        
+
         private void OnEnemiesMatrixReachedBottomScreen()
         {
             gameOver();
@@ -119,7 +152,7 @@ namespace SpaceInvaders
 
         private void gameOver()
         {
-            // TO DO
+            // TODO:
             System.Windows.Forms.MessageBox.Show("It's GG", "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
             Exit();
         }

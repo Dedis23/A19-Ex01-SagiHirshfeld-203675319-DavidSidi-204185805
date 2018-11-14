@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    class Spaceship : Drawable2DGameComponent
+    class Spaceship : Drawable2DGameComponent, ICollideable
     {
         private const int k_SpaceShipVelocity = 120;
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
@@ -36,35 +36,50 @@ namespace SpaceInvaders
             // Put it a little bit higher:
             y -= 32;
 
-            Position = new Vector2(x, y);
+            m_Position = new Vector2(x, y);
         }
 
         public override void Update(GameTime i_GameTime)
         {
             // Clamp the position between screen boundries:
-            Position.X = MathHelper.Clamp(Position.X, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
+            m_Position.X = MathHelper.Clamp(m_Position.X, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
+
+            /// FOR TESTING ///
+            m_Position.Y = MathHelper.Clamp(m_Position.Y, 0, Game.GraphicsDevice.Viewport.Height - Texture.Height);
 
             base.Update(i_GameTime);
         }
 
         public void MoveRight(GameTime i_GameTime)
         {
-            Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
         }
 
         public void MoveLeft(GameTime i_GameTime)
         {
-            Position.X -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            m_Position.X -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
         }
 
         public void MoveAccordingToMousePositionDelta(GameTime i_GameTime, Vector2 i_MousePositionDelta)
         {
-            Position.X += i_MousePositionDelta.X;
+            m_Position.X += i_MousePositionDelta.X;
         }
 
         public void FireBullet(GameTime i_GameTime)
         {
             // TODO: BOOM
+        }
+
+        /// FOR TESTING ///
+        public void MoveUp(GameTime i_GameTime)
+        {
+            m_Position.Y -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+        }
+
+        /// FOR TESTING ///
+        public void MoveDown(GameTime i_GameTime)
+        {
+            m_Position.Y += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
         }
     }
 }

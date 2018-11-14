@@ -41,6 +41,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collision Management\CollisionDetector.cs" />
+    <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
     <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
