@@ -15,6 +15,7 @@ namespace SpaceInvaders
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             Velocity = k_SpaceShipVelocity;
+            SetDefaultPosition();
         }
 
         public override void Initialize()

@@ -19,9 +19,59 @@ namespace SpaceInvaders
 
         private SpriteBatch m_SpriteBatch;
 
+        public float Width
+        {
+            get
+            {
+                return Texture != null ? Texture.Width : 0;
+            }
+        }
+
+        public float Height
+        {
+            get
+            {
+                return Texture != null ? Texture.Height : 0;
+            }
+        }
+
+        public float Top
+        {
+            get
+            {
+                return Position.Y;
+            }
+        }
+
+        public float Bottom
+        {
+            get
+            {
+                return Position.Y + this.Height;
+            }
+        }
+
+        public float Left
+        {
+            get
+            {
+                return Position.X;
+            }
+        }
+
+        public float Right
+        {
+            get
+            {
+                return Position.X + this.Width; ;
+            }
+        }
+
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
         {
             r_SourceFileURL = i_SourceFileURL;
+            m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);
         }
 
         public override void Draw(GameTime gameTime)
@@ -30,17 +80,6 @@ namespace SpaceInvaders
             m_SpriteBatch.Draw(Texture, Position, Tint);
             m_SpriteBatch.End();
             base.Draw(gameTime);
-        }
-
-        // This function is called when Game.LoadContent() is invoked - but before it is
-        // accessed. This means that any Texture/Position/Color assignments within 
-        // Game.LoadContent() will "overpower" the following assignments            
-        protected override void LoadContent()
-        {
-            m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);
-
-            base.LoadContent();
         }
     }
 }
