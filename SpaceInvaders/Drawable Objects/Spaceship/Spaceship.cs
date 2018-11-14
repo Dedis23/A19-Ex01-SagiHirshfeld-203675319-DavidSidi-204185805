@@ -21,19 +21,13 @@ namespace SpaceInvaders
             SetDefaultPosition();
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
-
         public void SetDefaultPosition()
         {
             // Get the bottom and center:
-            float x = (float)GraphicsDevice.Viewport.Width / 2;
+            float x = 0;
             float y = (float)GraphicsDevice.Viewport.Height;
 
             // Offset:
-            x -= Texture.Width / 2;
             y -= Texture.Height / 2;
 
             // Put it a little bit higher:

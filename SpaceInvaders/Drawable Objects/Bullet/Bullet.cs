@@ -2,7 +2,7 @@
 
 namespace SpaceInvaders
 {
-    public class Bullet : Drawable2DGameComponent
+    public class Bullet : Drawable2DGameComponent, ICollideable
     {
         private const int k_BulletsVelocity = 155;
         public eShootingDirection Direction { get; set; }

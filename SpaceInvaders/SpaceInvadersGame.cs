@@ -45,7 +45,7 @@ namespace SpaceInvaders
         {
             // TODO: pass to CollisionHandler?
         }
-        
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -114,7 +114,7 @@ namespace SpaceInvaders
             m_EnemiesMatrix.enemiesMatrixReachedBottomScreen += OnEnemiesMatrixReachedBottomScreen;
             Components.Add(m_EnemiesMatrix);
         }
-
+        
         private void loadSpaceship()
         {
             m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceShip) as Spaceship;

@@ -59,8 +59,9 @@ namespace SpaceInvaders
 
         private bool boxedBoundriesAreOverlapping(ICollideable i_CollideableA, ICollideable i_CollideableB)
         {
-            return !(i_CollideableA.Right < i_CollideableB.Left || i_CollideableB.Right < i_CollideableB.Left || 
-                i_CollideableA.Bottom < i_CollideableB.Top || i_CollideableB.Bottom < i_CollideableA.Top);
+            Rectangle rectangleA = new Rectangle(i_CollideableA.Left, i_CollideableA.Top, i_CollideableA.Width, i_CollideableA.Height);
+            Rectangle RectangleB = new Rectangle(i_CollideableB.Left, i_CollideableB.Top, i_CollideableB.Width, i_CollideableB.Height);
+            return rectangleA.Intersects(RectangleB);
         }
 
         private bool pixelCollisionDetected(ICollideable i_CollideableA, ICollideable i_CollideableB)

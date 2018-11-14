@@ -83,13 +83,9 @@ namespace SpaceInvaders
         {
             get
             {
-                int screenTop, screenBottom, screenLeft, screenRight;
-                screenTop = 0;
-                screenBottom = this.GraphicsDevice.Viewport.Height;
-                screenLeft = 0;
-                screenRight = this.GraphicsDevice.Viewport.Width;
-
-                return !(this.Right < screenLeft || screenRight < screenLeft || this.Bottom < screenTop || screenBottom < this.Top);
+                Rectangle spriteRectangle = new Rectangle(this.Left, this.Top, this.Width, this.Height);
+                Rectangle screenRectangle = new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+                return spriteRectangle.Intersects(screenRectangle);
             }
         }
 

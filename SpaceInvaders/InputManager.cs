@@ -102,8 +102,8 @@ namespace SpaceInvaders
 
             if (m_PrevMouseState != null)
             {
-                retVal.X = (Mouse.GetState().X - m_PrevMouseState.Value.X);
-                retVal.Y = (Mouse.GetState().Y - m_PrevMouseState.Value.Y);
+                retVal.X = Mouse.GetState().X - m_PrevMouseState.Value.X;
+                retVal.Y = Mouse.GetState().Y - m_PrevMouseState.Value.Y;
             }
 
             return retVal;
