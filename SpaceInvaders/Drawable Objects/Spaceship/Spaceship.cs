@@ -12,9 +12,13 @@ namespace SpaceInvaders
     class Spaceship : Drawable2DGameComponent, ICollideable
     {
         private const int k_SpaceShipVelocity = 120;
+        private const int k_BulletsVelocity = 120;
+        private Gun m_Gun;
+
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             Velocity = k_SpaceShipVelocity;
+            m_Gun = new Gun(i_Game);
             SetDefaultPosition();
         }
 
@@ -44,9 +48,6 @@ namespace SpaceInvaders
             // Clamp the position between screen boundries:
             m_Position.X = MathHelper.Clamp(m_Position.X, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
 
-            /// FOR TESTING ///
-            m_Position.Y = MathHelper.Clamp(m_Position.Y, 0, Game.GraphicsDevice.Viewport.Height - Texture.Height);
-
             base.Update(i_GameTime);
         }
 
@@ -65,21 +66,10 @@ namespace SpaceInvaders
             m_Position.X += i_MousePositionDelta.X;
         }
 
-        public void FireBullet(GameTime i_GameTime)
+        public void Shoot(GameTime i_GameTime)
         {
-            // TODO: BOOM
-        }
-
-        /// FOR TESTING ///
-        public void MoveUp(GameTime i_GameTime)
-        {
-            m_Position.Y -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
-        }
-
-        /// FOR TESTING ///
-        public void MoveDown(GameTime i_GameTime)
-        {
-            m_Position.Y += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Vector2 positionToShootFrom = new Vector2(this.Position.X + 0.5f * this.Width, this.Top -  1);
+            m_Gun.Shoot(positionToShootFrom, eShootingDirection.Up, k_BulletsVelocity, Color.Red);
         }
     }
 }

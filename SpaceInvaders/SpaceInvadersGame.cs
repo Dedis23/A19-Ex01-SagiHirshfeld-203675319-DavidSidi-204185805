@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace SpaceInvaders
 {
@@ -17,6 +17,7 @@ namespace SpaceInvaders
         Spaceship m_Spaceship;
         MotherShipSpawner m_MotherShipSpawner;
         EnemiesMatrix m_EnemiesMatrix;
+        Queue<GameComponent> m_RemovalQueue;
 
         public SpaceInvadersGame()
         {
@@ -35,30 +36,14 @@ namespace SpaceInvaders
             m_CollisionDetector.CollisionDetected += onCollision;
             Components.Add(m_CollisionDetector);
 
+            m_RemovalQueue = new Queue<GameComponent>();
+
             base.Initialize();
         }
 
         private void onCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
         {
-            /// FOR TESTING ///            
-            if (i_CollideableA is Spaceship && i_CollideableB is Enemy)                
-            {
-                flipSpaceshipColor(i_CollideableA as Spaceship);
-            }
-
-            if (i_CollideableB is Spaceship && i_CollideableA is Enemy)
-            {
-                flipSpaceshipColor(i_CollideableB as Spaceship);
-            }
-            /// FOR TESTING ///
-
             // TODO: pass to CollisionHandler?
-        }
-
-        /// FOR TESTING ///
-        private void flipSpaceshipColor(Spaceship i_Spaceship)
-        {
-            i_Spaceship.Tint = i_Spaceship.Tint == Color.Black ? Color.White : Color.Black;
         }
         
         protected override void LoadContent()
@@ -76,6 +61,14 @@ namespace SpaceInvaders
 
         protected override void Update(GameTime gameTime)
         {
+            // Remove components which were added to the removal queue
+            foreach (GameComponent gameComponentToRemove in m_RemovalQueue)
+            {
+                this.Components.Remove(gameComponentToRemove);
+                gameComponentToRemove.Dispose();
+            }
+            m_RemovalQueue.Clear();
+
             base.Update(gameTime);
         }
 
@@ -137,12 +130,7 @@ namespace SpaceInvaders
 
             // Mouse
             m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
-            m_InputManager.MouseLeftButtonPressed += m_Spaceship.FireBullet;
-
-            /// FOR TESTING ///
-            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveUp, Keys.Up);
-            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveDown, Keys.Down);
-            /// FOR TESTING ///
+            m_InputManager.MouseLeftButtonPressedOnce += m_Spaceship.Shoot;
         }
 
         private void OnEnemiesMatrixReachedBottomScreen()

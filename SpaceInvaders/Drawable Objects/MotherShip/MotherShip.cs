@@ -15,7 +15,9 @@ namespace SpaceInvaders
         private const int k_MotherShipPointsValue = 850;
         public int PointsValue { get; set; }
         public event Action MotherShipLeftTheScreen;
+#pragma warning disable CS0067 // The event 'MotherShip.MotherShipDestroyed' is never used
         public event Action MotherShipDestroyed;
+#pragma warning restore CS0067 // The event 'MotherShip.MotherShipDestroyed' is never used
 
         public MotherShip(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {

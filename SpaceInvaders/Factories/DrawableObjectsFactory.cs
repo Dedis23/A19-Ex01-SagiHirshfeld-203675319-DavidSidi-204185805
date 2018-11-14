@@ -19,6 +19,7 @@ namespace SpaceInvaders
             EnemyPink,
             EnemyLightBlue,
             EnemyLightYellow,
+            Bullet,
         }
 
         private const string k_MotherShipURL = @"Sprites\MotherShip_32x120";
@@ -54,6 +55,9 @@ namespace SpaceInvaders
                     break;
                 case eSpriteType.EnemyLightYellow:
                     objectToReturn = new Enemy(i_Game, k_EnemyLightYellowURL, Color.LightYellow, k_EnemyLightYellowPointsValue);
+                    break;
+                case eSpriteType.Bullet:
+                    objectToReturn = new Bullet(i_Game, k_BulletURL);
                     break;
             }
             return objectToReturn;

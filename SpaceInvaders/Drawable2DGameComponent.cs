@@ -79,6 +79,20 @@ namespace SpaceInvaders
             }
         }
 
+        public bool IsInScreen
+        {
+            get
+            {
+                int screenTop, screenBottom, screenLeft, screenRight;
+                screenTop = 0;
+                screenBottom = this.GraphicsDevice.Viewport.Height;
+                screenLeft = 0;
+                screenRight = this.GraphicsDevice.Viewport.Width;
+
+                return !(this.Right < screenLeft || screenRight < screenLeft || this.Bottom < screenTop || screenBottom < this.Top);
+            }
+        }
+
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
         {
             r_SourceFileURL = i_SourceFileURL;
@@ -92,6 +106,6 @@ namespace SpaceInvaders
             m_SpriteBatch.Draw(Texture, m_Position, Tint);
             m_SpriteBatch.End();
             base.Draw(gameTime);
-        }
+        }        
     }
 }

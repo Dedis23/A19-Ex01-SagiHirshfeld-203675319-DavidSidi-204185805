@@ -17,6 +17,8 @@ namespace SpaceInvaders
         public event Action<GameTime, Vector2> MouseMoved;
         public event Action<GameTime> MouseLeftButtonPressed;
         public event Action<GameTime> MouseRightButtonPressed;
+        public event Action<GameTime> MouseLeftButtonPressedOnce;
+        public event Action<GameTime> MouseRightButtonPressedOnce;
 
         public InputManager(Game game) : base(game)
         {
@@ -78,20 +80,31 @@ namespace SpaceInvaders
             {
                 MouseRightButtonPressed?.Invoke(i_GameTime);
             }
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && 
+                (m_PrevMouseState == null || m_PrevMouseState.Value.LeftButton == ButtonState.Released))
+            {
+                MouseLeftButtonPressedOnce?.Invoke(i_GameTime);
+            }
+
+            if (Mouse.GetState().RightButton == ButtonState.Pressed &&
+                (m_PrevMouseState == null || m_PrevMouseState.Value.RightButton == ButtonState.Released))
+            {
+                MouseRightButtonPressedOnce?.Invoke(i_GameTime);
+            }
+
+            m_PrevMouseState = Mouse.GetState();
         }
 
         private Vector2 getMousePositionDelta()
         {
             Vector2 retVal = Vector2.Zero;
-            MouseState currState = Mouse.GetState();
 
             if (m_PrevMouseState != null)
             {
-                retVal.X = (currState.X - m_PrevMouseState.Value.X);
-                retVal.Y = (currState.Y - m_PrevMouseState.Value.Y);
+                retVal.X = (Mouse.GetState().X - m_PrevMouseState.Value.X);
+                retVal.Y = (Mouse.GetState().Y - m_PrevMouseState.Value.Y);
             }
-
-            m_PrevMouseState = currState;
 
             return retVal;
         }
