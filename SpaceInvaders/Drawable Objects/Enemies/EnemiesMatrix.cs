@@ -79,8 +79,8 @@ namespace SpaceInvaders
             {
                 currentEnemy = DrawableObjectsFactory.Create(Game, i_EnemySpriteType) as Enemy;
                 currentEnemy.m_Position = currentEnemyPosition;
-                currentEnemy.Killed += removeEnemy;
                 currentEnemyPosition.X += k_DefaultEnemyWidth + (k_DefaultEnemyWidth * k_DistanceBetweenEachEnemy);
+                currentEnemy.Killed += removeEnemy;
                 rowOfEnemies.Add(currentEnemy);
                 Game.Components.Add(currentEnemy);
             }
@@ -165,26 +165,30 @@ namespace SpaceInvaders
         private float getFurthestEnemyXPosition()
         {
             float furthestEnemyXPosition = 0.0f;
-            Enemy enemyInTheEdge = null;
             if (m_JumpDirection == 1)
             {
                 foreach (List<Enemy> rowOfEnemies in r_EnemiesMatrix)
                 {
-                    if (rowOfEnemies.Count > 0)
+                    foreach (Enemy enemy in rowOfEnemies)
                     {
-                        enemyInTheEdge = rowOfEnemies[rowOfEnemies.Count - 1];
-                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.m_Position.X);
+                        if (rowOfEnemies.Count > 0)
+                        {
+                            furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemy.m_Position.X);
+                        }
                     }
                 }
             }
             else
             {
+                furthestEnemyXPosition = (float)this.Game.GraphicsDevice.Viewport.Width;
                 foreach (List<Enemy> rowOfEnemies in r_EnemiesMatrix)
                 {
-                    if (rowOfEnemies.Count > 0)
+                    foreach (Enemy enemy in rowOfEnemies)
                     {
-                        enemyInTheEdge = rowOfEnemies[0];
-                        furthestEnemyXPosition = Math.Max(furthestEnemyXPosition, enemyInTheEdge.m_Position.X);
+                        if (rowOfEnemies.Count > 0)
+                        {
+                            furthestEnemyXPosition = Math.Min(furthestEnemyXPosition, enemy.m_Position.X);
+                        }
                     }
                 }
             }
@@ -201,7 +205,7 @@ namespace SpaceInvaders
                 }
             }
         }
-
+        
         private void checkIfEnemiesMatrixReachedBottomScreen()
         {
             bool matrixReachedBottomScreen = false;
@@ -241,7 +245,7 @@ namespace SpaceInvaders
         }
 
         // Sagi: maybe temp
-        public void removeEnemy(object i_Enemy)
+        private void removeEnemy(object i_Enemy)
         {
             Enemy enemy = i_Enemy as Enemy;
             foreach(List<Enemy> enemyList in r_EnemiesMatrix)
