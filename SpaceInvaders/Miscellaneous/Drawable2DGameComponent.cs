@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    public abstract class Drawable2DGameComponent : DrawableGameComponent
+    public abstract class Drawable2DGameComponent : DrawableGameComponent, IKillable
     {
         readonly private String r_SourceFileURL;
         public Vector2 m_Position;
@@ -17,6 +17,7 @@ namespace SpaceInvaders
         public Texture2D Texture { get; set; }
         public int Velocity { get; set; }
         private SpriteBatch m_SpriteBatch;
+        public event Action<object> Killed;
 
         public Vector2 Position
         {
@@ -102,6 +103,13 @@ namespace SpaceInvaders
             m_SpriteBatch.Draw(Texture, m_Position, Tint);
             m_SpriteBatch.End();
             base.Draw(gameTime);
-        }        
+        }
+
+        public virtual void Kill()
+        {
+            this.Game.Components.Remove(this);
+            Killed?.Invoke(this);
+            this.Dispose();
+        }
     }
 }

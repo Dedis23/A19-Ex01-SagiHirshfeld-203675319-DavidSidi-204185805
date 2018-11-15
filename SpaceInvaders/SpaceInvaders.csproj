@@ -45,6 +45,7 @@
     <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
+    <Compile Include="Miscellaneous\IProjectile.cs" />
     <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
     <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
     <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
     <Compile Include="Miscellaneous\Gun.cs" />
     <Compile Include="Input Management\InputManager.cs" />
+    <Compile Include="Miscellaneous\IKillable.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

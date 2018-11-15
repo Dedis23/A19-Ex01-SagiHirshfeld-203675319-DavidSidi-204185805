@@ -12,6 +12,7 @@ namespace SpaceInvaders
     class Spaceship : Drawable2DGameComponent, ICollideable
     {
         private const int k_SpaceShipVelocity = 120;
+        private const int k_MaxBulletsInScreen = 3;
         private Gun m_Gun;
 
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
@@ -61,8 +62,11 @@ namespace SpaceInvaders
 
         public void Shoot(GameTime i_GameTime)
         {
-            Vector2 positionToShootFrom = new Vector2(this.Position.X + 0.5f * this.Width, this.Top -  1);
-            m_Gun.Shoot(positionToShootFrom, eShootingDirection.Up, Color.Red);
+            if (m_Gun.NumberOfShotBulletsInScreen < k_MaxBulletsInScreen)
+            {
+                Vector2 positionToShootFrom = new Vector2(this.Position.X + 0.5f * this.Width, this.Top - 1);
+                m_Gun.Shoot(positionToShootFrom, eShootingDirection.Up, Color.Red);
+            }
         }
     }
 }

@@ -68,6 +68,7 @@ namespace SpaceInvaders
                 this.Components.Remove(gameComponentToRemove);
                 gameComponentToRemove.Dispose();
             }
+
             m_RemovalQueue.Clear();
             base.Update(gameTime);
         }

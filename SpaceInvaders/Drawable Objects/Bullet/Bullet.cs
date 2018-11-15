@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace SpaceInvaders
 {
-    public class Bullet : Drawable2DGameComponent, ICollideable
+    public class Bullet : Drawable2DGameComponent, ICollideable, IProjectile
     {
         private const int k_BulletsVelocity = 155;
         public eShootingDirection Direction { get; set; }
@@ -19,7 +20,7 @@ namespace SpaceInvaders
 
             if (!IsInScreen)
             {
-                this.Game.Components.Remove(this);
+                this.Kill();
             }
 
             base.Update(i_GameTime);

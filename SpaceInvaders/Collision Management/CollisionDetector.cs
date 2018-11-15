@@ -34,7 +34,8 @@ namespace SpaceInvaders
                     checkedContent.Add(collideableA);
                     foreach (ICollideable collideableB in collideableGameContent)
                     {
-                        if (!checkedContent.Contains(collideableB))
+                        if (!checkedContent.Contains(collideableB) && 
+                            !(collideableB is IProjectile && collideableA is IProjectile))
                         {
                             checkAndNotifySingleCollision(collideableA, collideableB);
                         }

@@ -1,21 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace SpaceInvaders
 {
     public class Gun : GameComponent
     {
+        private HashSet<Bullet> m_BulletsFired;
+
+        public int NumberOfShotBulletsInScreen
+        {
+            get
+            {
+                return m_BulletsFired.Count;
+            }
+        }
+
         public Gun(Game game) : base(game)
         {
+            m_BulletsFired = new HashSet<Bullet>();
         }
 
         public void Shoot(Vector2 i_From, eShootingDirection i_Direction, Color i_BulletColor)
         {
             Bullet newBullet = DrawableObjectsFactory.Create(this.Game, DrawableObjectsFactory.eSpriteType.Bullet) as Bullet;
-            newBullet.Position = getCentralizedShootingPosition(newBullet, i_From, i_Direction);          
-
+            newBullet.Position = getCentralizedShootingPosition(newBullet, i_From, i_Direction);    
             newBullet.Tint = i_BulletColor;
             newBullet.Direction = i_Direction;
             this.Game.Components.Add(newBullet);
+            m_BulletsFired.Add(newBullet);
+            newBullet.Killed += (bullet) => m_BulletsFired.Remove(bullet as Bullet);
         }
 
         private Vector2 getCentralizedShootingPosition(Bullet i_Bullet, Vector2 i_From, eShootingDirection i_Direction)
