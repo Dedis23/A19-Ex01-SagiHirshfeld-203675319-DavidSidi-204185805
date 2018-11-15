@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -15,9 +9,7 @@ namespace SpaceInvaders
         private const int k_MotherShipPointsValue = 850;
         public int PointsValue { get; set; }
         public event Action MotherShipLeftTheScreen;
-#pragma warning disable CS0067 // The event 'MotherShip.MotherShipDestroyed' is never used
         public event Action MotherShipDestroyed;
-#pragma warning restore CS0067 // The event 'MotherShip.MotherShipDestroyed' is never used
 
         public MotherShip(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
@@ -54,7 +46,6 @@ namespace SpaceInvaders
             // Default MotherShip position (coming from the left of the screen)
             float x = -(float)this.Texture.Width;
             float y = (float)this.Texture.Height;
-
             m_Position = new Vector2(x, y);
         }
     }

@@ -48,17 +48,18 @@
     <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
     <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
     <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />
-    <Compile Include="Drawable2DGameComponent.cs" />
+    <Compile Include="Miscellaneous\Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
-    <Compile Include="eShootingDirection.cs" />
+    <Compile Include="Miscellaneous\eShootingDirection.cs" />
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
-    <Compile Include="Gun.cs" />
-    <Compile Include="InputManager.cs" />
-    <Compile Include="RandomSpawners\MotherShipSpawner.cs" />
-    <Compile Include="RandomSpawners\RandomSpawner.cs" />
+    <Compile Include="Miscellaneous\Gun.cs" />
+    <Compile Include="Input Management\InputManager.cs" />
+    <Compile Include="Spawners\MotherShipSpawner.cs" />
+    <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Miscellaneous\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -14,30 +9,45 @@ namespace SpaceInvaders
         private const int k_NumOfRowsWithPinkEnemies = 1, k_NumOfRowsWithLightBlueEnemies = 2, k_NumOfRowsWithLightYellowEnemies = 2, k_NumOfEnemiesInARow = 9;
         private const float k_DistanceBetweenEachEnemy = 0.6f;
         private const float k_DefaultStartingPositionX = 0, k_DefaultStartingPositionY = 96;
-        private const float k_JumpDistanceModifier = 0.5f;
         private const int k_DefaultEnemyWidth = 32, k_DefaultEnemyHeight = 32;
         private const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
+        private const float k_JumpDistanceModifier = 0.5f;
         private const float k_EnemiesReachedEdgeAccelerator = 0.92f;
         private const float k_FourEnemiesDefeatedAccelerator = 0.96f;
-        private float m_TimerToNextJump;
-        private float m_CurrentDelayBetweenJumps;
+        private const float k_ChanceForASingleEnemyToShoot = 5;
+        private const float k_TimeBetweenRollingForShootsInSeconds = 2;
         private float m_JumpDirection;
         private float m_JumpDistance;
         private int m_NumOfDefeatedEnemies;
-        private bool m_JumpedDownwards;
+        private bool m_LastJumpWasDownwards;
+        private Timer m_TimerForJumps;
+        private Timer m_TimerForEnemyShooting;
+        private Random m_RandomGenerator;
         private readonly List<List<Enemy>> r_EnemiesMatrix;
         public event Action enemiesMatrixReachedBottomScreen;
 
         public EnemiesMatrix(Game i_Game) : base(i_Game)
         {
             r_EnemiesMatrix = new List<List<Enemy>>();
-            m_CurrentDelayBetweenJumps = k_DefaultDelayBetweenJumpsInSeconds;
-            m_TimerToNextJump = 0.0f;
             m_JumpDirection = 1;
             m_NumOfDefeatedEnemies = 0;
-            m_JumpedDownwards = false;
+            m_LastJumpWasDownwards = false;
             m_JumpDistance = k_JumpDistanceModifier * k_DefaultEnemyWidth;
+            m_RandomGenerator = new Random();
+            initializeTimers();
             initializeMatrix();
+        }
+
+        private void initializeTimers()
+        {
+            m_TimerForJumps = new Timer(this.Game);
+            m_TimerForJumps.Interval = k_DefaultDelayBetweenJumpsInSeconds;
+            m_TimerForJumps.Notify += handleEnemiesMatrixJumps;
+            m_TimerForJumps.Activate();
+            m_TimerForEnemyShooting = new Timer(this.Game);
+            m_TimerForEnemyShooting.Interval = k_TimeBetweenRollingForShootsInSeconds;
+            m_TimerForEnemyShooting.Notify += rollsForShoot;
+            m_TimerForEnemyShooting.Activate();
         }
 
         private void initializeMatrix()
@@ -67,18 +77,11 @@ namespace SpaceInvaders
             Enemy currentEnemy = null;
             for (int i = 0; i < k_NumOfEnemiesInARow; i++)
             {
-                try
-                {
-                    currentEnemy = DrawableObjectsFactory.Create(Game, i_EnemySpriteType) as Enemy;
-                }
-                catch (Exception)
-                {
-                    throw new ArgumentException("Incorrect Enemy Sprite Type");
-                }
+                currentEnemy = DrawableObjectsFactory.Create(Game, i_EnemySpriteType) as Enemy;
                 currentEnemy.m_Position = currentEnemyPosition;
                 currentEnemyPosition.X += k_DefaultEnemyWidth + (k_DefaultEnemyWidth * k_DistanceBetweenEachEnemy);
-                Game.Components.Add(currentEnemy);
                 rowOfEnemies.Add(currentEnemy);
+                Game.Components.Add(currentEnemy);
             }
             return rowOfEnemies;
         }
@@ -95,36 +98,25 @@ namespace SpaceInvaders
             }
         }
 
-        public override void Update(GameTime i_GameTime)
+        private void handleEnemiesMatrixJumps()
         {
-            handleEnemiesMatrixJumps(i_GameTime);
-            base.Update(i_GameTime);
-        }
-
-        private void handleEnemiesMatrixJumps(GameTime i_GameTime)
-        {
-            m_TimerToNextJump += (float)i_GameTime.ElapsedGameTime.TotalSeconds;
-            if (m_TimerToNextJump >= m_CurrentDelayBetweenJumps)
+            if (enemiesOnEdge() == true)
             {
-                if (enemiesOnEdge() == true)
-                {
-                    makeAJumpDownwards();
-                    m_JumpedDownwards = true;
-                    checkIfEnemiesMatrixReachedBottomScreen();
-                    decreaseDelayBetweenJumps(k_EnemiesReachedEdgeAccelerator);
-                    m_JumpDirection *= -1;
-                }
-                else
-                {
-                    if (m_JumpedDownwards == false)
-                    {
-                        float amountToJump = calculateJumpAmount();
-                        jumpSideways(amountToJump);
-                    }
-                }
-                m_TimerToNextJump = 0.0f;
+                makeAJumpDownwards();
+                m_LastJumpWasDownwards = true;
+                checkIfEnemiesMatrixReachedBottomScreen();
+                decreaseDelayBetweenJumps(k_EnemiesReachedEdgeAccelerator);
+                m_JumpDirection *= -1;
             }
-            m_JumpedDownwards = false;
+            else
+            {
+                if (m_LastJumpWasDownwards == false)
+                {
+                    float amountToJump = calculateJumpAmount();
+                    jumpSideways(amountToJump);
+                }
+            }
+            m_LastJumpWasDownwards = false;
         }
 
         private float calculateJumpAmount()
@@ -148,17 +140,12 @@ namespace SpaceInvaders
             float furthestEnemyXPosition = getFurthestEnemyXPosition();
             if (m_JumpDirection == 1.0f)
             {
-                if (furthestEnemyXPosition + k_DefaultEnemyWidth == Game.GraphicsDevice.Viewport.Width)
-                {
-                    enemiesOnEdge = true;
-                }
+                enemiesOnEdge = furthestEnemyXPosition + k_DefaultEnemyWidth == Game.GraphicsDevice.Viewport.Width ?
+                    enemiesOnEdge = true : enemiesOnEdge = false;
             }
             else
             {
-                if (furthestEnemyXPosition == 0)
-                {
-                    enemiesOnEdge = true;
-                }
+                enemiesOnEdge = furthestEnemyXPosition == 0 ? enemiesOnEdge = true : enemiesOnEdge = false;
             }
             return enemiesOnEdge;
         }
@@ -235,7 +222,21 @@ namespace SpaceInvaders
 
         private void decreaseDelayBetweenJumps(float i_AcceleratorModifier)
         {
-            m_CurrentDelayBetweenJumps *= i_AcceleratorModifier;
+            m_TimerForJumps.Interval *= i_AcceleratorModifier;
+        }
+
+        private void rollsForShoot()
+        {
+            foreach (List<Enemy> rowOfEnemies in r_EnemiesMatrix)
+            {
+                foreach (Enemy enemy in rowOfEnemies)
+                {
+                    if (m_RandomGenerator.Next(1, 100) <= k_ChanceForASingleEnemyToShoot)
+                    {
+                        enemy.Shoot();
+                    }
+                }
+            }
         }
     }
 }

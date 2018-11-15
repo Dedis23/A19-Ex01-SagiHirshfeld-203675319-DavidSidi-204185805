@@ -10,14 +10,14 @@ namespace SpaceInvaders
     /// </summary>
     public class SpaceInvadersGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        InputManager m_InputManager;
-        CollisionDetector m_CollisionDetector;
-        Spaceship m_Spaceship;
-        MotherShipSpawner m_MotherShipSpawner;
-        EnemiesMatrix m_EnemiesMatrix;
-        Queue<GameComponent> m_RemovalQueue;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private InputManager m_InputManager;
+        private CollisionDetector m_CollisionDetector;
+        private Spaceship m_Spaceship;
+        private MotherShipSpawner m_MotherShipSpawner;
+        private EnemiesMatrix m_EnemiesMatrix;
+        private Queue<GameComponent> m_RemovalQueue;
 
         public SpaceInvadersGame()
         {
@@ -27,13 +27,14 @@ namespace SpaceInvaders
         protected override void Initialize()
         {
             Content.RootDirectory = "Content";
+            this.Window.Title = "Space Invaders";
             this.IsMouseVisible = true;
 
             m_InputManager = new InputManager(this);
             Components.Add(m_InputManager);
 
             m_CollisionDetector = new CollisionDetector(this);
-            m_CollisionDetector.CollisionDetected += onCollision;
+            m_CollisionDetector.CollisionDetected += OnCollision;
             Components.Add(m_CollisionDetector);
 
             m_RemovalQueue = new Queue<GameComponent>();
@@ -41,7 +42,7 @@ namespace SpaceInvaders
             base.Initialize();
         }
 
-        private void onCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
+        private void OnCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
         {
             // TODO: pass to CollisionHandler?
         }
@@ -52,7 +53,7 @@ namespace SpaceInvaders
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             loadBackground();
-            loadMothership();
+            loadMothershipSpawner();
             loadEnemies();
             loadSpaceship();
 
@@ -68,14 +69,12 @@ namespace SpaceInvaders
                 gameComponentToRemove.Dispose();
             }
             m_RemovalQueue.Clear();
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             base.Draw(gameTime);
         }
 
@@ -90,7 +89,7 @@ namespace SpaceInvaders
             graphics.ApplyChanges();
         }
 
-        private void loadMothership()
+        private void loadMothershipSpawner()
         {
             m_MotherShipSpawner = new MotherShipSpawner(this);
             m_MotherShipSpawner.MotherShipSpawned += OnMotherShipSpawned;
