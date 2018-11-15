@@ -79,7 +79,7 @@ namespace SpaceInvaders
             {
                 currentEnemy = DrawableObjectsFactory.Create(Game, i_EnemySpriteType) as Enemy;
                 currentEnemy.m_Position = currentEnemyPosition;
-                currentEnemy.ContainingMatrix = this; // Sagi: may be temp
+                currentEnemy.Killed += removeEnemy;
                 currentEnemyPosition.X += k_DefaultEnemyWidth + (k_DefaultEnemyWidth * k_DistanceBetweenEachEnemy);
                 rowOfEnemies.Add(currentEnemy);
                 Game.Components.Add(currentEnemy);
@@ -241,11 +241,12 @@ namespace SpaceInvaders
         }
 
         // Sagi: maybe temp
-        public void RemoveEnemy(Enemy i_Enemy)
+        public void removeEnemy(object i_Enemy)
         {
+            Enemy enemy = i_Enemy as Enemy;
             foreach(List<Enemy> enemyList in r_EnemiesMatrix)
             {
-                enemyList.Remove(i_Enemy);
+                enemyList.Remove(enemy);
             }
         }
     }
