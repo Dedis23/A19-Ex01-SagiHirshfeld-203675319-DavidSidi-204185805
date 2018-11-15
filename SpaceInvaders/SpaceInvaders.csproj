@@ -45,7 +45,6 @@
     <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
-    <Compile Include="Miscellaneous\IProjectile.cs" />
     <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
     <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
     <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />

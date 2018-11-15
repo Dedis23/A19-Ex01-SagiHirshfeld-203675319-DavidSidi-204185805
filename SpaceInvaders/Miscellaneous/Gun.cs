@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace SpaceInvaders
@@ -6,6 +7,7 @@ namespace SpaceInvaders
     public class Gun : GameComponent
     {
         private HashSet<Bullet> m_BulletsFired;
+        private readonly Type k_TypeOfShooter;
 
         public int NumberOfShotBulletsInScreen
         {
@@ -15,9 +17,10 @@ namespace SpaceInvaders
             }
         }
 
-        public Gun(Game game) : base(game)
+        public Gun(Game i_Game, object i_Shooter) : base(i_Game)
         {
             m_BulletsFired = new HashSet<Bullet>();
+            k_TypeOfShooter = i_Shooter.GetType();
         }
 
         public void Shoot(Vector2 i_From, eShootingDirection i_Direction, Color i_BulletColor)
@@ -26,6 +29,7 @@ namespace SpaceInvaders
             newBullet.Position = getCentralizedShootingPosition(newBullet, i_From, i_Direction);    
             newBullet.Tint = i_BulletColor;
             newBullet.Direction = i_Direction;
+            newBullet.TypeOfShooter = k_TypeOfShooter;
             this.Game.Components.Add(newBullet);
             m_BulletsFired.Add(newBullet);
             newBullet.Killed += (bullet) => m_BulletsFired.Remove(bullet as Bullet);

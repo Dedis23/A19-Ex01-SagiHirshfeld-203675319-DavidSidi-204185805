@@ -24,9 +24,9 @@ namespace SpaceInvaders
         {
             var collideableGameContent = from gameComponent in this.Game.Components
                                          where gameComponent is ICollideable
-                                         select gameComponent;            
+                                         select gameComponent;
 
-            HashSet<ICollideable> checkedContent = new HashSet<ICollideable>();
+            HashSet <ICollideable> checkedContent = new HashSet<ICollideable>();
             foreach (ICollideable collideableA in collideableGameContent)
             {
                 if (!checkedContent.Contains(collideableA))
@@ -35,7 +35,7 @@ namespace SpaceInvaders
                     foreach (ICollideable collideableB in collideableGameContent)
                     {
                         if (!checkedContent.Contains(collideableB) && 
-                            !(collideableB is IProjectile && collideableA is IProjectile))
+                            !(collideableB.GetType().IsEquivalentTo(collideableA.GetType())))
                         {
                             checkAndNotifySingleCollision(collideableA, collideableB);
                         }

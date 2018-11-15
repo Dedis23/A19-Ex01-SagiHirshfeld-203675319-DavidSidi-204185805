@@ -18,7 +18,7 @@ namespace SpaceInvaders
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             Velocity = k_SpaceShipVelocity;
-            m_Gun = new Gun(i_Game);
+            m_Gun = new Gun(i_Game, this);
             SetDefaultPosition();
         }
 

@@ -3,10 +3,11 @@ using System;
 
 namespace SpaceInvaders
 {
-    public class Bullet : Drawable2DGameComponent, ICollideable, IProjectile
+    public class Bullet : Drawable2DGameComponent, ICollideable
     {
         private const int k_BulletsVelocity = 155;
         public eShootingDirection Direction { get; set; }
+        public Type TypeOfShooter { get; set; }
 
         public Bullet(Game game, string i_SourceFileURL) : base(game, i_SourceFileURL)
         {
