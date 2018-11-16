@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpaceInvaders
 {
@@ -70,6 +71,17 @@ namespace SpaceInvaders
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            IEnumerable<Drawable2DGameComponent> drawableGameComponents = from gameComponent in this.Components
+                                                                          where gameComponent is Drawable2DGameComponent
+                                                                          select gameComponent as Drawable2DGameComponent;
+
+            foreach (Drawable2DGameComponent drawableGameComponent in drawableGameComponents)
+            {
+                spriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Tint);
+            }
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -144,6 +156,6 @@ namespace SpaceInvaders
         public void Exit(GameTime i_GameTime)
         {
             Exit();
-        }        
+        }
     }
 }

@@ -16,7 +16,6 @@ namespace SpaceInvaders
         public Color Tint { get; set; } = Color.White;
         public Texture2D Texture { get; set; }
         public int Velocity { get; set; }
-        private SpriteBatch m_SpriteBatch;
         public event Action<object> Killed;
 
         public Vector2 Position
@@ -93,16 +92,7 @@ namespace SpaceInvaders
         public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
         {
             r_SourceFileURL = i_SourceFileURL;
-            m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            m_SpriteBatch.Begin();
-            m_SpriteBatch.Draw(Texture, m_Position, Tint);
-            m_SpriteBatch.End();
-            base.Draw(gameTime);
         }
 
         public virtual void Kill()
