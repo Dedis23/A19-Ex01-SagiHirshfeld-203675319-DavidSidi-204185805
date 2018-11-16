@@ -1,33 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
     public abstract class Drawable2DGameComponent : DrawableGameComponent, IKillable
     {
-        readonly private String r_SourceFileURL;
-        public Vector2 m_Position;
+        private readonly string r_SourceFileURL;
+        private Vector2 m_Position;
+
         public Color Tint { get; set; } = Color.White;
+
         public Texture2D Texture { get; set; }
+
         public int Velocity { get; set; }
+
         public event Action<object> Killed;
+
+        public float PositionX
+        {
+            get
+            {
+                return m_Position.X;
+            }
+
+            set
+            {
+                m_Position.X = value;
+            }
+        }
+
+        public float PositionY
+        {
+            get
+            {
+                return m_Position.Y;
+            }
+
+            set
+            {
+                m_Position.Y = value;
+            }
+        }
 
         public Vector2 Position
         {
             get
             {
                 return m_Position;
-            }
-
-            set
-            {
-                m_Position = value;
             }
         }
 
@@ -89,7 +109,7 @@ namespace SpaceInvaders
             }
         }
 
-        public Drawable2DGameComponent(Game i_Game, String i_SourceFileURL) : base(i_Game)
+        public Drawable2DGameComponent(Game i_Game, string i_SourceFileURL) : base(i_Game)
         {
             r_SourceFileURL = i_SourceFileURL;
             Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);

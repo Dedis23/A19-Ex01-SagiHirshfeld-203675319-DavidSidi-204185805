@@ -42,13 +42,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collision Management\CollisionDetector.cs" />
-    <Compile Include="Collision Management\CollisionHandler.cs" />
+    <Compile Include="Collision Management\CollisionHandler.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
-    <Compile Include="Drawable Objects\Enemies\Enemy.cs" />
-    <Compile Include="Drawable Objects\Enemies\EnemiesMatrix.cs" />
-    <Compile Include="Drawable Objects\MotherShip\MotherShip.cs" />
+    <Compile Include="Drawable Objects\Invaders\Invader.cs" />
+    <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
+    <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
     <Compile Include="Miscellaneous\Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Miscellaneous\eShootingDirection.cs" />

@@ -1,29 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpaceInvaders
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class SpaceInvadersGame : Game
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        private readonly GraphicsDeviceManager r_Graphics;
+        private SpriteBatch m_SpriteBatch;
         private InputManager m_InputManager;
         private CollisionDetector m_CollisionDetector;
         private CollisionHandler m_CollisionHandler;
         private Spaceship m_Spaceship;
-        private MotherShipSpawner m_MotherShipSpawner;
-        private EnemiesMatrix m_EnemiesMatrix;
+        private MothershipSpawner m_MothershipSpawner;
+        private InvadersMatrix m_InvadersMatrix;
 
         public SpaceInvadersGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            r_Graphics = new GraphicsDeviceManager(this);
         }
 
         protected override void Initialize()
@@ -36,7 +32,7 @@ namespace SpaceInvaders
             Components.Add(m_InputManager);
 
             m_CollisionHandler = new CollisionHandler(this);
-            m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
+            m_CollisionHandler.EnemyCollidedWithSpaceship += OnEnemyCollidedWithSpaceship;
             Components.Add(m_CollisionHandler);
 
             m_CollisionDetector = new CollisionDetector(this);
@@ -49,13 +45,11 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            m_SpriteBatch = new SpriteBatch(GraphicsDevice);
             loadBackground();
             loadMothershipSpawner();
-            loadEnemies();
+            loadInvaders();
             loadSpaceship();
-
             setupInputBindings();
         }
 
@@ -66,18 +60,18 @@ namespace SpaceInvaders
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            GraphicsDevice.Clear(Color.White);
+            m_SpriteBatch.Begin();
             IEnumerable<Drawable2DGameComponent> drawableGameComponents = from gameComponent in this.Components
                                                                           where gameComponent is Drawable2DGameComponent
                                                                           select gameComponent as Drawable2DGameComponent;
 
             foreach (Drawable2DGameComponent drawableGameComponent in drawableGameComponents)
             {
-                spriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Tint);
+                m_SpriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Tint);
             }
 
-            spriteBatch.End();
+            m_SpriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -87,39 +81,40 @@ namespace SpaceInvaders
             Components.Add(background);
 
             // Adjust the ViewPort to match the size of the background
-            graphics.PreferredBackBufferWidth = (int)background.Width;
-            graphics.PreferredBackBufferHeight = (int)background.Height;
-            graphics.ApplyChanges();
+            r_Graphics.PreferredBackBufferWidth = (int)background.Width;
+            r_Graphics.PreferredBackBufferHeight = (int)background.Height;
+            r_Graphics.ApplyChanges();
         }
 
         private void loadMothershipSpawner()
         {
-            m_MotherShipSpawner = new MotherShipSpawner(this);
-            m_MotherShipSpawner.MotherShipSpawned += OnMotherShipSpawned;
-            m_MotherShipSpawner.MotherShipDeSpawned += OnMotherShipDeSpawned;
-            Components.Add(m_MotherShipSpawner);
+            m_MothershipSpawner = new MothershipSpawner(this);
+            m_MothershipSpawner.MothershipSpawned += OnMothershipSpawned;
+            m_MothershipSpawner.MothershipDeSpawned += OnMothershipDeSpawned;
+            Components.Add(m_MothershipSpawner);
         }
 
-        private void OnMotherShipSpawned(MotherShip i_SpawnedMotherShip)
+        private void OnMothershipSpawned(Mothership i_SpawnedMotherShip)
         {
             Components.Add(i_SpawnedMotherShip);
             i_SpawnedMotherShip.setDefaultPosition();
         }
-        private void OnMotherShipDeSpawned(MotherShip i_DeSpawnedMotherShip)
+        private void OnMothershipDeSpawned(Mothership i_DeSpawnedMotherShip)
         {
             Components.Remove(i_DeSpawnedMotherShip);
         }
 
-        private void loadEnemies()
+        private void loadInvaders()
         {
-            m_EnemiesMatrix = new EnemiesMatrix(this);
-            m_EnemiesMatrix.enemiesMatrixReachedBottomScreen += OnEnemiesMatrixReachedBottomScreen;
-            Components.Add(m_EnemiesMatrix);
+            m_InvadersMatrix = new InvadersMatrix(this);
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += OnInvadersMatrixReachedBottomScreen;
+            m_InvadersMatrix.allInvadersWereDefeated += OnAllInvadersWereDefeated;
+            Components.Add(m_InvadersMatrix);
         }
         
         private void loadSpaceship()
         {
-            m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceShip) as Spaceship;
+            m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.Spaceship) as Spaceship;
             m_Spaceship.Killed += onSpaceshipKilled;
             Components.Add(m_Spaceship);
         }
@@ -142,19 +137,23 @@ namespace SpaceInvaders
             m_InputManager.MouseLeftButtonPressedOnce += m_Spaceship.Shoot;
         }
 
-        private void OnEnemiesMatrixReachedBottomScreen()
+        private void OnInvadersMatrixReachedBottomScreen()
         {
             gameOver();
         }
 
-        private void onEnemyCollidedWithSpaceship()
+        private void OnAllInvadersWereDefeated()
+        {
+            gameOver();
+        }
+
+        private void OnEnemyCollidedWithSpaceship()
         {
             gameOver();
         }
 
         private void gameOver()
         {
-            // TODO:
             System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_Spaceship.Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
             Exit();
         }

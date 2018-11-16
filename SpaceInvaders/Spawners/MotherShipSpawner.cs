@@ -3,29 +3,31 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    public class MotherShipSpawner : GameComponent
+    public class MothershipSpawner : GameComponent
     {
         private const int k_ChanceToSpawn = 10;
         private const float k_TimeBetweenRolls = 1;
-        private Spawner m_RollingMachine;
-        private MotherShip m_CurrentMotherShip;
-        public event Action<MotherShip> MotherShipSpawned;
-        public event Action<MotherShip> MotherShipDeSpawned;
+        private readonly Spawner r_Spawner;
+        private Mothership m_CurrentMotherShip;
 
-        public MotherShipSpawner(Game i_Game) : base(i_Game)
+        public event Action<Mothership> MothershipSpawned;
+
+        public event Action<Mothership> MothershipDeSpawned;
+
+        public MothershipSpawner(Game i_Game) : base(i_Game)
         {
-            m_RollingMachine = new Spawner(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);
-            m_RollingMachine.Spawned += spawnMotherShip;
-            m_RollingMachine.Activate();
+            r_Spawner = new Spawner(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);
+            r_Spawner.Spawned += spawnMotherShip;
+            r_Spawner.Activate();
         }
 
         public void spawnMotherShip()
         {
-            m_CurrentMotherShip = DrawableObjectsFactory.Create(Game, DrawableObjectsFactory.eSpriteType.MotherShip) as MotherShip;
-            m_CurrentMotherShip.MotherShipLeftTheScreen += OnMotherShipLeftTheScreen;
-            m_CurrentMotherShip.MotherShipDestroyed += OnMotherShipDestroyed;
-            MotherShipSpawned?.Invoke(m_CurrentMotherShip);
-            m_RollingMachine.DeActivate();
+            m_CurrentMotherShip = DrawableObjectsFactory.Create(Game, DrawableObjectsFactory.eSpriteType.Mothership) as Mothership;
+            m_CurrentMotherShip.MothershipLeftTheScreen += OnMotherShipLeftTheScreen;
+            m_CurrentMotherShip.MothershipDestroyed += OnMothershipDestroyed;
+            MothershipSpawned?.Invoke(m_CurrentMotherShip);
+            r_Spawner.DeActivate();
         }
 
         public void OnMotherShipLeftTheScreen()
@@ -33,19 +35,16 @@ namespace SpaceInvaders
             killMotherShipAndNotify();
         }
 
-        public void OnMotherShipDestroyed()
+        public void OnMothershipDestroyed()
         {
             killMotherShipAndNotify();
-            // TO DO MORE (for example, add points to player)
         }
 
         private void killMotherShipAndNotify()
         {
-            // Calling listeners to let them know that the MotherShip is gone
-            MotherShipDeSpawned?.Invoke(m_CurrentMotherShip);
-            // Reactivating the RandomSpawner
+            MothershipDeSpawned?.Invoke(m_CurrentMotherShip);
             m_CurrentMotherShip = null;
-            m_RollingMachine.Activate();
+            r_Spawner.Activate();
         }
     }
 }

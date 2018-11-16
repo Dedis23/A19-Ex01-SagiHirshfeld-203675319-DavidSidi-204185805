@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
@@ -7,9 +7,12 @@ namespace SpaceInvaders
     {
         private float m_RemainingDelay;
         private bool m_Active;
+
         public float Interval { get; set; }
+
         public event Action Notify;
-        public Timer(Game i_Game) : base (i_Game)
+
+        public Timer(Game i_Game) : base(i_Game)
         {
             m_Active = false;
             m_RemainingDelay = 0.0f;
@@ -40,6 +43,7 @@ namespace SpaceInvaders
                 Notify?.Invoke();
                 m_RemainingDelay = 0.0f;
             }
+
             base.Update(i_GameTime);
         }
     }

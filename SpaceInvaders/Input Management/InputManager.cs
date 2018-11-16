@@ -1,71 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
     public class InputManager : GameComponent
     {
-        private static readonly IEnumerable<Keys> sr_EnumerableKeyboardKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>();
         private const int k_FramesToWaitBeforeInputTaking = 3;
+        private static readonly IEnumerable<Keys> sr_EnumerableKeyboardKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>();
+        private readonly Dictionary<Action<GameTime>, Keys> r_ActionToKeyboardDownDictionary;
+        private readonly Dictionary<Action<GameTime>, Keys> r_ActionToKeyboardSinglePressDictionary;
         private int m_WaitedFramesBeforeInputTaking = 0;
-        private Dictionary<Action<GameTime>, Keys> m_ActionToKeyboardDownDictionary;
-        private Dictionary<Action<GameTime>, Keys> m_ActionToKeyboardSinglePressDictionary;
         private KeyboardState m_CurrentKeyboardState;
         private MouseState m_CurrentMouseState;
         private KeyboardState? m_PrevKeyboardState;
         private MouseState? m_PrevMouseState;
+
         public event Action<GameTime, Vector2> MouseMoved;
+
         public event Action<GameTime> MouseLeftButtonPressed;
+
         public event Action<GameTime> MouseRightButtonPressed;
+
         public event Action<GameTime> MouseLeftButtonPressedOnce;
+
         public event Action<GameTime> MouseRightButtonPressedOnce;
 
         public InputManager(Game game) : base(game)
         {
-            m_ActionToKeyboardDownDictionary = new Dictionary<Action<GameTime>, Keys>();
-            m_ActionToKeyboardSinglePressDictionary = new Dictionary<Action<GameTime>, Keys>(); 
+            r_ActionToKeyboardDownDictionary = new Dictionary<Action<GameTime>, Keys>();
+            r_ActionToKeyboardSinglePressDictionary = new Dictionary<Action<GameTime>, Keys>(); 
         }
 
         public void RegisterKeyboardKeyDownBinding(Action<GameTime> i_Action, Keys i_KeyboardKey)
         {
-            if(m_ActionToKeyboardDownDictionary.ContainsKey(i_Action))
+            if(r_ActionToKeyboardDownDictionary.ContainsKey(i_Action))
             {
-                m_ActionToKeyboardDownDictionary[i_Action] = i_KeyboardKey;
+                r_ActionToKeyboardDownDictionary[i_Action] = i_KeyboardKey;
             }
-
             else
             {
-                m_ActionToKeyboardDownDictionary.Add(i_Action, i_KeyboardKey);
+                r_ActionToKeyboardDownDictionary.Add(i_Action, i_KeyboardKey);
             }
         }
 
         public void RegisterKeyboardSinglePressBinding(Action<GameTime> i_Action, Keys i_KeyboardKey)
         {
-            if (m_ActionToKeyboardSinglePressDictionary.ContainsKey(i_Action))
-            {
-                m_ActionToKeyboardSinglePressDictionary[i_Action] = i_KeyboardKey;
+            if (r_ActionToKeyboardSinglePressDictionary.ContainsKey(i_Action))
+            {   
+                r_ActionToKeyboardSinglePressDictionary[i_Action] = i_KeyboardKey;
             }
-
             else
             {
-                m_ActionToKeyboardSinglePressDictionary.Add(i_Action, i_KeyboardKey);
+                r_ActionToKeyboardSinglePressDictionary.Add(i_Action, i_KeyboardKey);
             }
         }
 
         public void RemoveKeyboardDownBinding(Action<GameTime> i_Action)
         {
-            m_ActionToKeyboardDownDictionary.Remove(i_Action);
+            r_ActionToKeyboardDownDictionary.Remove(i_Action);
         }
 
         public void RemoveKeyboardSinglePressBinding(Action<GameTime> i_Action)
         {
-            m_ActionToKeyboardSinglePressDictionary.Remove(i_Action);
+            r_ActionToKeyboardSinglePressDictionary.Remove(i_Action);
         }
 
         public override void Update(GameTime i_GameTime)
@@ -94,18 +94,18 @@ namespace SpaceInvaders
         private void checkAndNotifyForKeyboardInput(GameTime i_GameTime)
         {
             // Check any notify if any keyboard key of a registered action is down
-            foreach (Action<GameTime> action in m_ActionToKeyboardDownDictionary.Keys)
+            foreach (Action<GameTime> action in r_ActionToKeyboardDownDictionary.Keys)
             {
-                if (m_CurrentKeyboardState.IsKeyDown(m_ActionToKeyboardDownDictionary[action]))
+                if (m_CurrentKeyboardState.IsKeyDown(r_ActionToKeyboardDownDictionary[action]))
                 {
                     action.Invoke(i_GameTime);
                 }
             }
 
             // Check any notify if a keyboard key was pressed only once
-            foreach (Action<GameTime> action in m_ActionToKeyboardSinglePressDictionary.Keys)
+            foreach (Action<GameTime> action in r_ActionToKeyboardSinglePressDictionary.Keys)
             {
-                Keys keyBindedToAction = m_ActionToKeyboardSinglePressDictionary[action];
+                Keys keyBindedToAction = r_ActionToKeyboardSinglePressDictionary[action];
                 if (m_CurrentKeyboardState.IsKeyDown(keyBindedToAction) && (m_PrevKeyboardState == null || !m_PrevKeyboardState.Value.IsKeyDown(keyBindedToAction)))
                 {
                     action.Invoke(i_GameTime);

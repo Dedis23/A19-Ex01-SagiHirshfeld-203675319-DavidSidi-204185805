@@ -3,15 +3,18 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    public class MotherShip : Drawable2DGameComponent, ICollideable
+    public class Mothership : Drawable2DGameComponent, ICollideable
     {
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
-        public int PointsValue { get; set; }
-        public event Action MotherShipLeftTheScreen;
-        public event Action MotherShipDestroyed;
 
-        public MotherShip(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
+        public int PointsValue { get; set; }
+
+        public event Action MothershipLeftTheScreen;
+
+        public event Action MothershipDestroyed;
+
+        public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             this.Tint = Color.Red;
             this.Velocity = k_MotherShipVelocity;
@@ -31,14 +34,19 @@ namespace SpaceInvaders
 
         private void moveMotherShip(GameTime i_GameTime)
         {
-            if (this.m_Position.X >= this.GraphicsDevice.Viewport.Width)
+            if (this.PositionX >= this.GraphicsDevice.Viewport.Width)
             {
-                MotherShipLeftTheScreen?.Invoke();
+                MothershipLeftTheScreen?.Invoke();
             }
             else
             {
-                m_Position.X += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+                PositionX += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
             }
+        }
+
+        public void NotifyDestruction()
+        {
+            MothershipDestroyed?.Invoke();
         }
 
         public void setDefaultPosition()
@@ -46,7 +54,8 @@ namespace SpaceInvaders
             // Default MotherShip position (coming from the left of the screen)
             float x = -(float)this.Texture.Width;
             float y = (float)this.Texture.Height;
-            m_Position = new Vector2(x, y);
+            this.PositionX = x;
+            this.PositionY = y;
         }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
 
 namespace SpaceInvaders
 {
@@ -11,9 +8,7 @@ namespace SpaceInvaders
     {
         private readonly Queue<IKillable> r_KillQueue;
         private int k_ScorePenaltyForBulletHit = 1100;
-
         public event Action EnemyCollidedWithSpaceship;
-
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
             r_KillQueue = new Queue<IKillable>();
@@ -35,9 +30,9 @@ namespace SpaceInvaders
                 handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as IKillable);
             }
 
-            if (i_CollideableA is Enemy && i_CollideableB is Spaceship)
+            if (i_CollideableA is Invader && i_CollideableB is Spaceship)
             {
-                handleEnemyHitsSpaceship(i_CollideableA as Enemy, i_CollideableB as Spaceship);
+                handleEnemyHitsSpaceship(i_CollideableA as Invader, i_CollideableB as Spaceship);
             }
         }
 
@@ -56,14 +51,14 @@ namespace SpaceInvaders
                         handleSpaceshipHitByBullet(i_Killable as Spaceship);
                     }
 
-                    else if(i_Killable is Enemy)
+                    else if(i_Killable is Invader)
                     {
-                        handleEnemyHitByBullet(i_Killable as Enemy, i_Bullet);
+                        handleEnemyHitByBullet(i_Killable as Invader, i_Bullet);
                     }
 
-                    else if(i_Killable is MotherShip)
+                    else if(i_Killable is Mothership)
                     {
-                        handleMothershipHitByBullet(i_Killable as MotherShip, i_Bullet);
+                        handleMothershipHitByBullet(i_Killable as Mothership, i_Bullet);
                     }
                 }
             }
@@ -86,7 +81,7 @@ namespace SpaceInvaders
         }
 
         // TODO: A need for polymorphism detected!
-        private void handleEnemyHitByBullet(Enemy i_Enemy, Bullet i_Bullet)
+        private void handleEnemyHitByBullet(Invader i_Enemy, Bullet i_Bullet)
         {
             if (i_Bullet.Shooter is Spaceship)
             {
@@ -97,17 +92,18 @@ namespace SpaceInvaders
         }
 
         // TODO: A need for polymorphism detected!
-        private void handleMothershipHitByBullet(MotherShip i_Mothership, Bullet i_Bullet)
+        private void handleMothershipHitByBullet(Mothership i_Mothership, Bullet i_Bullet)
         {
             if (i_Bullet.Shooter is Spaceship)
             {
                 (i_Bullet.Shooter as Spaceship).Score += i_Mothership.PointsValue;
             }
-
+            // Need to fix here, my fix makes exception
+            // i_Mothership.NotifyDestruction();
             r_KillQueue.Enqueue(i_Mothership);
         }
 
-        private void handleEnemyHitsSpaceship(Enemy i_Enemy, Spaceship i_Spaceship)
+        private void handleEnemyHitsSpaceship(Invader i_Enemy, Spaceship i_Spaceship)
         {
             EnemyCollidedWithSpaceship.Invoke();
         }
@@ -129,4 +125,3 @@ namespace SpaceInvaders
         }
     }
 }
-
