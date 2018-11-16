@@ -7,7 +7,7 @@ namespace SpaceInvaders
     {
         private const int k_BulletsVelocity = 155;
         public eShootingDirection Direction { get; set; }
-        public Type TypeOfShooter { get; set; }
+        public object Shooter { get; set; }
 
         public Bullet(Game game, string i_SourceFileURL) : base(game, i_SourceFileURL)
         {

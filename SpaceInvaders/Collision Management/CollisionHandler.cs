@@ -10,6 +10,8 @@ namespace SpaceInvaders
     public class CollisionHandler : GameComponent
     {
         private readonly Queue<IKillable> r_KillQueue;
+        private int k_ScorePenaltyForBulletHit = 1100;
+
         public event Action EnemyCollidedWithSpaceship;
 
         public CollisionHandler(Game i_Game) : base(i_Game)
@@ -42,15 +44,67 @@ namespace SpaceInvaders
         private void handleBulletHitsKillable(Bullet i_Bullet, IKillable i_Killable)
         {
             // In Space Invaders a bullet shot by a certain creature won't do anything to similar creatures
-            if (i_Bullet.TypeOfShooter != i_Killable.GetType())
+            if (i_Bullet.Shooter.GetType() != i_Killable.GetType())
             {
                 // When multiple bullets hits the same target - this makes sure only one bullet will register
                 if (!r_KillQueue.Contains(i_Killable))
                 {
                     r_KillQueue.Enqueue(i_Bullet);
-                    r_KillQueue.Enqueue(i_Killable);
+
+                    if(i_Killable is Spaceship)
+                    {
+                        handleSpaceshipHitByBullet(i_Killable as Spaceship);
+                    }
+
+                    else if(i_Killable is Enemy)
+                    {
+                        handleEnemyHitByBullet(i_Killable as Enemy, i_Bullet);
+                    }
+
+                    else if(i_Killable is MotherShip)
+                    {
+                        handleMothershipHitByBullet(i_Killable as MotherShip, i_Bullet);
+                    }
                 }
             }
+        }
+
+        private void handleSpaceshipHitByBullet(Spaceship i_Spaceship)
+        {
+            i_Spaceship.Lives--;
+            i_Spaceship.Score -= k_ScorePenaltyForBulletHit;
+
+            if (i_Spaceship.Lives == 0)
+            {
+                r_KillQueue.Enqueue(i_Spaceship);
+            }
+
+            else
+            {
+                i_Spaceship.SetDefaultPosition();
+            }
+        }
+
+        // TODO: A need for polymorphism detected!
+        private void handleEnemyHitByBullet(Enemy i_Enemy, Bullet i_Bullet)
+        {
+            if (i_Bullet.Shooter is Spaceship)
+            {
+                (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
+            }
+
+            r_KillQueue.Enqueue(i_Enemy);
+        }
+
+        // TODO: A need for polymorphism detected!
+        private void handleMothershipHitByBullet(MotherShip i_Mothership, Bullet i_Bullet)
+        {
+            if (i_Bullet.Shooter is Spaceship)
+            {
+                (i_Bullet.Shooter as Spaceship).Score += i_Mothership.PointsValue;
+            }
+
+            r_KillQueue.Enqueue(i_Mothership);
         }
 
         private void handleEnemyHitsSpaceship(Enemy i_Enemy, Spaceship i_Spaceship)
@@ -60,14 +114,18 @@ namespace SpaceInvaders
 
         public override void Update(GameTime gameTime)
         {
-            // Remove components which were added to the removal queue
+            killComponentsInQueue();
+            base.Update(gameTime);
+        }
+
+        private void killComponentsInQueue()
+        {
             foreach (IKillable killableComponent in r_KillQueue)
             {
                 killableComponent.Kill();
             }
 
             r_KillQueue.Clear();
-            base.Update(gameTime);
         }
     }
 }

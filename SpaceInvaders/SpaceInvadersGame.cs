@@ -35,19 +35,15 @@ namespace SpaceInvaders
             m_InputManager = new InputManager(this);
             Components.Add(m_InputManager);
 
-            m_CollisionDetector = new CollisionDetector(this);
-            m_CollisionDetector.CollisionDetected += OnCollision;
-            Components.Add(m_CollisionDetector);
-
             m_CollisionHandler = new CollisionHandler(this);
+            m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
             Components.Add(m_CollisionHandler);
 
-            base.Initialize();
-        }
+            m_CollisionDetector = new CollisionDetector(this);
+            m_CollisionDetector.CollisionDetected += m_CollisionHandler.HandleCollision;
+            Components.Add(m_CollisionDetector);
 
-        private void OnCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
-        {
-            m_CollisionHandler.HandleCollision(i_CollideableA, i_CollideableB);
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -124,7 +120,13 @@ namespace SpaceInvaders
         private void loadSpaceship()
         {
             m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceShip) as Spaceship;
+            m_Spaceship.Killed += onSpaceshipKilled;
             Components.Add(m_Spaceship);
+        }
+
+        private void onSpaceshipKilled(object obj)
+        {
+            gameOver();
         }
 
         private void setupInputBindings()
@@ -145,10 +147,15 @@ namespace SpaceInvaders
             gameOver();
         }
 
+        private void onEnemyCollidedWithSpaceship()
+        {
+            gameOver();
+        }
+
         private void gameOver()
         {
             // TODO:
-            System.Windows.Forms.MessageBox.Show("It's GG", "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+            System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_Spaceship.Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
             Exit();
         }
 
