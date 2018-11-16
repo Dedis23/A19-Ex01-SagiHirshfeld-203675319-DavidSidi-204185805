@@ -244,7 +244,6 @@ namespace SpaceInvaders
             }
         }
 
-        // Sagi: maybe temp
         private void removeEnemy(object i_Enemy)
         {
             Enemy enemy = i_Enemy as Enemy;

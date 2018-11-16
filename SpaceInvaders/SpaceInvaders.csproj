@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collision Management\CollisionDetector.cs" />
+    <Compile Include="Collision Management\CollisionHandler.cs" />
     <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />

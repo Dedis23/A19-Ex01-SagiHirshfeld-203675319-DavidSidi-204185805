@@ -15,11 +15,10 @@ namespace SpaceInvaders
         private SpriteBatch spriteBatch;
         private InputManager m_InputManager;
         private CollisionDetector m_CollisionDetector;
-        private SpaceInvadersCollisionHandler m_CollisionHandler;
+        private CollisionHandler m_CollisionHandler;
         private Spaceship m_Spaceship;
         private MotherShipSpawner m_MotherShipSpawner;
         private EnemiesMatrix m_EnemiesMatrix;
-        private Queue<IKillable> m_KilllQueue;
 
         public SpaceInvadersGame()
         {
@@ -39,9 +38,8 @@ namespace SpaceInvaders
             m_CollisionDetector.CollisionDetected += OnCollision;
             Components.Add(m_CollisionDetector);
 
-            m_CollisionHandler = new SpaceInvadersCollisionHandler(this);
-
-            m_KilllQueue = new Queue<IKillable>();
+            m_CollisionHandler = new CollisionHandler(this);
+            Components.Add(m_CollisionHandler);
 
             base.Initialize();
         }
@@ -66,13 +64,6 @@ namespace SpaceInvaders
 
         protected override void Update(GameTime gameTime)
         {
-            // Remove components which were added to the removal queue
-            foreach (IKillable killableComponent in m_KilllQueue)
-            {
-                killableComponent.Kill();
-            }
-
-            m_KilllQueue.Clear();
             base.Update(gameTime);
         }
 
@@ -127,9 +118,10 @@ namespace SpaceInvaders
         private void setupInputBindings()
         {
             // Keyboard
-            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveLeft, Keys.Left);
-            m_InputManager.RegisterKeyboardKeyBinding(m_Spaceship.MoveRight, Keys.Right);
-            m_InputManager.RegisterKeyboardKeyBinding(Exit, Keys.Escape);
+            m_InputManager.RegisterKeyboardKeyDownBinding(m_Spaceship.MoveLeft, Keys.Left);
+            m_InputManager.RegisterKeyboardKeyDownBinding(m_Spaceship.MoveRight, Keys.Right);
+            m_InputManager.RegisterKeyboardSinglePressBinding(m_Spaceship.Shoot, Keys.Enter);
+            m_InputManager.RegisterKeyboardKeyDownBinding(Exit, Keys.Escape);
 
             // Mouse
             m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
@@ -152,58 +144,6 @@ namespace SpaceInvaders
         public void Exit(GameTime i_GameTime)
         {
             Exit();
-        }
-
-        public class SpaceInvadersCollisionHandler
-        {
-            public event Action EnemyCollidedWithSpaceship;
-            private SpaceInvadersGame m_Game;
-
-            public SpaceInvadersCollisionHandler(SpaceInvadersGame i_Game)
-            {
-                m_Game = i_Game;
-            }
-
-            public void HandleCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
-            {
-                if(i_CollideableA.GetType() != i_CollideableB.GetType())
-                {
-                    handleCollisionForPermutation(i_CollideableA, i_CollideableB);
-                    handleCollisionForPermutation(i_CollideableB, i_CollideableA);
-                }
-            }
-
-            private void handleCollisionForPermutation(ICollideable i_CollideableA, ICollideable i_CollideableB)
-            {
-                if(i_CollideableA is Bullet)
-                {
-                    handleBulletHitsCollideable(i_CollideableA as Bullet, i_CollideableB);
-                }
-
-                if(i_CollideableA is Enemy && i_CollideableB is Spaceship)
-                {
-                    handleEnemyHitsSpaceship(i_CollideableA as Enemy, i_CollideableB as Spaceship);
-                }
-            }
-
-            private void handleBulletHitsCollideable(Bullet i_Bullet, ICollideable i_Collideable)
-            {
-                if(i_Bullet.TypeOfShooter != i_Collideable.GetType())
-                {
-                    addToKillQueue(i_Bullet, i_Collideable as IKillable);
-                }
-            }
-
-            private void handleEnemyHitsSpaceship(Enemy i_Enemy, Spaceship i_Spaceship)
-            {
-                EnemyCollidedWithSpaceship.Invoke();
-            }
-
-            private void addToKillQueue(IKillable i_KillableA, IKillable i_KillableB)
-            {
-                m_Game.m_KilllQueue.Enqueue(i_KillableA);
-                m_Game.m_KilllQueue.Enqueue(i_KillableB);
-            }
-        }
+        }        
     }
 }
