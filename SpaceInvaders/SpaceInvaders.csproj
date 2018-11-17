@@ -57,6 +57,7 @@
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
     <Compile Include="Miscellaneous\Gun.cs" />
     <Compile Include="Input Management\InputManager.cs" />
+    <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IKillable.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />

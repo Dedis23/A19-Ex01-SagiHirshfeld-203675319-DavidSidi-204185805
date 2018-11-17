@@ -46,22 +46,27 @@ namespace SpaceInvaders
                 {
                     r_KillQueue.Enqueue(i_Bullet);
 
-                    if(i_Killable is Spaceship)
+                    if (i_Killable is IEnemy)
+                    {
+                        handleEnemyHitByBullet(i_Killable as IEnemy, i_Bullet);
+                    }
+
+                    else if (i_Killable is Spaceship)
                     {
                         handleSpaceshipHitByBullet(i_Killable as Spaceship);
                     }
-
-                    else if(i_Killable is Invader)
-                    {
-                        handleEnemyHitByBullet(i_Killable as Invader, i_Bullet);
-                    }
-
-                    else if(i_Killable is Mothership)
-                    {
-                        handleMothershipHitByBullet(i_Killable as Mothership, i_Bullet);
-                    }
                 }
             }
+        }
+
+        private void handleEnemyHitByBullet(IEnemy i_Enemy, Bullet i_Bullet)
+        {
+            if (i_Bullet.Shooter is Spaceship)
+            {
+                (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
+            }
+
+            r_KillQueue.Enqueue(i_Enemy);
         }
 
         private void handleSpaceshipHitByBullet(Spaceship i_Spaceship)
@@ -78,29 +83,6 @@ namespace SpaceInvaders
             {
                 i_Spaceship.SetDefaultPosition();
             }
-        }
-
-        // TODO: A need for polymorphism detected!
-        private void handleEnemyHitByBullet(Invader i_Enemy, Bullet i_Bullet)
-        {
-            if (i_Bullet.Shooter is Spaceship)
-            {
-                (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
-            }
-
-            r_KillQueue.Enqueue(i_Enemy);
-        }
-
-        // TODO: A need for polymorphism detected!
-        private void handleMothershipHitByBullet(Mothership i_Mothership, Bullet i_Bullet)
-        {
-            if (i_Bullet.Shooter is Spaceship)
-            {
-                (i_Bullet.Shooter as Spaceship).Score += i_Mothership.PointsValue;
-            }
-            // Need to fix here, my fix makes exception
-            // i_Mothership.NotifyDestruction();
-            r_KillQueue.Enqueue(i_Mothership);
         }
 
         private void handleEnemyHitsSpaceship(Invader i_Enemy, Spaceship i_Spaceship)

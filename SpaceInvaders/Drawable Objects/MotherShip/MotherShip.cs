@@ -3,22 +3,18 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    public class Mothership : Drawable2DGameComponent, ICollideable
+    public class Mothership : Drawable2DGameComponent, ICollideable, IEnemy
     {
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
-
         public int PointsValue { get; set; }
-
-        public event Action MothershipLeftTheScreen;
-
-        public event Action MothershipDestroyed;
 
         public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             this.Tint = Color.Red;
             this.Velocity = k_MotherShipVelocity;
             PointsValue = k_MotherShipPointsValue;
+            setDefaultPosition();
         }
 
         public override void Initialize()
@@ -36,7 +32,7 @@ namespace SpaceInvaders
         {
             if (this.PositionX >= this.GraphicsDevice.Viewport.Width)
             {
-                MothershipLeftTheScreen?.Invoke();
+                this.Kill();
             }
             else
             {
@@ -44,12 +40,7 @@ namespace SpaceInvaders
             }
         }
 
-        public void NotifyDestruction()
-        {
-            MothershipDestroyed?.Invoke();
-        }
-
-        public void setDefaultPosition()
+        private void setDefaultPosition()
         {
             // Default MotherShip position (coming from the left of the screen)
             float x = -(float)this.Texture.Width;

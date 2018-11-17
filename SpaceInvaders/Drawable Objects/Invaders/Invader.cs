@@ -2,7 +2,7 @@
 
 namespace SpaceInvaders
 {
-    public class Invader : Drawable2DGameComponent, ICollideable
+    public class Invader : Drawable2DGameComponent, ICollideable, IEnemy
     {
         private readonly Gun r_Gun;
 

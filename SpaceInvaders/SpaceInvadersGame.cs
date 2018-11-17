@@ -89,19 +89,7 @@ namespace SpaceInvaders
         private void loadMothershipSpawner()
         {
             m_MothershipSpawner = new MothershipSpawner(this);
-            m_MothershipSpawner.MothershipSpawned += OnMothershipSpawned;
-            m_MothershipSpawner.MothershipDeSpawned += OnMothershipDeSpawned;
             Components.Add(m_MothershipSpawner);
-        }
-
-        private void OnMothershipSpawned(Mothership i_SpawnedMotherShip)
-        {
-            Components.Add(i_SpawnedMotherShip);
-            i_SpawnedMotherShip.setDefaultPosition();
-        }
-        private void OnMothershipDeSpawned(Mothership i_DeSpawnedMotherShip)
-        {
-            Components.Remove(i_DeSpawnedMotherShip);
         }
 
         private void loadInvaders()
