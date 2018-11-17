@@ -119,6 +119,12 @@ namespace SpaceInvaders
         {
             this.Game.Components.Remove(this);
             Killed?.Invoke(this);
+            
+            foreach(Delegate d in Killed.GetInvocationList())
+            {
+                Killed -= (Action<object>)d;
+            }
+
             this.Dispose();
         }
     }
