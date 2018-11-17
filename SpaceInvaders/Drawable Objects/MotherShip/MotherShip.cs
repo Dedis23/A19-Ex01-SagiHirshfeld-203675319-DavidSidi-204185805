@@ -7,6 +7,7 @@ namespace SpaceInvaders
     {
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
+
         public int PointsValue { get; set; }
 
         public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
