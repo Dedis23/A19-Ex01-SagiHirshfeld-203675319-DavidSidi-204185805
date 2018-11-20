@@ -118,11 +118,14 @@ namespace SpaceInvaders
         public virtual void Kill()
         {
             this.Game.Components.Remove(this);
-            Killed?.Invoke(this);
-            
-            foreach(Delegate d in Killed.GetInvocationList())
+
+            if (Killed != null)
             {
-                Killed -= (Action<object>)d;
+                Killed.Invoke(this);
+                foreach (Delegate d in Killed.GetInvocationList())
+                {
+                    Killed -= (Action<object>)d;
+                }
             }
 
             this.Dispose();

@@ -34,9 +34,8 @@ namespace SpaceInvaders
         }
 
         private void handleBulletHitsKillable(Bullet i_Bullet, IKillable i_Killable)
-        {
-            // When multiple bullets hits the same target - this makes sure only one bullet will register
-            if (!r_KillQueue.Contains(i_Killable))
+        {            
+            if (!r_KillQueue.Contains(i_Bullet) && !r_KillQueue.Contains(i_Killable))
             {
                 if (i_Killable is Bullet)
                 {

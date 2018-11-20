@@ -93,7 +93,7 @@ namespace SpaceInvaders
 
         private void checkAndNotifyForKeyboardInput(GameTime i_GameTime)
         {
-            // Check any notify if any keyboard key of a registered action is down
+            // Check and notify if any keyboard key of a registered action is down
             foreach (Action<GameTime> action in r_ActionToKeyboardDownDictionary.Keys)
             {
                 if (m_CurrentKeyboardState.IsKeyDown(r_ActionToKeyboardDownDictionary[action]))
@@ -102,7 +102,7 @@ namespace SpaceInvaders
                 }
             }
 
-            // Check any notify if a keyboard key was pressed only once
+            // Check and notify if a keyboard key was pressed only once
             foreach (Action<GameTime> action in r_ActionToKeyboardSinglePressDictionary.Keys)
             {
                 Keys keyBindedToAction = r_ActionToKeyboardSinglePressDictionary[action];
