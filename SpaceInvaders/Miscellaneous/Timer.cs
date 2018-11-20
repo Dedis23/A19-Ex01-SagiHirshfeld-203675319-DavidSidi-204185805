@@ -41,7 +41,7 @@ namespace SpaceInvaders
             if (m_RemainingDelay >= Interval)
             {
                 Notify?.Invoke();
-                m_RemainingDelay = 0.0f;
+                m_RemainingDelay -= Interval;
             }
 
             base.Update(i_GameTime);
