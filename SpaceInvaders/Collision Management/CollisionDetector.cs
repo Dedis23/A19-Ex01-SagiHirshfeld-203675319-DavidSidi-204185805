@@ -16,29 +16,25 @@ namespace SpaceInvaders
 
         public override void Update(GameTime gameTime)
         {
-            checkAndNotifyForCollisions();
+            checkAndNotifyForCollisions1();
             base.Update(gameTime);
         }
 
-        private void checkAndNotifyForCollisions()
+        private void checkAndNotifyForCollisions1()
         {
-            var collideableGameContent = from gameComponent in this.Game.Components
-                                         where gameComponent is ICollideable
-                                         select gameComponent;
+            IEnumerable<ICollideable> collideableGameContent = from gameComponent in this.Game.Components
+                                                               where gameComponent is ICollideable
+                                                               select gameComponent as ICollideable;
 
             HashSet <ICollideable> checkedContent = new HashSet<ICollideable>();
             foreach (ICollideable collideableA in collideableGameContent)
             {
-                if (!checkedContent.Contains(collideableA))
+                checkedContent.Add(collideableA);
+                foreach (ICollideable collideableB in collideableGameContent)
                 {
-                    checkedContent.Add(collideableA);
-                    foreach (ICollideable collideableB in collideableGameContent)
+                    if (!checkedContent.Contains(collideableB))
                     {
-                        if (!checkedContent.Contains(collideableB) && 
-                            !(collideableB.GetType().IsEquivalentTo(collideableA.GetType())))
-                        {
-                            checkAndNotifySingleCollision(collideableA, collideableB);
-                        }
+                        checkAndNotifySingleCollision(collideableA, collideableB);
                     }
                 }
             }
