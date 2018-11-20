@@ -35,49 +35,43 @@ namespace SpaceInvaders
 
         private void handleBulletHitsKillable(Bullet i_Bullet, IKillable i_Killable)
         {
-            // In Space Invaders a bullet shot by a certain creature won't do anything to similar creatures
-            if (i_Bullet.Shooter.GetType() != i_Killable.GetType())
+            // When multiple bullets hits the same target - this makes sure only one bullet will register
+            if (!r_KillQueue.Contains(i_Killable))
             {
-                // When multiple bullets hits the same target - this makes sure only one bullet will register
-                if (!r_KillQueue.Contains(i_Killable))
+                if (i_Killable is Bullet)
                 {
-                    if(i_Killable is Bullet)
-                    {
-                        handleBulletHitsBullet(i_Bullet, i_Killable as Bullet);
-                    }
+                    handleBulletHitsBullet(i_Bullet, i_Killable as Bullet);
+                }
 
-                    else if (i_Killable is IEnemy)
-                    {
-                        handleBulletHitsEnemyBullet(i_Bullet, i_Killable as IEnemy);
-                    }
+                else if (i_Killable is IEnemy)
+                {
+                    handleBulletHitsEnemy(i_Bullet, i_Killable as IEnemy);
+                }
 
-                    else if (i_Killable is Spaceship)
-                    {
-                        handleBulletHitsSpaceship(i_Bullet, i_Killable as Spaceship);
-                    }
+                else if (i_Killable is Spaceship)
+                {
+                    handleBulletHitsSpaceship(i_Bullet, i_Killable as Spaceship);
                 }
             }
         }
 
         private void handleBulletHitsBullet(Bullet i_BulletA, Bullet i_BulletB)
         {
-            if(i_BulletA.Shooter is IEnemy && !(i_BulletB.Shooter is IEnemy))
+            if(i_BulletA.Shooter is IEnemy && i_BulletB.Shooter is Spaceship)
             {
                 r_KillQueue.Enqueue(i_BulletA);
                 r_KillQueue.Enqueue(i_BulletB);
             }
         }
 
-        private void handleBulletHitsEnemyBullet(Bullet i_Bullet, IEnemy i_Enemy)
+        private void handleBulletHitsEnemy(Bullet i_Bullet, IEnemy i_Enemy)
         {
-            r_KillQueue.Enqueue(i_Bullet);
-
             if (i_Bullet.Shooter is Spaceship)
             {
+                r_KillQueue.Enqueue(i_Bullet);
+                r_KillQueue.Enqueue(i_Enemy);
                 (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
             }
-
-            r_KillQueue.Enqueue(i_Enemy);
         }
 
         private void handleBulletHitsSpaceship(Bullet i_Bullet, Spaceship i_Spaceship)
