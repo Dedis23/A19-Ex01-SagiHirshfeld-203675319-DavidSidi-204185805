@@ -44,10 +44,7 @@ namespace SpaceInvaders
             float y = (float)GraphicsDevice.Viewport.Height;
 
             // Offset:
-            y -= Texture.Height / 2;
-
-            // Put it a little bit higher:
-            y -= 32;
+            y -= Texture.Height * 1.5f;
 
             PositionX = x;
             PositionY = y;

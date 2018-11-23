@@ -20,10 +20,9 @@ namespace SpaceInvaders
         private readonly List<List<Invader>> r_InvadersMatrix;
         private Timer m_TimerForJumps;
         private Timer m_TimerForInvaderShooting;
-        private float m_JumpDirection;
-        private float m_JumpDistance;
+        private eDirection m_CurrentSideJumpDirection;
+        private float m_DefaultJumpDistance;
         private int m_NumOfDefeatedInvaders;
-        private bool m_LastJumpWasDownwards;
 
         public event Action invadersMatrixReachedBottomScreen;
 
@@ -32,10 +31,9 @@ namespace SpaceInvaders
         public InvadersMatrix(Game i_Game) : base(i_Game)
         {
             r_InvadersMatrix = new List<List<Invader>>();
-            m_JumpDirection = 1;
+            m_CurrentSideJumpDirection = eDirection.Right;
+            m_DefaultJumpDistance = k_JumpDistanceModifier * k_DefaultInvaderWidth;
             m_NumOfDefeatedInvaders = 0;
-            m_LastJumpWasDownwards = false;
-            m_JumpDistance = k_JumpDistanceModifier * k_DefaultInvaderWidth;
             r_RandomGenerator = new Random((int)DateTime.Now.Ticks);
             initializeTimers();
             initializeMatrix();
@@ -96,37 +94,40 @@ namespace SpaceInvaders
 
         private void handleInvadersMatrixJumps()
         {
-            if (invadersOnEdge() == true)
+            if (invadersOnEdge() == false)
             {
-                makeAJumpDownwards();
-                m_LastJumpWasDownwards = true;
-                checkIfInvadersMatrixReachedBottomScreen();
-                decreaseDelayBetweenJumps(k_InvadersReachedEdgeAccelerator);
-                m_JumpDirection *= -1;
+                float amountToJump = calculateJumpDistance();
+                doAJump(m_CurrentSideJumpDirection, amountToJump);
             }
             else
             {
-                if (m_LastJumpWasDownwards == false)
+                doAJump(eDirection.Down, m_DefaultJumpDistance);
+                checkIfInvadersMatrixReachedBottomScreen();
+                decreaseDelayBetweenJumps(k_InvadersReachedEdgeAccelerator);
+                switch (m_CurrentSideJumpDirection)
                 {
-                    float amountToJump = calculateJumpAmount();
-                    jumpSideways(amountToJump);
+                    case eDirection.Right:
+                        m_CurrentSideJumpDirection = eDirection.Left;
+                        break;
+                    case eDirection.Left:
+                        m_CurrentSideJumpDirection = eDirection.Right;
+                        break;
                 }
             }
-
-            m_LastJumpWasDownwards = false;
         }
 
-        private float calculateJumpAmount()
+        private float calculateJumpDistance()
         {
             float furthestInvaderXPosition = getFurthestInvaderXPosition();
             float amountToJump = 0.0f;
-            if (m_JumpDirection == 1.0f)
+            switch (m_CurrentSideJumpDirection)
             {
-                amountToJump = Math.Min(m_JumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - k_DefaultInvaderWidth);
-            }
-            else
-            {
-                amountToJump = Math.Min(m_JumpDistance, furthestInvaderXPosition);
+                case eDirection.Right:
+                    amountToJump = Math.Min(m_DefaultJumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - k_DefaultInvaderWidth);
+                    break;
+                case eDirection.Left:
+                    amountToJump = Math.Min(m_DefaultJumpDistance, furthestInvaderXPosition);
+                    break;
             }
 
             return amountToJump;
@@ -136,73 +137,92 @@ namespace SpaceInvaders
         {
             bool invadersOnEdge = false;
             float furthestInvaderXPosition = getFurthestInvaderXPosition();
-            if (m_JumpDirection == 1.0f)
+            switch (m_CurrentSideJumpDirection)
             {
-                invadersOnEdge = furthestInvaderXPosition + k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width ?
-                    invadersOnEdge = true : invadersOnEdge = false;
-            }
-            else
-            {
-                invadersOnEdge = furthestInvaderXPosition == 0 ? invadersOnEdge = true : invadersOnEdge = false;
+                case eDirection.Right:
+                    invadersOnEdge = furthestInvaderXPosition + k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width ? 
+                        invadersOnEdge = true : invadersOnEdge = false;
+                    break;
+                case eDirection.Left:
+                    invadersOnEdge = furthestInvaderXPosition == 0 ? invadersOnEdge = true : invadersOnEdge = false;
+                    break;
             }
 
             return invadersOnEdge;
         }
 
-        private void jumpSideways(float i_JumpAmount)
+        private void doAJump(eDirection i_JumpDirection, float i_JumpAmount)
         {
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+            switch (i_JumpDirection)
             {
-                foreach (Invader invader in rowOfInvaders)
-                {
-                    invader.PositionX += i_JumpAmount * m_JumpDirection;
-                }
+                case eDirection.Right:
+                    foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+                    {
+                        foreach (Invader invader in rowOfInvaders)
+                        {
+                            invader.PositionX += i_JumpAmount;
+                        }
+                    }
+
+                    break;
+                case eDirection.Left:
+                    foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+                    {
+                        foreach (Invader invader in rowOfInvaders)
+                        {
+                            invader.PositionX -= i_JumpAmount;
+                        }
+                    }
+
+                    break;
+                case eDirection.Down:
+                    foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+                    {
+                        foreach (Invader invader in rowOfInvaders)
+                        {
+                            invader.PositionY += i_JumpAmount;
+                        }
+                    }
+
+                    break;
             }
         }
 
         private float getFurthestInvaderXPosition()
         {
             float furthestInvaderXPosition = 0.0f;
-            if (m_JumpDirection == 1)
+            switch (m_CurrentSideJumpDirection)
             {
-                foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
-                {
-                    foreach (Invader invader in rowOfInvaders)
+                case eDirection.Right:
+                    foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
                     {
-                        if (rowOfInvaders.Count > 0)
+                        foreach (Invader invader in rowOfInvaders)
                         {
-                            furthestInvaderXPosition = Math.Max(furthestInvaderXPosition, invader.PositionX);
+                            if (rowOfInvaders.Count > 0)
+                            {
+                                furthestInvaderXPosition = Math.Max(furthestInvaderXPosition, invader.PositionX);
+                            }
                         }
                     }
-                }
-            }
-            else
-            {
-                furthestInvaderXPosition = (float)this.Game.GraphicsDevice.Viewport.Width;
-                foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
-                {
-                    foreach (Invader invader in rowOfInvaders)
+
+                    break;
+                case eDirection.Left:
+                    furthestInvaderXPosition = (float)this.Game.GraphicsDevice.Viewport.Width;
+                    foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
                     {
-                        if (rowOfInvaders.Count > 0)
+                        foreach (Invader invader in rowOfInvaders)
                         {
-                            furthestInvaderXPosition = Math.Min(furthestInvaderXPosition, invader.PositionX);
+                            if (rowOfInvaders.Count > 0)
+                            {
+                                furthestInvaderXPosition = Math.Min(furthestInvaderXPosition, invader.PositionX);
+                            }
                         }
                     }
-                }
+
+                    break;
             }
 
             return furthestInvaderXPosition;
-        }
-
-        private void makeAJumpDownwards()
-        {
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
-            {
-                foreach (Invader invader in rowOfInvaders)
-                {
-                    invader.PositionY += m_JumpDistance;
-                }
-            }
         }
         
         private void checkIfInvadersMatrixReachedBottomScreen()

@@ -28,7 +28,7 @@ namespace SpaceInvaders
 
         public event Action<GameTime> MouseRightButtonPressedOnce;
 
-        public InputManager(Game game) : base(game)
+        public InputManager(Game i_Game) : base(i_Game)
         {
             r_ActionToKeyboardDownDictionary = new Dictionary<Action<GameTime>, Keys>();
             r_ActionToKeyboardSinglePressDictionary = new Dictionary<Action<GameTime>, Keys>(); 

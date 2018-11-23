@@ -32,7 +32,7 @@ namespace SpaceInvaders
             Components.Add(m_InputManager);
 
             m_CollisionHandler = new CollisionHandler(this);
-            m_CollisionHandler.EnemyCollidedWithSpaceship += OnEnemyCollidedWithSpaceship;
+            m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
             Components.Add(m_CollisionHandler);
 
             m_CollisionDetector = new CollisionDetector(this);
@@ -95,8 +95,8 @@ namespace SpaceInvaders
         private void loadInvaders()
         {
             m_InvadersMatrix = new InvadersMatrix(this);
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += OnInvadersMatrixReachedBottomScreen;
-            m_InvadersMatrix.allInvadersWereDefeated += OnAllInvadersWereDefeated;
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
+            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
             Components.Add(m_InvadersMatrix);
         }
         
@@ -105,11 +105,6 @@ namespace SpaceInvaders
             m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.Spaceship) as Spaceship;
             m_Spaceship.Killed += onSpaceshipKilled;
             Components.Add(m_Spaceship);
-        }
-
-        private void onSpaceshipKilled(object obj)
-        {
-            gameOver();
         }
 
         private void setupInputBindings()
@@ -125,17 +120,22 @@ namespace SpaceInvaders
             m_InputManager.MouseLeftButtonPressedOnce += m_Spaceship.Shoot;
         }
 
-        private void OnInvadersMatrixReachedBottomScreen()
+        private void onSpaceshipKilled(object i_Object)
         {
             gameOver();
         }
 
-        private void OnAllInvadersWereDefeated()
+        private void onInvadersMatrixReachedBottomScreen()
         {
             gameOver();
         }
 
-        private void OnEnemyCollidedWithSpaceship()
+        private void onAllInvadersWereDefeated()
+        {
+            gameOver();
+        }
+
+        private void onEnemyCollidedWithSpaceship()
         {
             gameOver();
         }

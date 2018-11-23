@@ -47,25 +47,24 @@ namespace SpaceInvaders
             switch (i_Direction)
             {
                 case eDirection.Up:
-                    centralizedX = r_Shooter.Position.X + 0.5f * r_Shooter.Width - (0.5f * i_Bullet.Width);
+                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Width) - (0.5f * i_Bullet.Width);
                     centralizedY = r_Shooter.Top - 1 - i_Bullet.Height;
                     break;
 
                 case eDirection.Down:
-                    centralizedX = r_Shooter.Position.X + 0.5f * r_Shooter.Width - (0.5f * i_Bullet.Width);
+                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Width) - (0.5f * i_Bullet.Width);
                     centralizedY = r_Shooter.Bottom + 1;
                     break;
 
                 case eDirection.Left:
                     centralizedX = r_Shooter.Left - 1 - i_Bullet.Width;
-                    centralizedY = r_Shooter.Position.Y + 0.5f * r_Shooter.Height - (0.5f * i_Bullet.Height);
+                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Height) - (0.5f * i_Bullet.Height);
                     break;
 
                 case eDirection.Right:
                     centralizedX = r_Shooter.Right + 1;
-                    centralizedY = r_Shooter.Position.Y + 0.5f * r_Shooter.Height - (0.5f * i_Bullet.Height);
+                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Height) - (0.5f * i_Bullet.Height);
                     break;
-
             }
 
             return new Vector2(centralizedX, centralizedY);

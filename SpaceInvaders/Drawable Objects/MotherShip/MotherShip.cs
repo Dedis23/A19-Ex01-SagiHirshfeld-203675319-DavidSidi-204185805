@@ -23,10 +23,10 @@ namespace SpaceInvaders
             base.Initialize();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime i_GameTime)
         {
-            base.Update(gameTime);
-            moveMotherShip(gameTime);
+            base.Update(i_GameTime);
+            moveMotherShip(i_GameTime);
         }
 
         private void moveMotherShip(GameTime i_GameTime)

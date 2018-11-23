@@ -5,7 +5,9 @@ namespace SpaceInvaders
     public class Bullet : Drawable2DGameComponent, ICollideable
     {
         private const int k_BulletsVelocity = 155;
+
         public eDirection Direction { get; set; }
+
         public object Shooter { get; set; }
 
         public Bullet(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)

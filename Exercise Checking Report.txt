@@ -1,0 +1,12 @@
+==========================Exercise Checking Report==========================
+Exercise No...........: 1
+First Student Details.: 203675319 - Sagi Hirshfeld
+Second Student Details: 204185805 - David Sidi
+Delivery Date.........: 25.11.18
+Delivered In Delay....: No
+Delay Reason..........: 
+Visual Studio Version.: 2017
+Comments..............: 
+StyleCop shows 2 warnings regarding LINQ operations. according to our research, there is no solution to this,
+it looks like StyleCop does not allow this sort of LINQ operations.
+=======================End Exercise Checking Report=========================

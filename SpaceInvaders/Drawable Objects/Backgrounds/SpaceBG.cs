@@ -6,7 +6,7 @@ namespace SpaceInvaders
 {
     public class SpaceBG : Drawable2DGameComponent
     {
-        public SpaceBG(Game game, string i_SourceFileURL) : base(game, i_SourceFileURL)
+        public SpaceBG(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             setDefaultPosition();
         }

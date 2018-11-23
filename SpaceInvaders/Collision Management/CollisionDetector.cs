@@ -16,11 +16,11 @@ namespace SpaceInvaders
 
         public override void Update(GameTime i_GameTime)
         {
-            checkAndNotifyForCollisions1();
+            checkAndNotifyForCollisions();
             base.Update(i_GameTime);
         }
 
-        private void checkAndNotifyForCollisions1()
+        private void checkAndNotifyForCollisions()
         {
             IEnumerable<ICollideable> collideableGameContent = from gameComponent in this.Game.Components
                                                                where gameComponent is ICollideable
