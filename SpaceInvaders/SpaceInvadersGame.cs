@@ -68,7 +68,7 @@ namespace SpaceInvaders
 
             foreach (Drawable2DGameComponent drawableGameComponent in drawableGameComponents)
             {
-                m_SpriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Tint);
+                m_SpriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Color);
             }
 
             m_SpriteBatch.End();

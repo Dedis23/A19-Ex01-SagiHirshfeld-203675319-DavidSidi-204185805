@@ -53,12 +53,13 @@
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
     <Compile Include="Miscellaneous\Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
-    <Compile Include="Miscellaneous\eShootingDirection.cs" />
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
+    <Compile Include="Miscellaneous\eDirection.cs" />
     <Compile Include="Miscellaneous\Gun.cs" />
     <Compile Include="Input Management\InputManager.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IKillable.cs" />
+    <Compile Include="Miscellaneous\IShooter.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

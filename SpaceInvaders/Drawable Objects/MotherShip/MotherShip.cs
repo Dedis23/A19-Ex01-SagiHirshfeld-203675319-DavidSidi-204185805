@@ -12,7 +12,7 @@ namespace SpaceInvaders
 
         public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
-            this.Tint = Color.Red;
+            this.Color = Color.Red;
             this.Velocity = k_MotherShipVelocity;
             PointsValue = k_MotherShipPointsValue;
             setDefaultPosition();

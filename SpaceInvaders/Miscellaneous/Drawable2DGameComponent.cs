@@ -9,7 +9,7 @@ namespace SpaceInvaders
         private readonly string r_SourceFileURL;
         private Vector2 m_Position;
 
-        public Color Tint { get; set; } = Color.White;
+        public Color Color { get; set; } = Color.White;
 
         public Texture2D Texture { get; set; }
 

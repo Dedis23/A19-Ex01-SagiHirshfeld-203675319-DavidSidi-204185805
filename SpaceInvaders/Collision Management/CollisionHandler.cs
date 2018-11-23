@@ -9,6 +9,7 @@ namespace SpaceInvaders
         private readonly Queue<IKillable> r_KillQueue;
         private int k_ScorePenaltyForBulletHit = 1100;
         public event Action EnemyCollidedWithSpaceship;
+
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
             r_KillQueue = new Queue<IKillable>();

@@ -3,13 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public class Spaceship : Drawable2DGameComponent, ICollideable
+    public class Spaceship : Drawable2DGameComponent, ICollideable, IShooter
     {
         private const int k_SpaceshipVelocity = 120;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
         private readonly Gun r_Gun;
         private int m_Score;
+
+        public Color BulletsColor { get; } = Color.Red;
 
         public int Lives { get; set; }
 
@@ -28,10 +30,10 @@ namespace SpaceInvaders
 
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
+            r_Gun = new Gun(this);
             Velocity = k_SpaceshipVelocity;
             Lives = k_StartingLivesCount;
             m_Score = 0;
-            r_Gun = new Gun(i_Game, this);
             SetDefaultPosition();
         }
 
@@ -78,8 +80,7 @@ namespace SpaceInvaders
         {
             if (r_Gun.NumberOfShotBulletsInScreen < k_MaxBulletsInScreen)
             {
-                Vector2 positionToShootFrom = new Vector2(this.Position.X + (0.5f * this.Width), this.Top - 1);
-                r_Gun.Shoot(positionToShootFrom, eShootingDirection.Up, Color.Red);
+                r_Gun.Shoot(eDirection.Up);
             }
         }
     }

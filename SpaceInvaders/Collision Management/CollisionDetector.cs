@@ -10,14 +10,14 @@ namespace SpaceInvaders
     {
         public event Action<ICollideable, ICollideable> CollisionDetected;
 
-        public CollisionDetector(Game game) : base(game)
+        public CollisionDetector(Game i_Game) : base(i_Game)
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime i_GameTime)
         {
             checkAndNotifyForCollisions1();
-            base.Update(gameTime);
+            base.Update(i_GameTime);
         }
 
         private void checkAndNotifyForCollisions1()
@@ -61,6 +61,8 @@ namespace SpaceInvaders
             return rectangleA.Intersects(RectangleB);
         }
 
+        // The following method was mostly taken from this tutorial: 
+        // https://www.youtube.com/watch?v=5vKF0zb0PsA - "C# Xna Made Easy Tutorial 27 - Pixel Perfect Collision"
         private bool pixelCollisionDetected(ICollideable i_CollideableA, ICollideable i_CollideableB)
         {
             bool collisionDetected = false;
@@ -71,8 +73,8 @@ namespace SpaceInvaders
             // Store the pixel data
             Color[] colorDataA = new Color[spriteA.Width * spriteA.Height];
             Color[] colorDataB = new Color[spriteB.Width * spriteB.Height];
-            spriteA.GetData<Color>(colorDataA);
-            spriteB.GetData<Color>(colorDataB);
+            spriteA.GetData(colorDataA);
+            spriteB.GetData(colorDataB);
 
             // Calculate the boundaries of the rectangle which is the overlap between i_CollideableA and i_CollideableB
             // float is used instead of int for numerical capacity
