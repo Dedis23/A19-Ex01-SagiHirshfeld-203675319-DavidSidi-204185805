@@ -81,8 +81,8 @@ namespace SpaceInvaders
             Components.Add(background);
 
             // Adjust the ViewPort to match the size of the background
-            r_Graphics.PreferredBackBufferWidth = (int)background.Width;
-            r_Graphics.PreferredBackBufferHeight = (int)background.Height;
+            r_Graphics.PreferredBackBufferWidth = background.Width;
+            r_Graphics.PreferredBackBufferHeight = background.Height;
             r_Graphics.ApplyChanges();
         }
 

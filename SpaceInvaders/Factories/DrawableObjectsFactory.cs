@@ -34,21 +34,27 @@ namespace SpaceInvaders
                 case eSpriteType.SpaceBG:
                     objectToReturn = new SpaceBG(i_Game, k_SpaceBGURL);
                     break;
+
                 case eSpriteType.Spaceship:
                     objectToReturn = new Spaceship(i_Game, k_SpaceshipURL);
                     break;
+
                 case eSpriteType.Mothership:
                     objectToReturn = new Mothership(i_Game, k_MothershipURL);
                     break;
+
                 case eSpriteType.InvaderPink:
                     objectToReturn = new Invader(i_Game, k_InvaderPinkURL, Color.Pink, k_InvaderPinkPointsValue);
                     break;
+
                 case eSpriteType.InvaderLightBlue:
                     objectToReturn = new Invader(i_Game, k_InvaderLightBlueURL, Color.LightBlue, k_InvaderLightBluePointsValue);
                     break;
+
                 case eSpriteType.InvaderLightYellow:
                     objectToReturn = new Invader(i_Game, k_InvaderLightYellowURL, Color.LightYellow, k_InvaderLightYellowPointsValue);
                     break;
+
                 case eSpriteType.Bullet:
                     objectToReturn = new Bullet(i_Game, k_BulletURL);
                     break;
