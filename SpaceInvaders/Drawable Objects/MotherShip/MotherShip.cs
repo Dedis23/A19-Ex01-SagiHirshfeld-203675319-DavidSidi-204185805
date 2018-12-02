@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    public class Mothership : Drawable2DGameComponent, ICollideable, IEnemy
+    public class Mothership : Sprite, ICollideable, IEnemy
     {
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
@@ -13,7 +13,7 @@ namespace SpaceInvaders
         public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             this.Color = Color.Red;
-            this.Velocity = k_MotherShipVelocity;
+            this.Velocity = new Vector2(k_MotherShipVelocity, 0);
             PointsValue = k_MotherShipPointsValue;
             setDefaultPosition();
         }
@@ -26,18 +26,10 @@ namespace SpaceInvaders
         public override void Update(GameTime i_GameTime)
         {
             base.Update(i_GameTime);
-            moveMotherShip(i_GameTime);
-        }
 
-        private void moveMotherShip(GameTime i_GameTime)
-        {
             if (this.PositionX >= this.GraphicsDevice.Viewport.Width)
             {
                 this.Kill();
-            }
-            else
-            {
-                PositionX += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
             }
         }
 

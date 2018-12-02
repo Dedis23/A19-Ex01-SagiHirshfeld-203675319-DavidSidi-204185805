@@ -10,31 +10,31 @@ namespace SpaceInvaders
     {
         private const int k_FramesToWaitBeforeInputTaking = 3;
         private static readonly IEnumerable<Keys> sr_EnumerableKeyboardKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>();
-        private readonly Dictionary<Action<GameTime>, Keys> r_ActionToKeyboardDownDictionary;
-        private readonly Dictionary<Action<GameTime>, Keys> r_ActionToKeyboardSinglePressDictionary;
+        private readonly Dictionary<Action, Keys> r_ActionToKeyboardDownDictionary;
+        private readonly Dictionary<Action, Keys> r_ActionToKeyboardSinglePressDictionary;
         private int m_WaitedFramesBeforeInputTaking = 0;
         private KeyboardState m_CurrentKeyboardState;
         private MouseState m_CurrentMouseState;
         private KeyboardState? m_PrevKeyboardState;
         private MouseState? m_PrevMouseState;
 
-        public event Action<GameTime, Vector2> MouseMoved;
+        public event Action<Vector2> MouseMoved;
 
-        public event Action<GameTime> MouseLeftButtonPressed;
+        public event Action MouseLeftButtonPressed;
 
-        public event Action<GameTime> MouseRightButtonPressed;
+        public event Action MouseRightButtonPressed;
 
-        public event Action<GameTime> MouseLeftButtonPressedOnce;
+        public event Action MouseLeftButtonPressedOnce;
 
-        public event Action<GameTime> MouseRightButtonPressedOnce;
+        public event Action MouseRightButtonPressedOnce;
 
         public InputManager(Game i_Game) : base(i_Game)
         {
-            r_ActionToKeyboardDownDictionary = new Dictionary<Action<GameTime>, Keys>();
-            r_ActionToKeyboardSinglePressDictionary = new Dictionary<Action<GameTime>, Keys>(); 
+            r_ActionToKeyboardDownDictionary = new Dictionary<Action, Keys>();
+            r_ActionToKeyboardSinglePressDictionary = new Dictionary<Action, Keys>(); 
         }
 
-        public void RegisterKeyboardKeyDownBinding(Action<GameTime> i_Action, Keys i_KeyboardKey)
+        public void RegisterKeyboardKeyDownBinding(Action i_Action, Keys i_KeyboardKey)
         {
             if(r_ActionToKeyboardDownDictionary.ContainsKey(i_Action))
             {
@@ -46,7 +46,7 @@ namespace SpaceInvaders
             }
         }
 
-        public void RegisterKeyboardSinglePressBinding(Action<GameTime> i_Action, Keys i_KeyboardKey)
+        public void RegisterKeyboardSinglePressBinding(Action i_Action, Keys i_KeyboardKey)
         {
             if (r_ActionToKeyboardSinglePressDictionary.ContainsKey(i_Action))
             {   
@@ -58,12 +58,12 @@ namespace SpaceInvaders
             }
         }
 
-        public void RemoveKeyboardDownBinding(Action<GameTime> i_Action)
+        public void RemoveKeyboardDownBinding(Action i_Action)
         {
             r_ActionToKeyboardDownDictionary.Remove(i_Action);
         }
 
-        public void RemoveKeyboardSinglePressBinding(Action<GameTime> i_Action)
+        public void RemoveKeyboardSinglePressBinding(Action i_Action)
         {
             r_ActionToKeyboardSinglePressDictionary.Remove(i_Action);
         }
@@ -77,8 +77,8 @@ namespace SpaceInvaders
             // after the second frame (= after the second Update)
             if(m_WaitedFramesBeforeInputTaking >= k_FramesToWaitBeforeInputTaking)
             {
-                checkAndNotifyForKeyboardInput(i_GameTime);
-                checkAndNotifyForMouseInput(i_GameTime);
+                checkAndNotifyForKeyboardInput();
+                checkAndNotifyForMouseInput();
             }
             else
             {
@@ -91,56 +91,56 @@ namespace SpaceInvaders
             base.Update(i_GameTime);
         }
 
-        private void checkAndNotifyForKeyboardInput(GameTime i_GameTime)
+        private void checkAndNotifyForKeyboardInput()
         {
             // Check and notify if any keyboard key of a registered action is down
-            foreach (Action<GameTime> action in r_ActionToKeyboardDownDictionary.Keys)
+            foreach (Action action in r_ActionToKeyboardDownDictionary.Keys)
             {
                 if (m_CurrentKeyboardState.IsKeyDown(r_ActionToKeyboardDownDictionary[action]))
                 {
-                    action.Invoke(i_GameTime);
+                    action.Invoke();
                 }
             }
 
             // Check and notify if a keyboard key was pressed only once
-            foreach (Action<GameTime> action in r_ActionToKeyboardSinglePressDictionary.Keys)
+            foreach (Action action in r_ActionToKeyboardSinglePressDictionary.Keys)
             {
                 Keys keyBindedToAction = r_ActionToKeyboardSinglePressDictionary[action];
                 if (m_CurrentKeyboardState.IsKeyDown(keyBindedToAction) && (m_PrevKeyboardState == null || !m_PrevKeyboardState.Value.IsKeyDown(keyBindedToAction)))
                 {
-                    action.Invoke(i_GameTime);
+                    action.Invoke();
                 }
             }
         }
 
-        private void checkAndNotifyForMouseInput(GameTime i_GameTime)
+        private void checkAndNotifyForMouseInput()
         {
             Vector2 mousePositionDelta = getMousePositionDelta();
             if (mousePositionDelta != Vector2.Zero)
             {
-                MouseMoved?.Invoke(i_GameTime, mousePositionDelta);
+                MouseMoved?.Invoke(mousePositionDelta);
             }
 
             if (m_CurrentMouseState.LeftButton == ButtonState.Pressed)
             {
-                MouseLeftButtonPressed?.Invoke(i_GameTime);
+                MouseLeftButtonPressed?.Invoke();
             }
 
             if (m_CurrentMouseState.RightButton == ButtonState.Pressed)
             {
-                MouseRightButtonPressed?.Invoke(i_GameTime);
+                MouseRightButtonPressed?.Invoke();
             }
 
             if (m_CurrentMouseState.LeftButton == ButtonState.Pressed && 
                 (m_PrevMouseState == null || m_PrevMouseState.Value.LeftButton == ButtonState.Released))
             {
-                MouseLeftButtonPressedOnce?.Invoke(i_GameTime);
+                MouseLeftButtonPressedOnce?.Invoke();
             }
 
             if (m_CurrentMouseState.RightButton == ButtonState.Pressed &&
                 (m_PrevMouseState == null || m_PrevMouseState.Value.RightButton == ButtonState.Released))
             {
-                MouseRightButtonPressedOnce?.Invoke(i_GameTime);
+                MouseRightButtonPressedOnce?.Invoke();
             }
         }
 

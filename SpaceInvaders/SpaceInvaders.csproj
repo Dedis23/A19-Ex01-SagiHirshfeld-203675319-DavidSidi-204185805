@@ -51,7 +51,6 @@
     <Compile Include="Drawable Objects\Invaders\Invader.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
-    <Compile Include="Miscellaneous\Drawable2DGameComponent.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
     <Compile Include="Miscellaneous\eDirection.cs" />
@@ -60,6 +59,7 @@
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IKillable.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />
+    <Compile Include="Miscellaneous\Sprite.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

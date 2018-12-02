@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public class Spaceship : Drawable2DGameComponent, ICollideable, IShooter
+    public class Spaceship : Sprite, ICollideable, IShooter
     {
-        private const int k_SpaceshipVelocity = 120;
+        private const int k_FlightVelocity = 120;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
         private readonly Gun r_Gun;
         private int m_Score;
-
         public Color BulletsColor { get; } = Color.Red;
 
         public int Lives { get; set; }
@@ -31,7 +30,6 @@ namespace SpaceInvaders
         public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {
             r_Gun = new Gun(this);
-            Velocity = k_SpaceshipVelocity;
             Lives = k_StartingLivesCount;
             m_Score = 0;
             SetDefaultPosition();
@@ -52,28 +50,31 @@ namespace SpaceInvaders
 
         public override void Update(GameTime i_GameTime)
         {
+            base.Update(i_GameTime);
+
             // Clamp the position between screen boundries:
             PositionX = MathHelper.Clamp(PositionX, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
 
-            base.Update(i_GameTime);
+            // Reset the velocity after moving due to MoveLeft or MoveRight
+            Velocity = Vector2.Zero;
         }
 
-        public void MoveRight(GameTime i_GameTime)
+        public void MoveRight()
         {
-            PositionX += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Velocity = new Vector2(k_FlightVelocity, 0);
         }
 
-        public void MoveLeft(GameTime i_GameTime)
+        public void MoveLeft()
         {
-            PositionX -= (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Velocity = new Vector2(-k_FlightVelocity, 0);
         }
 
-        public void MoveAccordingToMousePositionDelta(GameTime i_GameTime, Vector2 i_MousePositionDelta)
+        public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
         {
             PositionX += i_MousePositionDelta.X;
         }
 
-        public void Shoot(GameTime i_GameTime)
+        public void Shoot()
         {
             if (r_Gun.NumberOfShotBulletsInScreen < k_MaxBulletsInScreen)
             {

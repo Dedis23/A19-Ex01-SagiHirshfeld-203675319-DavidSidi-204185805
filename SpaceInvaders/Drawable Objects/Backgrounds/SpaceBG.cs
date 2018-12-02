@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    public class SpaceBG : Drawable2DGameComponent
+    public class SpaceBG : Sprite
     {
         public SpaceBG(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
         {

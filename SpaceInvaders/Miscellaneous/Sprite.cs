@@ -4,17 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public abstract class Drawable2DGameComponent : DrawableGameComponent, IKillable
+    public abstract class Sprite : DrawableGameComponent, IKillable
     {
         private readonly string r_SourceFileURL;
         private Vector2 m_Position;
-
         public Color Color { get; set; } = Color.White;
-
         public Texture2D Texture { get; set; }
-
-        public int Velocity { get; set; }
-
+        public Vector2 Velocity { get; set; }
         public event Action<object> Killed;
 
         public float PositionX
@@ -109,10 +105,16 @@ namespace SpaceInvaders
             }
         }
 
-        public Drawable2DGameComponent(Game i_Game, string i_SourceFileURL) : base(i_Game)
+        public Sprite(Game i_Game, string i_SourceFileURL) : base(i_Game)
         {
             r_SourceFileURL = i_SourceFileURL;
             Texture = Game.Content.Load<Texture2D>(r_SourceFileURL);
+        }
+
+        public override void Update(GameTime i_GameTime)
+        {
+            m_Position += (float)i_GameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            base.Update(i_GameTime);
         }
 
         public virtual void Kill()

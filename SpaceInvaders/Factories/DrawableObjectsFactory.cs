@@ -26,9 +26,9 @@ namespace SpaceInvaders
         private const int k_InvaderLightBluePointsValue = 140;
         private const int k_InvaderLightYellowPointsValue = 110;
 
-        public static Drawable2DGameComponent Create(Game i_Game, eSpriteType i_ObjectType)
+        public static Sprite Create(Game i_Game, eSpriteType i_ObjectType)
         {
-            Drawable2DGameComponent objectToReturn = null;
+            Sprite objectToReturn = null;
             switch (i_ObjectType)
             {
                 case eSpriteType.SpaceBG:

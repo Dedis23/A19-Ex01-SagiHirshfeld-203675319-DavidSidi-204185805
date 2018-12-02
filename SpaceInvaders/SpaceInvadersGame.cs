@@ -62,11 +62,11 @@ namespace SpaceInvaders
         {
             GraphicsDevice.Clear(Color.White);
             m_SpriteBatch.Begin();
-            IEnumerable<Drawable2DGameComponent> drawableGameComponents = from gameComponent in this.Components
-                                                                          where gameComponent is Drawable2DGameComponent
-                                                                          select gameComponent as Drawable2DGameComponent;
+            IEnumerable<Sprite> drawableGameComponents = from gameComponent in this.Components
+                                                                          where gameComponent is Sprite
+                                                                          select gameComponent as Sprite;
 
-            foreach (Drawable2DGameComponent drawableGameComponent in drawableGameComponents)
+            foreach (Sprite drawableGameComponent in drawableGameComponents)
             {
                 m_SpriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Color);
             }
@@ -77,7 +77,7 @@ namespace SpaceInvaders
 
         private void loadBackground()
         {
-            Drawable2DGameComponent background = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG);
+            Sprite background = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG);
             Components.Add(background);
 
             // Adjust the ViewPort to match the size of the background
@@ -143,12 +143,6 @@ namespace SpaceInvaders
         private void gameOver()
         {
             System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_Spaceship.Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
-            Exit();
-        }
-
-        // Overriden to enable keybind registration
-        public void Exit(GameTime i_GameTime)
-        {
             Exit();
         }
     }
