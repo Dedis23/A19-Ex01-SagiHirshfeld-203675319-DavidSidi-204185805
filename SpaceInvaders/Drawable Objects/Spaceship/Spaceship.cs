@@ -30,11 +30,17 @@ namespace SpaceInvaders
             }
         }
 
-        public Spaceship(Game i_Game, string i_SourceFileURL) : base(k_AssetName, i_Game)
+        public Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
             r_Gun = new Gun(this);
             Lives = k_StartingLivesCount;
             m_Score = 0;
+        }
+
+        protected override void InitBounds()
+        {
+            base.InitBounds();
+
             SetDefaultPosition();
         }
 
@@ -74,7 +80,7 @@ namespace SpaceInvaders
 
         public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
         {
-            Position += i_MousePositionDelta;
+            Position += new Vector2(i_MousePositionDelta.X, 0);
         }
 
         public void Shoot()

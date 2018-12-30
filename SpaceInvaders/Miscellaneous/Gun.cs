@@ -34,8 +34,6 @@ namespace SpaceInvaders
 
             r_BulletsFired.Add(newBullet);
             newBullet.Killed += (bullet) => r_BulletsFired.Remove(bullet as Bullet);
-
-            r_Shooter.Game.Components.Add(newBullet);
         }
 
         private Vector2 getCentralizedShootingPosition(Bullet i_Bullet, eDirection i_Direction)

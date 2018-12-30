@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
@@ -10,9 +11,9 @@ namespace SpaceInvaders
 
         public Color BulletsColor { get; } = Color.Blue;
 
-        public Invader(Game i_Game, string i_SourceFileURL, Color i_Tint, int i_PointsValue) : base(i_Game, i_SourceFileURL)
+        public Invader(Game i_Game, string i_SourceFileURL, Color i_Tint, int i_PointsValue) : base(i_SourceFileURL ,i_Game)
         {
-            Color = i_Tint;
+            TintColor = i_Tint;
             PointsValue = i_PointsValue;
             r_Gun = new Gun(this);
         }

@@ -20,7 +20,6 @@ namespace SpaceInvaders
         {
             m_CurrentMotherShip = DrawableObjectsFactory.Create(Game, DrawableObjectsFactory.eSpriteType.Mothership) as Mothership;
             m_CurrentMotherShip.Killed += OnMothershipKilled;
-            this.Game.Components.Add(m_CurrentMotherShip);
             r_Spawner.DeActivate();
         }
 

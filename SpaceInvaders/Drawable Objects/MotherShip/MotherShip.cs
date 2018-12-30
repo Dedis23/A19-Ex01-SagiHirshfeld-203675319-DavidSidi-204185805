@@ -1,18 +1,20 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
     public class Mothership : Sprite, ICollideable, IEnemy
     {
+        private const string k_AssetName = @"Sprites\MotherShip_32x120";
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
 
         public int PointsValue { get; set; }
 
-        public Mothership(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
+        public Mothership(Game i_Game) : base(k_AssetName, i_Game)
         {
-            this.Color = Color.Red;
+            this.TintColor = Color.Red;
             this.Velocity = new Vector2(k_MotherShipVelocity, 0);
             PointsValue = k_MotherShipPointsValue;
             setDefaultPosition();
@@ -27,7 +29,7 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
-            if (this.PositionX >= this.GraphicsDevice.Viewport.Width)
+            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
             {
                 this.Kill();
             }
@@ -38,8 +40,7 @@ namespace SpaceInvaders
             // Default MotherShip position (coming from the left of the screen)
             float x = -(float)this.Texture.Width;
             float y = (float)this.Texture.Height;
-            this.PositionX = x;
-            this.PositionY = y;
+            this.Position = new Vector2(x, y);
         }
     }
 }

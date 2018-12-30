@@ -82,13 +82,11 @@ namespace SpaceInvaders
             Invader currentInvader;
             for (int i = 0; i < k_NumOfInvadersInARow; i++)
             {
-                currentInvader = DrawableObjectsFactory.Create(Game, i_InvaderSpriteType) as Invader;
-                currentInvader.PositionX = nextInvaderPosition.X;
-                currentInvader.PositionY = nextInvaderPosition.Y;
+                currentInvader = DrawableObjectsFactory.Create(Game, i_InvaderSpriteType) as Invader;                
+                currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
                 nextInvaderPosition.X += k_XGapBetweenInvaders;
                 currentInvader.Killed += removeInvader;
                 rowOfInvaders.Add(currentInvader);
-                Game.Components.Add(currentInvader);
             }
 
             return rowOfInvaders;
@@ -124,7 +122,7 @@ namespace SpaceInvaders
                 // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
-            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.PositionX;
+            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
             float amountToJump = 0.0f;
             switch (m_JumpDirection)
             {
@@ -149,7 +147,7 @@ namespace SpaceInvaders
                 // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
-            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.PositionX;
+            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
             switch (m_JumpDirection)
             {
                 case 1.0f:
@@ -166,24 +164,22 @@ namespace SpaceInvaders
 
         private void doAJump(bool i_JumpSideways, float i_JumpAmount)
         {
-            float xDelta = 0.0f;
-            float yDelta = 0.0f;
+            Vector2 delta = Vector2.Zero;
 
             if (i_JumpSideways == true)
             {
-                xDelta = i_JumpAmount * m_JumpDirection;
+                delta.X = i_JumpAmount * m_JumpDirection;
             }
             else
             {
-                yDelta = i_JumpAmount;
+                delta.Y = i_JumpAmount;
             }
 
             foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
             {
                 foreach (Invader invader in rowOfInvaders)
                 {
-                    invader.PositionX += xDelta;
-                    invader.PositionY += yDelta;
+                    invader.Position += delta;
                 }
             }
         }
@@ -201,9 +197,9 @@ namespace SpaceInvaders
                         {
                             if (rowOfInvaders.Count > 0)
                             {
-                                if (furthestInvaderXPosition < invader.PositionX)
+                                if (furthestInvaderXPosition < invader.Position.X)
                                 {
-                                    furthestInvaderXPosition = invader.PositionX;
+                                    furthestInvaderXPosition = invader.Position.X;
                                     furthestInvaderXPositionToReturn = invader;
                                 }
                             }
@@ -220,9 +216,9 @@ namespace SpaceInvaders
                         {
                             if (rowOfInvaders.Count > 0)
                             {
-                                if (furthestInvaderXPosition >= invader.PositionX)
+                                if (furthestInvaderXPosition >= invader.Position.X)
                                 {
-                                    furthestInvaderXPosition = invader.PositionX;
+                                    furthestInvaderXPosition = invader.Position.X;
                                     furthestInvaderXPositionToReturn = invader;
                                 }
                             }
@@ -238,7 +234,7 @@ namespace SpaceInvaders
         // DEBUG
         public string DEBUG()
         {
-            return m_CurrentfurthestInvaderInXPosition?.PositionX.ToString();
+            return m_CurrentfurthestInvaderInXPosition?.Position.X.ToString();
         }
         // DEBUG
         
@@ -249,7 +245,7 @@ namespace SpaceInvaders
             {
                 foreach (Invader invader in rowOfInvaders)
                 {
-                    if (invader.PositionY + k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
+                    if (invader.Position.Y + k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
                     {
                         matrixReachedBottomScreen = true;
                     }

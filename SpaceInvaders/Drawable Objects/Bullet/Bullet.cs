@@ -12,7 +12,7 @@ namespace SpaceInvaders
         public eDirection Direction { get; set; }
         public object Shooter { get; set; }
 
-        public Bullet(Game i_Game, string i_SourceFileURL) : base(k_AssetName, i_Game)
+        public Bullet(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
 

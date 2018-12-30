@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
@@ -16,6 +17,7 @@ namespace SpaceInvaders
         private Spaceship m_Spaceship;
         private MothershipSpawner m_MothershipSpawner;
         private InvadersMatrix m_InvadersMatrix;
+        private Sprite m_Background;
 
         public SpaceInvadersGame()
         {
@@ -39,18 +41,19 @@ namespace SpaceInvaders
             m_CollisionDetector.CollisionDetected += m_CollisionHandler.HandleCollision;
             Components.Add(m_CollisionDetector);
 
+            loadBackground();
+            loadSpaceship();
+            loadMothershipSpawner();
+            //loadInvaders();  
+
+            setupInputBindings();
             base.Initialize();
         }
 
         protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            m_SpriteBatch = new SpriteBatch(GraphicsDevice);
-            loadBackground();
-            loadMothershipSpawner();
-            loadInvaders();
-            loadSpaceship();
-            setupInputBindings();
+        {           
+            // Sagi: Maybe something inits have to move here to make shit work???
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -61,35 +64,22 @@ namespace SpaceInvaders
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
-            m_SpriteBatch.Begin();
-            IEnumerable<Sprite> drawableGameComponents = from gameComponent in this.Components
-                                                                          where gameComponent is Sprite
-                                                                          select gameComponent as Sprite;
-
-            foreach (Sprite drawableGameComponent in drawableGameComponents)
-            {
-                m_SpriteBatch.Draw(drawableGameComponent.Texture, drawableGameComponent.Position, drawableGameComponent.Color);
-            }
-
-            m_SpriteBatch.End();
             base.Draw(gameTime);
         }
 
         private void loadBackground()
         {
-            Sprite background = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG);
-            Components.Add(background);
-
+            m_Background = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG);
+            // Create a new SpriteBatch, which can be used to draw textures.
             // Adjust the ViewPort to match the size of the background
-            r_Graphics.PreferredBackBufferWidth = background.Width;
-            r_Graphics.PreferredBackBufferHeight = background.Height;
-            r_Graphics.ApplyChanges();
+            //r_Graphics.PreferredBackBufferWidth = m_Background.Width;
+            //r_Graphics.PreferredBackBufferHeight = m_Background.Height;
+            //r_Graphics.ApplyChanges();
         }
 
         private void loadMothershipSpawner()
         {
             m_MothershipSpawner = new MothershipSpawner(this);
-            Components.Add(m_MothershipSpawner);
         }
 
         private void loadInvaders()
@@ -104,7 +94,6 @@ namespace SpaceInvaders
         {
             m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.Spaceship) as Spaceship;
             m_Spaceship.Killed += onSpaceshipKilled;
-            Components.Add(m_Spaceship);
         }
 
         private void setupInputBindings()

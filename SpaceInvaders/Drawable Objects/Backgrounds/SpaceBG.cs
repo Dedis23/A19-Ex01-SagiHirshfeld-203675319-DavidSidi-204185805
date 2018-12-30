@@ -1,20 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
     public class SpaceBG : Sprite
     {
-        public SpaceBG(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
-        {
-            setDefaultPosition();
-        }
-
-        public void setDefaultPosition()
-        {
-            PositionX = 0.0f;
-            PositionY = 0.0f;
+        private const string k_AssetName = @"Backgrounds\BG_Space01_1024x768";
+        public SpaceBG(Game i_Game) : base(k_AssetName, i_Game)
+        {            
         }
     }
 }
