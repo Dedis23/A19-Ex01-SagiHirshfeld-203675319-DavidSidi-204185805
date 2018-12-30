@@ -1,8 +1,8 @@
 ==========================Exercise Checking Report==========================
-Exercise No...........: 1
+Exercise No...........: 2
 First Student Details.: 203675319 - Sagi Hirshfeld
 Second Student Details: 204185805 - David Sidi
-Delivery Date.........: 25.11.18
+Delivery Date.........: 09.01.18
 Delivered In Delay....: No
 Delay Reason..........: 
 Visual Studio Version.: 2017
