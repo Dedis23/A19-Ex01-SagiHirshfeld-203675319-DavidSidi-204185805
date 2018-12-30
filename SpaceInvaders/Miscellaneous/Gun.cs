@@ -22,47 +22,37 @@ namespace SpaceInvaders
             r_Shooter = i_Shooter;
         }
 
-        public void Shoot(eDirection i_Direction)
+        public void Shoot()
         {
-            Bullet newBullet = DrawableObjectsFactory.Create(r_Shooter.Game, DrawableObjectsFactory.eSpriteType.Bullet) as Bullet;
-
-            Vector2 centralizedShootingPosition = getCentralizedShootingPosition(newBullet, i_Direction);
+            Bullet newBullet = new Bullet(r_Shooter.Game);
+            Vector2 centralizedShootingPosition = getCentralizedShootingPosition(newBullet);
             newBullet.Position = centralizedShootingPosition;
-            newBullet.TintColor = r_Shooter.BulletsColor;
-            newBullet.Direction = i_Direction;
+            newBullet.TintColor = r_Shooter.BulletsColor;         
             newBullet.Shooter = r_Shooter;
 
+            if( r_Shooter is IEnemy)
+            {
+                newBullet.Velocity *= -1;
+            }
+
             r_BulletsFired.Add(newBullet);
-            newBullet.Killed += (bullet) => r_BulletsFired.Remove(bullet as Bullet);
+            newBullet.SpriteKilled += (bullet) => r_BulletsFired.Remove(bullet as Bullet);
         }
 
-        private Vector2 getCentralizedShootingPosition(Bullet i_Bullet, eDirection i_Direction)
+        private Vector2 getCentralizedShootingPosition(Bullet i_Bullet)
         {
             float centralizedX = 0;
             float centralizedY = 0;
-
-            switch (i_Direction)
+            
+            centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
+            if (r_Shooter is IEnemy)
             {
-                case eDirection.Up:
-                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
-                    centralizedY = r_Shooter.Bounds.Top - 1 - i_Bullet.Height;
-                    break;
-
-                case eDirection.Down:
-                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
-                    centralizedY = r_Shooter.Bounds.Bottom + 1;
-                    break;
-
-                case eDirection.Left:
-                    centralizedX = r_Shooter.Bounds.Left - 1 - i_Bullet.Width;
-                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Bounds.Height) - (0.5f * i_Bullet.Height);
-                    break;
-
-                case eDirection.Right:
-                    centralizedX = r_Shooter.Bounds.Right + 1;
-                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Bounds.Height) - (0.5f * i_Bullet.Height);
-                    break;
+                centralizedY = r_Shooter.Bounds.Bottom + 1;                
             }
+            else
+            {
+                centralizedY = r_Shooter.Bounds.Top - 1 - i_Bullet.Height;
+            }            
 
             return new Vector2(centralizedX, centralizedY);
         }

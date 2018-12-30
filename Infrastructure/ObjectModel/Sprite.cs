@@ -6,7 +6,7 @@ using System;
 
 namespace Infrastructure.ObjectModel
 {
-    public class Sprite : LoadableDrawableComponent, IKillable
+    public class Sprite : LoadableDrawableComponent
     {
         private Texture2D m_Texture;
         public Texture2D Texture
@@ -103,9 +103,8 @@ namespace Infrastructure.ObjectModel
 
         public Sprite(string i_AssetName, Game i_Game)
             : base(i_AssetName, i_Game, int.MaxValue)
-        { }        
-
-        private Rectangle m_GameScreenBounds;
+        { }   
+        
         protected Rectangle GameScreenBounds
         {
             get { return new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height); }
@@ -129,8 +128,7 @@ namespace Infrastructure.ObjectModel
         {
             // default initialization of bounds
             m_Width = m_Texture.Width;
-            m_Height = m_Texture.Height;
-            m_Position = Vector2.Zero;
+            m_Height = m_Texture.Height;            
         }
 
 
@@ -260,24 +258,41 @@ namespace Infrastructure.ObjectModel
             return collisionDetected;
         }
 
+        public ICollisionHandler m_CollisionHandler;
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            if (this is ICollidable2D)
+            {
+                m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;
+            }            
+        }
+
         // TODO 15: Implement a basic collision reaction between two ICollidable2D objects
         public virtual void Collided(ICollidable i_Collidable)
         {
-            // defualt behavior - change direction:
-            this.Velocity *= -1;
+            if (this is ICollidable  && m_CollisionHandler != null)
+            {
+                m_CollisionHandler.HandleCollision(this as ICollidable, i_Collidable);
+            }
         }
 
-        public event Action<object> Killed;
-        public virtual void Kill()
+        public event Action<object> SpriteKilled;
+        public void Kill()        
+        {
+            SpriteKilled?.Invoke(this);
+            OnKilled();            
+        }
+
+        protected virtual void OnKilled()
         {
             this.Game.Components.Remove(this);
-
-            if (Killed != null)
+            if (SpriteKilled != null)
             {
-                Killed.Invoke(this);
-                foreach (Delegate d in Killed.GetInvocationList())
+                foreach (Delegate d in SpriteKilled.GetInvocationList())
                 {
-                    Killed -= (Action<object>)d;
+                    SpriteKilled -= (Action<object>)d;
                 }
             }
 

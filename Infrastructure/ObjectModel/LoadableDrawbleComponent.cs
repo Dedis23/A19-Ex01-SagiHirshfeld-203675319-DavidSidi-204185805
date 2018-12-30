@@ -75,6 +75,8 @@ namespace Infrastructure.ObjectModel
             : this(i_AssetName, i_Game, i_CallsOrder, i_CallsOrder)
         { }
 
+        
+
         public override void Initialize()
         {
             base.Initialize();
@@ -91,6 +93,7 @@ namespace Infrastructure.ObjectModel
                     collisionMgr.AddObjectToMonitor(this as ICollidable);
                 }
             }
+
             // -- end of TODO 12
 
             // After everything is loaded and initialzied,

@@ -42,11 +42,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Collision Management\CollisionDetector.cs" />
     <Compile Include="Collision Management\CollisionHandler.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Collision Management\ICollideable.cs" />
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
     <Compile Include="Drawable Objects\Invaders\Invader.cs" />
@@ -54,12 +52,9 @@
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Factories\DrawableObjectsFactory.cs" />
-    <Compile Include="Miscellaneous\eDirection.cs" />
     <Compile Include="Miscellaneous\Gun.cs" />
-    <Compile Include="Input Management\InputManager.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />
-    <Compile Include="Miscellaneous\Sprite.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

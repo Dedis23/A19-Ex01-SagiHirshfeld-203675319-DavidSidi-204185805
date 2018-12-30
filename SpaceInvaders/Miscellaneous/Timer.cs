@@ -1,12 +1,13 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
+using Infrastructure.ObjectModel;
+
 namespace SpaceInvaders
 {
-    public class Timer : GameComponent
+    public class Timer : RegisteredComponent
     {
         private float m_RemainingDelay;
-        private bool m_Active;
 
         public float Interval { get; set; }
 
@@ -14,25 +15,23 @@ namespace SpaceInvaders
 
         public Timer(Game i_Game) : base(i_Game)
         {
-            m_Active = false;
+            this.Enabled = false;
             m_RemainingDelay = 0.0f;
         }
 
         public void Activate()
         {
-            m_Active = true;
-            Game.Components.Add(this);
+            this.Enabled = true;
         }
 
         public void DeActivate()
         {
-            m_Active = false;
-            Game.Components.Remove(this);
+            this.Enabled = false;
         }
 
         public bool IsActive()
         {
-            return m_Active;
+            return this.Enabled;
         }
 
         public override void Update(GameTime i_GameTime)

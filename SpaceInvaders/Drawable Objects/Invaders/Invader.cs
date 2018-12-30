@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
-    public class Invader : Sprite, ICollideable, IShooter, IEnemy
+    public class Invader : Sprite, ICollidable2D, IShooter, IEnemy
     {
         private readonly Gun r_Gun;
-
         public int PointsValue { get; set; }
-
         public Color BulletsColor { get; } = Color.Blue;
 
         public Invader(Game i_Game, string i_SourceFileURL, Color i_Tint, int i_PointsValue) : base(i_SourceFileURL ,i_Game)
@@ -20,7 +19,7 @@ namespace SpaceInvaders
 
         public void Shoot()
         {
-            r_Gun.Shoot(eDirection.Down);
+            r_Gun.Shoot();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace SpaceInvaders
                 currentInvader = DrawableObjectsFactory.Create(Game, i_InvaderSpriteType) as Invader;                
                 currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
                 nextInvaderPosition.X += k_XGapBetweenInvaders;
-                currentInvader.Killed += removeInvader;
+                currentInvader.SpriteKilled += removeInvader;
                 rowOfInvaders.Add(currentInvader);
             }
 
@@ -276,6 +276,24 @@ namespace SpaceInvaders
                     }
                 }
             }
+        }
+
+        private List<Invader> m_KilledInvadersList = new List<Invader>();
+        private void addToKilledInvadersList(object i_Invader)
+        {
+            m_KilledInvadersList.Add(i_Invader as Invader);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            //foreach (Invader invader in m_KilledInvadersList)
+            //{
+            //    removeInvader(invader);
+            //}
+
+            //m_KilledInvadersList.Clear();
         }
 
         private void removeInvader(object i_Invader)

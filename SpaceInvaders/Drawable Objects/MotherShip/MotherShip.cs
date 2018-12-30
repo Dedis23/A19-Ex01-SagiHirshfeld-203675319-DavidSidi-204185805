@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
-    public class Mothership : Sprite, ICollideable, IEnemy
+    public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
         private const int k_MotherShipVelocity = 110;
@@ -15,14 +16,16 @@ namespace SpaceInvaders
         public Mothership(Game i_Game) : base(k_AssetName, i_Game)
         {
             this.TintColor = Color.Red;
-            this.Velocity = new Vector2(k_MotherShipVelocity, 0);
+            this.Velocity = Vector2.Zero;
+            this.Visible = false;
             PointsValue = k_MotherShipPointsValue;
-            setDefaultPosition();
         }
 
-        public override void Initialize()
+        protected override void InitBounds()
         {
-            base.Initialize();
+            base.InitBounds();
+
+            setDefaultPosition();
         }
 
         public override void Update(GameTime i_GameTime)
@@ -37,10 +40,21 @@ namespace SpaceInvaders
 
         private void setDefaultPosition()
         {
-            // Default MotherShip position (coming from the left of the screen)
-            float x = -(float)this.Texture.Width;
-            float y = (float)this.Texture.Height;
-            this.Position = new Vector2(x, y);
+            // Default MotherShip position (coming from the left of the screen) 
+            this.Position = new Vector2(-this.Width, this.Height);
+        }
+
+        public void SpawnAndFly()
+        {
+            setDefaultPosition();
+            this.Visible = true;
+            this.Velocity = new Vector2(k_MotherShipVelocity, 0);
+        }
+
+        protected override void OnKilled()
+        {
+            this.Visible = false;
+            this.Velocity = Vector2.Zero;
         }
     }
 }

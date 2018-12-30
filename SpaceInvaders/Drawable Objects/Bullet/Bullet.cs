@@ -4,23 +4,16 @@ using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
-    public class Bullet : Sprite, ICollideable
+    public class Bullet : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Bullet";
         private const int k_BulletsVelocity = 155;
 
-        public eDirection Direction { get; set; }
         public object Shooter { get; set; }
 
         public Bullet(Game i_Game) : base(k_AssetName, i_Game)
         {
-        }
-
-        public override void Initialize()
-        {
-            float yVelocity = Direction == eDirection.Down ? k_BulletsVelocity : -k_BulletsVelocity;
-            Velocity = new Vector2(0, yVelocity);
-            base.Initialize();
+            Velocity = new Vector2(0, -k_BulletsVelocity);
         }
 
         public override void Update(GameTime i_GameTime)

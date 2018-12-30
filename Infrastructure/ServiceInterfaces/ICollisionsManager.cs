@@ -23,7 +23,7 @@ namespace Infrastructure.ServiceInterfaces
     {
         Rectangle Bounds { get; }
         Vector2 Velocity { get; }
-        Texture2D Texture { get; }
+        Texture2D Texture { get; }        
     }
     // -- end of TODO 07
 

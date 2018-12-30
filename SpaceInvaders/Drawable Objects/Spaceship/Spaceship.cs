@@ -2,18 +2,22 @@
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
+using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace SpaceInvaders
 {
-    public class Spaceship : Sprite, ICollideable, IShooter
+    public class Spaceship : Sprite, ICollidable2D, IShooter
     {
         private const string k_AssetName = @"Sprites\Ship01_32x32";
-        private const int k_FlightVelocity = 120;
+        private const int k_ScorePenaltyForBulletHit = 1100;
+        private const int k_Velocity = 120;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
         private readonly Gun r_Gun;
         private int m_Score;
         public Color BulletsColor { get; } = Color.Red;
+        private IInputManager m_InputManager;
 
         public int Lives { get; set; }
 
@@ -37,6 +41,12 @@ namespace SpaceInvaders
             m_Score = 0;
         }
 
+        public override void Initialize()
+        {
+            m_InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            base.Initialize();
+        }
+
         protected override void InitBounds()
         {
             base.InitBounds();
@@ -58,24 +68,31 @@ namespace SpaceInvaders
 
         public override void Update(GameTime i_GameTime)
         {
+            if (m_InputManager.KeyboardState.IsKeyDown(Keys.Left))
+            {
+                m_Velocity.X = k_Velocity * -1;
+            }
+            else if (m_InputManager.KeyboardState.IsKeyDown(Keys.Right))
+            {
+                m_Velocity.X = k_Velocity;
+            }
+            else
+            {
+                m_Velocity.X = 0;
+            }
+
+            if (m_InputManager.KeyPressed(Keys.Enter) || m_InputManager.ButtonPressed(eInputButtons.Left))
+            {
+                Shoot();
+            }
+
             base.Update(i_GameTime);
+
+            MoveAccordingToMousePositionDelta(m_InputManager.MousePositionDelta);
 
             // Clamp the position between screen boundries:
             float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
             Position = new Vector2(x, Position.Y);
-
-            // Reset the velocity after moving due to MoveLeft or MoveRight
-            Velocity = Vector2.Zero;
-        }
-
-        public void MoveRight()
-        {
-            Velocity = new Vector2(k_FlightVelocity, 0);
-        }
-
-        public void MoveLeft()
-        {
-            Velocity = new Vector2(-k_FlightVelocity, 0);
         }
 
         public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
@@ -87,8 +104,20 @@ namespace SpaceInvaders
         {
             if (r_Gun.NumberOfShotBulletsInScreen < k_MaxBulletsInScreen)
             {
-                r_Gun.Shoot(eDirection.Up);
+                r_Gun.Shoot();
             }
+        }
+
+        public void TakeBulletHit()
+        {
+            Lives--;
+            Score -= k_ScorePenaltyForBulletHit;
+            if(Lives == 0)
+            {
+                this.Kill();
+            }
+
+            SetDefaultPosition();
         }
     }
 }

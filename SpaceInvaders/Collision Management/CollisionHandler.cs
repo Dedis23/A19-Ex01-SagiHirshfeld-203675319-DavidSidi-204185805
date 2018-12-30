@@ -2,31 +2,42 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
-    public class CollisionHandler : GameComponent
+    public class CollisionHandler : GameService, ICollisionHandler
     {
-        private readonly Queue<IKillable> r_KillQueue;
-        private int k_ScorePenaltyForBulletHit = 1100;
+        private readonly Queue<Sprite> r_KillQueue;        
         public event Action EnemyCollidedWithSpaceship;
 
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
-            r_KillQueue = new Queue<IKillable>();
+            r_KillQueue = new Queue<Sprite>();
         }
 
-        public void HandleCollision(ICollideable i_CollideableA, ICollideable i_CollideableB)
+        protected override void RegisterAsService()
         {
-            handleCollisionForPermutation(i_CollideableA, i_CollideableB);
-            handleCollisionForPermutation(i_CollideableB, i_CollideableA);
+            this.Game.Services.AddService(typeof(ICollisionHandler), this);
         }
 
-        private void handleCollisionForPermutation(ICollideable i_CollideableA, ICollideable i_CollideableB)
+        public void HandleCollision(ICollidable i_CollideableA, ICollidable i_CollideableB)
         {
-            if (i_CollideableA is Bullet && i_CollideableB is IKillable)
+            if(i_CollideableA is ICollidable2D && i_CollideableB is ICollidable2D)
             {
-                handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as IKillable);
+                ICollidable2D collidableA = i_CollideableA as ICollidable2D;
+                ICollidable2D collidableB = i_CollideableB as ICollidable2D;
+
+                handleCollisionForPermutation(collidableA, collidableB);
+                handleCollisionForPermutation(collidableB, collidableA);
+            }
+        }
+
+        private void handleCollisionForPermutation(ICollidable2D i_CollideableA, ICollidable2D i_CollideableB)
+        {
+            if (i_CollideableA is Bullet && i_CollideableB is Sprite)
+            {
+                handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as Sprite);
             }
 
             else if (i_CollideableA is Invader && i_CollideableB is Spaceship)
@@ -35,8 +46,8 @@ namespace SpaceInvaders
             }
         }
 
-        private void handleBulletHitsKillable(Bullet i_Bullet, IKillable i_Killable)
-        {            
+        private void handleBulletHitsKillable(Bullet i_Bullet, Sprite i_Killable)
+        {
             if (!r_KillQueue.Contains(i_Bullet) && !r_KillQueue.Contains(i_Killable))
             {
                 if (i_Killable is Bullet)
@@ -58,7 +69,7 @@ namespace SpaceInvaders
 
         private void handleBulletHitsBullet(Bullet i_BulletA, Bullet i_BulletB)
         {
-            if(i_BulletA.Shooter is IEnemy && i_BulletB.Shooter is Spaceship)
+            if (i_BulletA.Shooter is IEnemy && i_BulletB.Shooter is Spaceship)
             {
                 r_KillQueue.Enqueue(i_BulletA);
                 r_KillQueue.Enqueue(i_BulletB);
@@ -70,7 +81,11 @@ namespace SpaceInvaders
             if (i_Bullet.Shooter is Spaceship)
             {
                 r_KillQueue.Enqueue(i_Bullet);
-                r_KillQueue.Enqueue(i_Enemy);
+                if(i_Enemy is Sprite)
+                {
+                    r_KillQueue.Enqueue(i_Enemy as Sprite);
+                }
+                
                 (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
             }
         }
@@ -78,19 +93,7 @@ namespace SpaceInvaders
         private void handleBulletHitsSpaceship(Bullet i_Bullet, Spaceship i_Spaceship)
         {
             r_KillQueue.Enqueue(i_Bullet);
-
-            i_Spaceship.Lives--;
-            i_Spaceship.Score -= k_ScorePenaltyForBulletHit;
-
-            if (i_Spaceship.Lives == 0)
-            {
-                r_KillQueue.Enqueue(i_Spaceship);
-            }
-
-            else
-            {
-                i_Spaceship.SetDefaultPosition();
-            }
+            i_Spaceship.TakeBulletHit();
         }
 
         private void handleEnemyHitsSpaceship(Invader i_Enemy, Spaceship i_Spaceship)
@@ -106,7 +109,7 @@ namespace SpaceInvaders
 
         private void killComponentsInQueue()
         {
-            foreach (IKillable killableComponent in r_KillQueue)
+            foreach (Sprite killableComponent in r_KillQueue)
             {
                 killableComponent.Kill();
             }

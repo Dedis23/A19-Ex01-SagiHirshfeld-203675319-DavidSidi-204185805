@@ -3,6 +3,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Infrastructure.Managers;
+using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel;
 using System;
 
@@ -11,14 +13,15 @@ namespace SpaceInvaders
     public class SpaceInvadersGame : Game
     {
         private readonly GraphicsDeviceManager r_Graphics;
-        private SpriteBatch m_SpriteBatch;
-        private InputManager m_InputManager;
-        private CollisionDetector m_CollisionDetector;
-        private CollisionHandler m_CollisionHandler;
+        private SpriteBatch m_SpriteBatch;        
         private Spaceship m_Spaceship;
         private MothershipSpawner m_MothershipSpawner;
         private InvadersMatrix m_InvadersMatrix;
         private Sprite m_Background;
+
+        private IInputManager m_InputManager;
+        private ICollisionsManager m_CollisionsManager;
+        private CollisionHandler m_CollisionHandler;
 
         public SpaceInvadersGame()
         {
@@ -28,28 +31,22 @@ namespace SpaceInvaders
             this.IsMouseVisible = true;
 
             m_InputManager = new InputManager(this);
-            Components.Add(m_InputManager);
+
+            m_CollisionsManager = new CollisionsManager(this);
 
             m_CollisionHandler = new CollisionHandler(this);
             m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
-            Components.Add(m_CollisionHandler);
-
-            m_CollisionDetector = new CollisionDetector(this);
-            m_CollisionDetector.CollisionDetected += m_CollisionHandler.HandleCollision;
-            Components.Add(m_CollisionDetector);
 
             m_Background = new SpaceBG(this);
 
             m_Spaceship = new Spaceship(this);
-            m_Spaceship.Killed += onSpaceshipKilled;
+            m_Spaceship.SpriteKilled += onSpaceshipKilled;
 
             m_MothershipSpawner = new MothershipSpawner(this);
 
             m_InvadersMatrix = new InvadersMatrix(this);
             m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
             m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
-
-            setupInputBindings();
         }
 
         protected override void Initialize()
@@ -82,6 +79,11 @@ namespace SpaceInvaders
 
         protected override void Update(GameTime gameTime)
         {
+            if( m_InputManager.KeyPressed(Keys.Escape))
+            {
+                Exit();
+            }
+
             base.Update(gameTime);
         }
 
@@ -92,19 +94,6 @@ namespace SpaceInvaders
             m_SpriteBatch.Begin();
             base.Draw(gameTime);
             m_SpriteBatch.End();
-        }
-
-        private void setupInputBindings()
-        {
-            // Keyboard
-            m_InputManager.RegisterKeyboardKeyDownBinding(m_Spaceship.MoveLeft, Keys.Left);
-            m_InputManager.RegisterKeyboardKeyDownBinding(m_Spaceship.MoveRight, Keys.Right);
-            m_InputManager.RegisterKeyboardSinglePressBinding(m_Spaceship.Shoot, Keys.Enter);
-            m_InputManager.RegisterKeyboardKeyDownBinding(Exit, Keys.Escape);
-
-            // Mouse
-            m_InputManager.MouseMoved += m_Spaceship.MoveAccordingToMousePositionDelta;
-            m_InputManager.MouseLeftButtonPressedOnce += m_Spaceship.Shoot;
         }
 
         private void onSpaceshipKilled(object i_Object)
