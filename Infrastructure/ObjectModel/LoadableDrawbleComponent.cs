@@ -98,30 +98,6 @@ namespace Infrastructure.ObjectModel
             InitBounds();   // a call to an abstract method;
         }
 
-        // TODO 02: Show/Hide Bounding box
-#if DEBUG
-        protected bool m_ShowBoundingBox = true;
-#else
-        protected bool m_ShowBoundingBox = false;
-#endif
-
-        public bool ShowBoundingBox
-        {
-            get { return m_ShowBoundingBox; }
-            set { m_ShowBoundingBox = value; }
-        }
-        // -- end of TODO 02
-
         protected abstract void InitBounds();
-
-        // TODO 03: enforce the logic of drawing the bounding box to the derivies:
-        public override void Draw(GameTime gameTime)
-        {
-            DrawBoundingBox();
-            base.Draw(gameTime);
-        }
-
-        protected abstract void DrawBoundingBox();
-        // -- end of TODO 03
     }
 }

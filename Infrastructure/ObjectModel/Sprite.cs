@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
+using System;
 
 namespace Infrastructure.ObjectModel
 {
@@ -185,13 +186,6 @@ namespace Infrastructure.ObjectModel
             base.Draw(gameTime);
         }
 
-        // TODO 04:
-        protected override void DrawBoundingBox()
-        {
-            // not implemented yet
-        }
-        // -- end of TODO 04
-
         // TODO 14: Implement a basic collision detection between two ICollidable2D objects:
         public virtual bool CheckCollision(ICollidable i_Source)
         {
@@ -199,12 +193,58 @@ namespace Infrastructure.ObjectModel
             ICollidable2D source = i_Source as ICollidable2D;
             if (source != null)
             {
-                collided = source.Bounds.Intersects(this.Bounds) || source.Bounds.Contains(this.Bounds);
+                if( source.Bounds.Intersects(this.Bounds) || source.Bounds.Contains(this.Bounds))
+                {
+                    collided = checkPixelCollision(source);
+                }
             }
 
             return collided;
         }
-        // -- end of TODO 14
+
+        // The following method was mostly taken from this tutorial: 
+        // https://www.youtube.com/watch?v=5vKF0zb0PsA - "C# Xna Made Easy Tutorial 27 - Pixel Perfect Collision"
+        private bool checkPixelCollision(ICollidable2D i_Source)
+        {
+            bool collisionDetected = false;
+
+            Texture2D spriteA = this.Texture;
+            Texture2D spriteB = i_Source.Texture;
+
+            // Store the pixel data
+            Color[] colorDataA = new Color[spriteA.Width * spriteA.Height];
+            Color[] colorDataB = new Color[spriteB.Width * spriteB.Height];
+            spriteA.GetData(colorDataA);
+            spriteB.GetData(colorDataB);
+
+            // Calculate the boundaries of the rectangle which is the overlap between i_CollideableA and i_CollideableB
+            // float is used instead of int for numerical capacity
+            int top, bottom, left, right;
+            top = Math.Max(this.Bounds.Top, i_Source.Bounds.Top);
+            bottom = Math.Min(this.Bounds.Bottom, i_Source.Bounds.Bottom);
+            left = Math.Max(this.Bounds.Left, i_Source.Bounds.Left);
+            right = Math.Min(this.Bounds.Right, i_Source.Bounds.Right);
+
+            // Scan the pixels of the rectangle which defines the overlap
+            // and look for a pixel in which both textures are not transparent
+            for (int y = top; y < bottom && !collisionDetected; y++)
+            {
+                for (int x = left; x < right && !collisionDetected; x++)
+                {
+                    int pixelIndexA = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
+                    int pixelIndexB = (y - i_Source.Bounds.Top) * (i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
+
+                    Color pixelOfSpriteA = colorDataA[pixelIndexA];
+                    Color pixelOfSpriteB = colorDataB[pixelIndexB];
+
+                    // Color.A is the color's alpha component which determines opacity
+                    // when a pixel's alpha == 0 that pixel is completely transparent 
+                    collisionDetected = pixelOfSpriteA.A != 0 && pixelOfSpriteB.A != 0;
+                }
+            }
+
+            return collisionDetected;
+        }
 
         // TODO 15: Implement a basic collision reaction between two ICollidable2D objects
         public virtual void Collided(ICollidable i_Collidable)
