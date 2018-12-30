@@ -11,5 +11,12 @@ namespace SpaceInvaders
         public SpaceBG(Game i_Game) : base(k_AssetName, i_Game)
         {            
         }
+
+        protected override void InitBounds()
+        {
+            base.InitBounds();
+
+            this.DrawOrder = int.MinValue;
+        }
     }
 }

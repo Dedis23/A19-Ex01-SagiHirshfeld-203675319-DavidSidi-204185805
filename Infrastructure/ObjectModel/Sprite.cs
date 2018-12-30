@@ -108,14 +108,7 @@ namespace Infrastructure.ObjectModel
         private Rectangle m_GameScreenBounds;
         protected Rectangle GameScreenBounds
         {
-            get { return m_GameScreenBounds; }
-        }
-        
-        public override void Initialize()
-        {
-            base.Initialize();
-
-            m_GameScreenBounds = new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            get { return new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height); }
         }
 
         public bool IsInScreen

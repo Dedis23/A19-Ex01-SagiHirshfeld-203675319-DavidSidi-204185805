@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Infrastructure.ObjectModel;
+using System;
 
 namespace SpaceInvaders
 {
@@ -22,10 +23,6 @@ namespace SpaceInvaders
         public SpaceInvadersGame()
         {
             r_Graphics = new GraphicsDeviceManager(this);
-        }
-
-        protected override void Initialize()
-        {
             Content.RootDirectory = "Content";
             this.Window.Title = "Space Invaders";
             this.IsMouseVisible = true;
@@ -41,19 +38,46 @@ namespace SpaceInvaders
             m_CollisionDetector.CollisionDetected += m_CollisionHandler.HandleCollision;
             Components.Add(m_CollisionDetector);
 
-            loadBackground();
-            loadSpaceship();
-            loadMothershipSpawner();
-            //loadInvaders();  
+            m_Background = new SpaceBG(this);
+
+            m_Spaceship = new Spaceship(this);
+            m_Spaceship.Killed += onSpaceshipKilled;
+
+            m_MothershipSpawner = new MothershipSpawner(this);
+
+            m_InvadersMatrix = new InvadersMatrix(this);
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
+            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
 
             setupInputBindings();
+        }
+
+        protected override void Initialize()
+        {
+            m_SpriteBatch = new SpriteBatch(GraphicsDevice);
+            this.Services.AddService(m_SpriteBatch.GetType(), m_SpriteBatch);
+
             base.Initialize();
         }
 
         protected override void LoadContent()
-        {           
-            // Sagi: Maybe something inits have to move here to make shit work???
+        {
+            fitViewportToBackground();
+            setSpaceshipDefaultPosition(m_Spaceship);
+           
             base.LoadContent();
+        }
+
+        private void setSpaceshipDefaultPosition(Spaceship m_Spaceship)
+        {
+            m_Spaceship.SetDefaultPosition();
+        }
+
+        private void fitViewportToBackground()
+        {
+            r_Graphics.PreferredBackBufferWidth = m_Background.Width;
+            r_Graphics.PreferredBackBufferHeight = m_Background.Height;
+            r_Graphics.ApplyChanges();
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,36 +88,10 @@ namespace SpaceInvaders
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
+
+            m_SpriteBatch.Begin();
             base.Draw(gameTime);
-        }
-
-        private void loadBackground()
-        {
-            m_Background = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.SpaceBG);
-            // Create a new SpriteBatch, which can be used to draw textures.
-            // Adjust the ViewPort to match the size of the background
-            //r_Graphics.PreferredBackBufferWidth = m_Background.Width;
-            //r_Graphics.PreferredBackBufferHeight = m_Background.Height;
-            //r_Graphics.ApplyChanges();
-        }
-
-        private void loadMothershipSpawner()
-        {
-            m_MothershipSpawner = new MothershipSpawner(this);
-        }
-
-        private void loadInvaders()
-        {
-            m_InvadersMatrix = new InvadersMatrix(this);
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
-            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
-            Components.Add(m_InvadersMatrix);
-        }
-        
-        private void loadSpaceship()
-        {
-            m_Spaceship = DrawableObjectsFactory.Create(this, DrawableObjectsFactory.eSpriteType.Spaceship) as Spaceship;
-            m_Spaceship.Killed += onSpaceshipKilled;
+            m_SpriteBatch.End();
         }
 
         private void setupInputBindings()

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
-    public class InvadersMatrix : GameComponent
+    public class InvadersMatrix : RegisteredComponent
     {
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
         private const float k_DistanceBetweenEachInvader = 0.6f;
