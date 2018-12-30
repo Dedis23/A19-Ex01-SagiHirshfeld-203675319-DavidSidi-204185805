@@ -57,7 +57,6 @@
     <Compile Include="Miscellaneous\Gun.cs" />
     <Compile Include="Input Management\InputManager.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />
-    <Compile Include="Miscellaneous\IKillable.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />
     <Compile Include="Miscellaneous\Sprite.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />

@@ -9,16 +9,8 @@ namespace SpaceInvaders
 
         Vector2 Position { get; }
 
-        int Width { get; }
+        Rectangle Bounds { get; }
 
-        int Height { get; }
 
-        int Top { get; }
-
-        int Bottom { get; }
-
-        int Left { get; }
-
-        int Right { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpaceInvaders
+namespace Infrastructure.ObjectModel
 {
     public interface IKillable
     {

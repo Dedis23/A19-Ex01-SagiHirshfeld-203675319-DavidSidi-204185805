@@ -56,9 +56,7 @@ namespace SpaceInvaders
 
         private bool boxedBoundriesAreOverlapping(ICollideable i_CollideableA, ICollideable i_CollideableB)
         {
-            Rectangle rectangleA = new Rectangle(i_CollideableA.Left, i_CollideableA.Top, i_CollideableA.Width, i_CollideableA.Height);
-            Rectangle RectangleB = new Rectangle(i_CollideableB.Left, i_CollideableB.Top, i_CollideableB.Width, i_CollideableB.Height);
-            return rectangleA.Intersects(RectangleB);
+            return i_CollideableA.Bounds.Intersects(i_CollideableB.Bounds);
         }
 
         // The following method was mostly taken from this tutorial: 
@@ -71,18 +69,18 @@ namespace SpaceInvaders
             Texture2D spriteB = i_CollideableB.Texture;
 
             // Store the pixel data
-            Color[] colorDataA = new Color[spriteA.Width * spriteA.Height];
-            Color[] colorDataB = new Color[spriteB.Width * spriteB.Height];
+            Color[] colorDataA = new Color[spriteA.Bounds.Width * spriteA.Height];
+            Color[] colorDataB = new Color[spriteB.Bounds.Width * spriteB.Height];
             spriteA.GetData(colorDataA);
             spriteB.GetData(colorDataB);
 
             // Calculate the boundaries of the rectangle which is the overlap between i_CollideableA and i_CollideableB
             // float is used instead of int for numerical capacity
             int top, bottom, left, right;
-            top = Math.Max(i_CollideableA.Top, i_CollideableB.Top);
-            bottom = Math.Min(i_CollideableA.Bottom, i_CollideableB.Bottom);
-            left = Math.Max(i_CollideableA.Left, i_CollideableB.Left);
-            right = Math.Min(i_CollideableA.Right, i_CollideableB.Right);
+            top = Math.Max(i_CollideableA.Bounds.Top, i_CollideableB.Bounds.Top);
+            bottom = Math.Min(i_CollideableA.Bounds.Bottom, i_CollideableB.Bounds.Bottom);
+            left = Math.Max(i_CollideableA.Bounds.Left, i_CollideableB.Bounds.Left);
+            right = Math.Min(i_CollideableA.Bounds.Right, i_CollideableB.Bounds.Right);
 
             // Scan the pixels of the rectangle which defines the overlap
             // and look for a pixel in which both textures are not transparent
@@ -90,8 +88,8 @@ namespace SpaceInvaders
             {
                 for (int x = left; x < right && !collisionDetected; x++)
                 {
-                    int pixelIndexA = (y - i_CollideableA.Top) * (i_CollideableA.Width) + (x - i_CollideableA.Left);
-                    int pixelIndexB = (y - i_CollideableB.Top) * (i_CollideableB.Width) + (x - i_CollideableB.Left);
+                    int pixelIndexA = (y - i_CollideableA.Bounds.Top) * (i_CollideableA.Bounds.Width) + (x - i_CollideableA.Bounds.Left);
+                    int pixelIndexB = (y - i_CollideableB.Bounds.Top) * (i_CollideableB.Bounds.Width) + (x - i_CollideableB.Bounds.Left);
 
                     Color pixelOfSpriteA = colorDataA[pixelIndexA];
                     Color pixelOfSpriteB = colorDataB[pixelIndexB];

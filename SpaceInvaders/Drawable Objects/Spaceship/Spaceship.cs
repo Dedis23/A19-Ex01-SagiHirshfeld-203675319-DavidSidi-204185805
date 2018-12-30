@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Infrastructure.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
     public class Spaceship : Sprite, ICollideable, IShooter
     {
+        private const string k_AssetName = @"Sprites\Ship01_32x32";
         private const int k_FlightVelocity = 120;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
@@ -27,7 +30,7 @@ namespace SpaceInvaders
             }
         }
 
-        public Spaceship(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
+        public Spaceship(Game i_Game, string i_SourceFileURL) : base(k_AssetName, i_Game)
         {
             r_Gun = new Gun(this);
             Lives = k_StartingLivesCount;
@@ -44,8 +47,7 @@ namespace SpaceInvaders
             // Offset:
             y -= Texture.Height * 1.5f;
 
-            PositionX = x;
-            PositionY = y;
+            Position = new Vector2(x, y);
         }
 
         public override void Update(GameTime i_GameTime)
@@ -53,7 +55,8 @@ namespace SpaceInvaders
             base.Update(i_GameTime);
 
             // Clamp the position between screen boundries:
-            PositionX = MathHelper.Clamp(PositionX, 0, Game.GraphicsDevice.Viewport.Width - Texture.Width);
+            float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
+            Position = new Vector2(x, Position.Y);
 
             // Reset the velocity after moving due to MoveLeft or MoveRight
             Velocity = Vector2.Zero;
@@ -71,7 +74,7 @@ namespace SpaceInvaders
 
         public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
         {
-            PositionX += i_MousePositionDelta.X;
+            Position += i_MousePositionDelta;
         }
 
         public void Shoot()

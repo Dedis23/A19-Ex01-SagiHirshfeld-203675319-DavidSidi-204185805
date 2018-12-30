@@ -6,7 +6,7 @@ using System;
 
 namespace Infrastructure.ObjectModel
 {
-    public class Sprite : LoadableDrawableComponent
+    public class Sprite : LoadableDrawableComponent, IKillable
     {
         private Texture2D m_Texture;
         public Texture2D Texture
@@ -103,7 +103,28 @@ namespace Infrastructure.ObjectModel
 
         public Sprite(string i_AssetName, Game i_Game)
             : base(i_AssetName, i_Game, int.MaxValue)
-        { }
+        { }        
+
+        private Rectangle m_GameScreenBounds;
+        protected Rectangle GameScreenBounds
+        {
+            get { return m_GameScreenBounds; }
+        }
+        
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            m_GameScreenBounds = new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+        }
+
+        public bool IsInScreen
+        {
+            get
+            {
+                return this.Bounds.Intersects(GameScreenBounds);
+            }
+        }
 
         /// <summary>
         /// Default initialization of bounds
@@ -251,6 +272,23 @@ namespace Infrastructure.ObjectModel
         {
             // defualt behavior - change direction:
             this.Velocity *= -1;
+        }
+
+        public event Action<object> Killed;
+        public virtual void Kill()
+        {
+            this.Game.Components.Remove(this);
+
+            if (Killed != null)
+            {
+                Killed.Invoke(this);
+                foreach (Delegate d in Killed.GetInvocationList())
+                {
+                    Killed -= (Action<object>)d;
+                }
+            }
+
+            this.Dispose();
         }
     }
 }

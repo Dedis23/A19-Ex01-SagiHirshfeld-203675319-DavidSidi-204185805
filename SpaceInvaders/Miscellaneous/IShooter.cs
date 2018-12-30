@@ -10,16 +10,7 @@ namespace SpaceInvaders
 
         Color BulletsColor { get; }
 
-        int Width { get; }
+        Rectangle Bounds { get; }
 
-        int Height { get; }
-
-        int Top { get; }
-
-        int Bottom { get; }
-
-        int Left { get; }
-
-        int Right { get; }
     }
 }

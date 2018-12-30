@@ -27,9 +27,8 @@ namespace SpaceInvaders
             Bullet newBullet = DrawableObjectsFactory.Create(r_Shooter.Game, DrawableObjectsFactory.eSpriteType.Bullet) as Bullet;
 
             Vector2 centralizedShootingPosition = getCentralizedShootingPosition(newBullet, i_Direction);
-            newBullet.PositionX = centralizedShootingPosition.X;
-            newBullet.PositionY = centralizedShootingPosition.Y;
-            newBullet.Color = r_Shooter.BulletsColor;
+            newBullet.Position = centralizedShootingPosition;
+            newBullet.TintColor = r_Shooter.BulletsColor;
             newBullet.Direction = i_Direction;
             newBullet.Shooter = r_Shooter;
 
@@ -47,23 +46,23 @@ namespace SpaceInvaders
             switch (i_Direction)
             {
                 case eDirection.Up:
-                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Width) - (0.5f * i_Bullet.Width);
-                    centralizedY = r_Shooter.Top - 1 - i_Bullet.Height;
+                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
+                    centralizedY = r_Shooter.Bounds.Top - 1 - i_Bullet.Height;
                     break;
 
                 case eDirection.Down:
-                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Width) - (0.5f * i_Bullet.Width);
-                    centralizedY = r_Shooter.Bottom + 1;
+                    centralizedX = r_Shooter.Position.X + (0.5f * r_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
+                    centralizedY = r_Shooter.Bounds.Bottom + 1;
                     break;
 
                 case eDirection.Left:
-                    centralizedX = r_Shooter.Left - 1 - i_Bullet.Width;
-                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Height) - (0.5f * i_Bullet.Height);
+                    centralizedX = r_Shooter.Bounds.Left - 1 - i_Bullet.Width;
+                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Bounds.Height) - (0.5f * i_Bullet.Height);
                     break;
 
                 case eDirection.Right:
-                    centralizedX = r_Shooter.Right + 1;
-                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Height) - (0.5f * i_Bullet.Height);
+                    centralizedX = r_Shooter.Bounds.Right + 1;
+                    centralizedY = r_Shooter.Position.Y + (0.5f * r_Shooter.Bounds.Height) - (0.5f * i_Bullet.Height);
                     break;
             }
 

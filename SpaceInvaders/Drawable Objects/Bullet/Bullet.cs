@@ -1,14 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
+using Infrastructure.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
     public class Bullet : Sprite, ICollideable
     {
+        private const string k_AssetName = @"Sprites\Bullet";
         private const int k_BulletsVelocity = 155;
+
         public eDirection Direction { get; set; }
         public object Shooter { get; set; }
 
-        public Bullet(Game i_Game, string i_SourceFileURL) : base(i_Game, i_SourceFileURL)
+        public Bullet(Game i_Game, string i_SourceFileURL) : base(k_AssetName, i_Game)
         {
         }
 
@@ -28,7 +32,5 @@ namespace SpaceInvaders
 
             base.Update(i_GameTime);
         }
-
-
     }
 }
