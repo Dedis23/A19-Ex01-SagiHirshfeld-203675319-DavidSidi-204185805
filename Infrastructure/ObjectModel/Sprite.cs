@@ -103,8 +103,8 @@ namespace Infrastructure.ObjectModel
 
         public Sprite(string i_AssetName, Game i_Game)
             : base(i_AssetName, i_Game, int.MaxValue)
-        { }   
-        
+        { }
+
         protected Rectangle GameScreenBounds
         {
             get { return new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height); }
@@ -124,13 +124,30 @@ namespace Infrastructure.ObjectModel
         /// <remarks>
         /// Derived classes are welcome to override this to implement their specific boudns initialization
         /// </remarks>
+        /// 
+        public float Scale;
+        public float Rotation;
+        public Vector2 PositionOrigin { get; set; }
+        public Vector2 RotationOrigin { get; set; }
         protected override void InitBounds()
         {
             // default initialization of bounds
-            m_Width = m_Texture.Width;
-            m_Height = m_Texture.Height;            
+            SpecificTextureBounds();
+            Scale = 1.0f;
+            RotationOrigin = Vector2.Zero;
         }
-
+        protected virtual void SpecificTextureBounds()
+        {
+            if (m_Texture != null)
+            {
+                m_Width = m_Texture.Width;
+                m_Height = m_Texture.Height;
+            }
+        }
+        public Vector2 DrawingPosition
+        {
+            get { return Position - PositionOrigin + RotationOrigin; }
+        }
 
         private bool m_UseSharedBatch = true;
 
@@ -146,7 +163,7 @@ namespace Infrastructure.ObjectModel
 
         protected override void LoadContent()
         {
-            m_Texture = Game.Content.Load<Texture2D>(m_AssetName);
+            LoadTexture();
 
             if (m_SpriteBatch == null)
             {
@@ -161,6 +178,12 @@ namespace Infrastructure.ObjectModel
             }
 
             base.LoadContent();
+        }
+
+        // this turned into injection point in case derived class want to make a specific type of Load
+        protected virtual void LoadTexture()
+        {
+            m_Texture = Game.Content.Load<Texture2D>(m_AssetName);
         }
 
         /// <summary>
@@ -188,7 +211,7 @@ namespace Infrastructure.ObjectModel
                 m_SpriteBatch.Begin();
             }
 
-            m_SpriteBatch.Draw(m_Texture, m_Position, m_TintColor);
+            SpecificDraw();
 
             if (!m_UseSharedBatch)
             {
@@ -198,6 +221,12 @@ namespace Infrastructure.ObjectModel
             base.Draw(gameTime);
         }
 
+        // this turned into injection point in case derived class want to make a specific draw
+        protected virtual void SpecificDraw()
+        {
+            m_SpriteBatch.Draw(m_Texture, m_Position, m_TintColor);
+        }
+
         // TODO 14: Implement a basic collision detection between two ICollidable2D objects:
         public virtual bool CheckCollision(ICollidable i_Source)
         {
@@ -205,7 +234,7 @@ namespace Infrastructure.ObjectModel
             ICollidable2D source = i_Source as ICollidable2D;
             if (source != null)
             {
-                if( source.Bounds.Intersects(this.Bounds) || source.Bounds.Contains(this.Bounds))
+                if (source.Bounds.Intersects(this.Bounds) || source.Bounds.Contains(this.Bounds))
                 {
                     collided = checkPixelCollision(source);
                 }
@@ -266,23 +295,23 @@ namespace Infrastructure.ObjectModel
             if (this is ICollidable2D)
             {
                 m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;
-            }            
+            }
         }
 
         // TODO 15: Implement a basic collision reaction between two ICollidable2D objects
         public virtual void Collided(ICollidable i_Collidable)
         {
-            if (this is ICollidable  && m_CollisionHandler != null)
+            if (this is ICollidable && m_CollisionHandler != null)
             {
                 m_CollisionHandler.HandleCollision(this as ICollidable, i_Collidable);
             }
         }
 
         public event Action<object> SpriteKilled;
-        public void Kill()        
+        public void Kill()
         {
             SpriteKilled?.Invoke(this);
-            OnKilled();            
+            OnKilled();
         }
 
         protected virtual void OnKilled()
