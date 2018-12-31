@@ -48,10 +48,12 @@
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
     <Compile Include="Drawable Objects\Invaders\Invader.cs" />
+    <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightBlue.cs" />
+    <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightYellow.cs" />
+    <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
-    <Compile Include="Factories\DrawableObjectsFactory.cs" />
     <Compile Include="Miscellaneous\Gun.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />

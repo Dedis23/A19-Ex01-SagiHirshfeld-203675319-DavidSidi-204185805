@@ -59,31 +59,37 @@ namespace SpaceInvaders
             Vector2 currentRowPosition = new Vector2(k_DefaultStartingPositionX, k_DefaultStartingPositionY);
             for (int i = 0; i < k_NumOfRowsWithPinkInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, DrawableObjectsFactory.eSpriteType.InvaderPink));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderPink));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
 
             for (int i = 0; i < k_NumOfRowsWithLightBlueInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, DrawableObjectsFactory.eSpriteType.InvaderLightBlue));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderLightBlue));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
 
             for (int i = 0; i < k_NumOfRowsWithLightYellowInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, DrawableObjectsFactory.eSpriteType.InvaderLightYellow));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderLightYellow));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
         }
 
-        private List<Invader> createARowOfInvaders(Vector2 i_PositionOfFirstInvaderInTheRow, DrawableObjectsFactory.eSpriteType i_InvaderSpriteType)
+        private enum eInvaderPresets
+        {
+            InvaderPink,
+            InvaderLightBlue,
+            InvaderLightYellow
+        }
+
+        private List<Invader> createARowOfInvaders(Vector2 i_PositionOfFirstInvaderInTheRow, eInvaderPresets i_InvaderPreset)
         {
             List<Invader> rowOfInvaders = new List<Invader>();
             Vector2 nextInvaderPosition = i_PositionOfFirstInvaderInTheRow;
-            Invader currentInvader;
             for (int i = 0; i < k_NumOfInvadersInARow; i++)
             {
-                currentInvader = DrawableObjectsFactory.Create(Game, i_InvaderSpriteType) as Invader;                
+                Invader currentInvader = createInvaderBasedOnPreset(i_InvaderPreset);
                 currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
                 nextInvaderPosition.X += k_XGapBetweenInvaders;
                 currentInvader.SpriteKilled += removeInvader;
@@ -91,6 +97,24 @@ namespace SpaceInvaders
             }
 
             return rowOfInvaders;
+        }
+
+        private Invader createInvaderBasedOnPreset(eInvaderPresets i_InvaderPreset)
+        {
+            Invader newInvader = null;
+            switch (i_InvaderPreset)
+            {
+                case eInvaderPresets.InvaderPink:
+                    newInvader = new InvaderPink(this.Game) as Invader;
+                    break;
+                case eInvaderPresets.InvaderLightBlue:
+                    newInvader = new InvaderLightBlue(this.Game) as Invader;
+                    break;
+                case eInvaderPresets.InvaderLightYellow:
+                    newInvader = new InvaderLightYellow(this.Game) as Invader;
+                    break;
+            }
+            return newInvader;
         }
 
         private void handleInvadersMatrixJumps()
@@ -198,7 +222,7 @@ namespace SpaceInvaders
                         {
                             if (rowOfInvaders.Count > 0)
                             {
-                                if (furthestInvaderXPosition < invader.Position.X)
+                                if (furthestInvaderXPosition <= invader.Position.X)
                                 {
                                     furthestInvaderXPosition = invader.Position.X;
                                     furthestInvaderXPositionToReturn = invader;
@@ -232,13 +256,6 @@ namespace SpaceInvaders
             return furthestInvaderXPositionToReturn;
         }
 
-        // DEBUG
-        public string DEBUG()
-        {
-            return m_CurrentfurthestInvaderInXPosition?.Position.X.ToString();
-        }
-        // DEBUG
-        
         private void checkIfInvadersMatrixReachedBottomScreen()
         {
             bool matrixReachedBottomScreen = false;
