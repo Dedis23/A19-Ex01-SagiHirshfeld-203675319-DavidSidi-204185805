@@ -22,6 +22,8 @@ namespace Infrastructure.ObjectModel
             OnDisposed(this, EventArgs.Empty);
         }
 
+        //public event EventHandler<EventArgs>
+        
         protected string m_AssetName;
 
         // used to load the sprite:
