@@ -14,7 +14,7 @@ namespace SpaceInvaders
     {
         private readonly GraphicsDeviceManager r_Graphics;
         private SpriteBatch m_SpriteBatch;        
-        private Spaceship m_Spaceship;
+        private List<Spaceship> m_SpaceshipList;
         private MothershipSpawner m_MothershipSpawner;
         private InvadersMatrix m_InvadersMatrix;
         private Sprite m_Background;
@@ -22,6 +22,9 @@ namespace SpaceInvaders
         private IInputManager m_InputManager;
         private ICollisionsManager m_CollisionsManager;
         private CollisionHandler m_CollisionHandler;
+
+        // Test
+        //SpriteFont m_Arial;
 
         public SpaceInvadersGame()
         {
@@ -39,14 +42,11 @@ namespace SpaceInvaders
 
             m_Background = new SpaceBG(this);
 
-            m_Spaceship = new Spaceship(this);
-            m_Spaceship.SpriteKilled += onSpaceshipKilled;
+            loadSpaceships();
 
             m_MothershipSpawner = new MothershipSpawner(this);
 
-            m_InvadersMatrix = new InvadersMatrix(this);
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
-            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
+            loadInvadersMatrix();
         }
 
         protected override void Initialize()
@@ -60,14 +60,41 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             fitViewportToBackground();
-            setSpaceshipDefaultPosition(m_Spaceship);
+            setSpaceshipsAtDefaultPosition();
+
+            // Test
+            //m_Arial = Content.Load<SpriteFont>(@"Fonts\ComicSansMS");
            
             base.LoadContent();
         }
 
-        private void setSpaceshipDefaultPosition(Spaceship m_Spaceship)
+        private void loadSpaceships()
         {
-            m_Spaceship.SetDefaultPosition();
+            Spaceship newSpaceship;
+            m_SpaceshipList = new List<Spaceship>();
+
+            newSpaceship = new Player1Spaceship(this);
+            newSpaceship.SpriteKilled += onSpaceshipKilled;
+            m_SpaceshipList.Add(newSpaceship);
+
+            newSpaceship = new Player2Spaceship(this);
+            newSpaceship.SpriteKilled += onSpaceshipKilled;
+            m_SpaceshipList.Add(newSpaceship);
+        }
+
+        private void setSpaceshipsAtDefaultPosition()
+        {
+            foreach (Spaceship spaceship in m_SpaceshipList)
+            {
+                spaceship.SetDefaultPosition();
+            }
+        }
+
+        private void loadInvadersMatrix()
+        {
+            m_InvadersMatrix = new InvadersMatrix(this);
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
+            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
         }
 
         private void fitViewportToBackground()
@@ -93,12 +120,28 @@ namespace SpaceInvaders
 
             m_SpriteBatch.Begin();
             base.Draw(gameTime);
+            //m_SpriteBatch.DrawString(m_Arial, "TEXT ON SCREEN", Vector2.Zero, Color.Black);
             m_SpriteBatch.End();
         }
 
         private void onSpaceshipKilled(object i_Object)
         {
-            gameOver();
+            (i_Object as Spaceship).Enabled = false;
+
+            bool allSpaceshipsDisabled = true;
+            foreach (Spaceship spaceship in m_SpaceshipList)
+            {
+                if (spaceship.Enabled)
+                {
+                    allSpaceshipsDisabled = false;
+                    break;
+                }
+            }
+
+            if (allSpaceshipsDisabled)
+            {
+                gameOver();
+            }         
         }
 
         private void onInvadersMatrixReachedBottomScreen()
@@ -118,7 +161,7 @@ namespace SpaceInvaders
 
         private void gameOver()
         {
-            System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_Spaceship.Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+            System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_SpaceshipList[0].Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
             Exit();
         }
     }

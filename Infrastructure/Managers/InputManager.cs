@@ -75,9 +75,10 @@ namespace Infrastructure.Managers
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>        
         public override void Update(GameTime gameTime)
         {
+
             m_PrevKeyboardState = m_KeyboardState;
             m_KeyboardState = Keyboard.GetState();
 
@@ -565,13 +566,27 @@ namespace Infrastructure.Managers
             return checkButtonsState(i_MouseButtons, ButtonState.Released, !v_OneIsEnough);
         }
 
+        private const int k_FramesToWaitBeforeInput = 3;
+        private int m_FramesWaited;
+
         public Vector2 MousePositionDelta
         {
             get
             {
-                return new Vector2(
+                Vector2 posDelta;
+                if (m_FramesWaited >= k_FramesToWaitBeforeInput)
+                {
+                    posDelta = new Vector2(
                     (float)(m_MouseState.X - m_PrevMouseState.X),
                     (float)(m_MouseState.Y - m_PrevMouseState.Y));
+                }
+                else
+                {
+                    posDelta = Vector2.Zero;
+                    m_FramesWaited++;
+                }
+
+                return posDelta;
             }
         }
 

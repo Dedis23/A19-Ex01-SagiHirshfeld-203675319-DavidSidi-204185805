@@ -7,9 +7,8 @@ using System;
 
 namespace SpaceInvaders
 {
-    public class Spaceship : Sprite, ICollidable2D, IShooter
+    public abstract class Spaceship : Sprite, ICollidable2D, IShooter
     {
-        private const string k_AssetName = @"Sprites\Ship01_32x32";
         private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_Velocity = 120;
         private const int k_MaxBulletsInScreen = 3;
@@ -17,7 +16,7 @@ namespace SpaceInvaders
         private readonly Gun r_Gun;
         private int m_Score;
         public Color BulletsColor { get; } = Color.Red;
-        private IInputManager m_InputManager;
+        protected IInputManager m_InputManager;
 
         public int Lives { get; set; }
 
@@ -34,7 +33,7 @@ namespace SpaceInvaders
             }
         }
 
-        public Spaceship(Game i_Game) : base(k_AssetName, i_Game)
+        public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
@@ -68,11 +67,22 @@ namespace SpaceInvaders
 
         public override void Update(GameTime i_GameTime)
         {
-            if (m_InputManager.KeyboardState.IsKeyDown(Keys.Left))
+            base.Update(i_GameTime);
+
+            TakeInput();
+
+            // Clamp the position between screen boundries:
+            float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
+            Position = new Vector2(x, Position.Y);
+        }
+
+        protected virtual void TakeInput()
+        {
+            if (MoveLeftDetected())
             {
                 m_Velocity.X = k_Velocity * -1;
             }
-            else if (m_InputManager.KeyboardState.IsKeyDown(Keys.Right))
+            else if (MoveRightDetected())
             {
                 m_Velocity.X = k_Velocity;
             }
@@ -81,26 +91,27 @@ namespace SpaceInvaders
                 m_Velocity.X = 0;
             }
 
-            if (m_InputManager.KeyPressed(Keys.Enter) || m_InputManager.ButtonPressed(eInputButtons.Left))
+            if (ShootDetected())
             {
                 Shoot();
             }
-
-            base.Update(i_GameTime);
-
-            MoveAccordingToMousePositionDelta(m_InputManager.MousePositionDelta);
-
-            // Clamp the position between screen boundries:
-            float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
-            Position = new Vector2(x, Position.Y);
         }
 
-        public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
+        // Injection points that are meant to be overriden by inheritors
+        protected virtual bool MoveLeftDetected()
         {
-            Position += new Vector2(i_MousePositionDelta.X, 0);
+            return false;
+        }
+        protected virtual bool MoveRightDetected()
+        {
+            return false;
+        }
+        protected virtual bool ShootDetected()
+        {
+            return false;
         }
 
-        public void Shoot()
+        private void Shoot()
         {
             r_Gun.Shoot();
         }

@@ -8,6 +8,5 @@ namespace SpaceInvaders
         Vector2 Position { get; }
         Color BulletsColor { get; }
         Rectangle Bounds { get; }
-        void Shoot();
     }
 }
