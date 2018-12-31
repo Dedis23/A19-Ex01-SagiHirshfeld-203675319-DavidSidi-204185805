@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Managers\AnimationManager.cs" />
     <Compile Include="Managers\CollisionsManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="ObjectModel\GameService.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="ObjectModel\RegisteredComponent.cs" />
     <Compile Include="ObjectModel\Sprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceInterfaces\IAnimationManager.cs" />
     <Compile Include="ServiceInterfaces\ICollisionHandler.cs" />
     <Compile Include="ServiceInterfaces\ICollisionsManager.cs" />
     <Compile Include="ServiceInterfaces\IInputManager.cs" />

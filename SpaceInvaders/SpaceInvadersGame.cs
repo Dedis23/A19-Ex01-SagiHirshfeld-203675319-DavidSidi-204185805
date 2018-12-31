@@ -22,6 +22,7 @@ namespace SpaceInvaders
         private IInputManager m_InputManager;
         private ICollisionsManager m_CollisionsManager;
         private CollisionHandler m_CollisionHandler;
+        private AnimationManager m_AnimationManager;
 
         public SpaceInvadersGame()
         {
@@ -36,6 +37,8 @@ namespace SpaceInvaders
 
             m_CollisionHandler = new CollisionHandler(this);
             m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
+
+            m_AnimationManager = new AnimationManager(this);
 
             m_Background = new SpaceBG(this);
 

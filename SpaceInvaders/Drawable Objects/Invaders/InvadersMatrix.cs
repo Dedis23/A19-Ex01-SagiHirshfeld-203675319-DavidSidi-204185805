@@ -10,16 +10,15 @@ namespace SpaceInvaders
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
         private const float k_DistanceBetweenEachInvader = 0.6f;
         private const float k_DefaultStartingPositionX = 0, k_DefaultStartingPositionY = 96;
-        private const int k_DefaultInvaderWidth = 32, k_DefaultInvaderHeight = 32;
         private const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
         private const float k_JumpDistanceModifier = 0.5f;
         private const float k_InvadersReachedEdgeAccelerator = 0.92f;
         private const float k_FourInvadersDefeatedAccelerator = 0.96f;
         private const float k_ChanceForASingleInvaderToShoot = 5;
         private const float k_TimeBetweenRollingForShootsInSeconds = 2;
-        private const float k_XGapBetweenInvaders = k_DefaultInvaderWidth + (k_DefaultInvaderWidth * k_DistanceBetweenEachInvader);
-        private const float k_YGapBetweenInvaders = k_DefaultInvaderHeight + (k_DefaultInvaderHeight * k_DistanceBetweenEachInvader);
-        private const float k_DefaultJumpDistance = k_JumpDistanceModifier * k_DefaultInvaderWidth;
+        private const float k_XGapBetweenInvaders = Invader.k_DefaultInvaderWidth + (Invader.k_DefaultInvaderWidth * k_DistanceBetweenEachInvader);
+        private const float k_YGapBetweenInvaders = Invader.k_DefaultInvaderHeight + (Invader.k_DefaultInvaderHeight * k_DistanceBetweenEachInvader);
+        private const float k_DefaultJumpDistance = k_JumpDistanceModifier * Invader.k_DefaultInvaderWidth;
         private readonly Random r_RandomGenerator;
         private readonly List<List<Invader>> r_InvadersMatrix;
         private Invader m_CurrentfurthestInvaderInXPosition;
@@ -152,7 +151,7 @@ namespace SpaceInvaders
             switch (m_JumpDirection)
             {
                 case 1.0f:
-                    amountToJump = Math.Min(k_DefaultJumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - k_DefaultInvaderWidth);
+                    amountToJump = Math.Min(k_DefaultJumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - Invader.k_DefaultInvaderWidth);
                     break;
 
                 case -1.0f:
@@ -176,7 +175,7 @@ namespace SpaceInvaders
             switch (m_JumpDirection)
             {
                 case 1.0f:
-                    invadersOnEdge = furthestInvaderXPosition + k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width;
+                    invadersOnEdge = furthestInvaderXPosition + Invader.k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width;
                     break;
 
                 case -1.0f:
@@ -263,7 +262,7 @@ namespace SpaceInvaders
             {
                 foreach (Invader invader in rowOfInvaders)
                 {
-                    if (invader.Position.Y + k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
+                    if (invader.Position.Y + Invader.k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
                     {
                         matrixReachedBottomScreen = true;
                     }

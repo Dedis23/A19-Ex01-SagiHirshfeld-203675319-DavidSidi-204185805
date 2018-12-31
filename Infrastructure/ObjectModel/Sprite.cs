@@ -125,15 +125,16 @@ namespace Infrastructure.ObjectModel
         /// Derived classes are welcome to override this to implement their specific boudns initialization
         /// </remarks>
         /// 
-        public float Scale;
-        public float Rotation;
-        public Vector2 PositionOrigin { get; set; }
-        public Vector2 RotationOrigin { get; set; }
+        protected float Scale { get; set; }
+        protected float Rotation { get; set; }
+        protected Vector2 PositionOrigin { get; set; }
+        protected Vector2 RotationOrigin { get; set; }
         protected override void InitBounds()
         {
             // default initialization of bounds
             SpecificTextureBounds();
             Scale = 1.0f;
+            PositionOrigin = Vector2.Zero;
             RotationOrigin = Vector2.Zero;
         }
         protected virtual void SpecificTextureBounds()
@@ -224,7 +225,7 @@ namespace Infrastructure.ObjectModel
         // this turned into injection point in case derived class want to make a specific draw
         protected virtual void SpecificDraw()
         {
-            m_SpriteBatch.Draw(m_Texture, m_Position, m_TintColor);
+            m_SpriteBatch.Draw(m_Texture, DrawingPosition, m_TintColor);
         }
 
         // TODO 14: Implement a basic collision detection between two ICollidable2D objects:
@@ -295,6 +296,12 @@ namespace Infrastructure.ObjectModel
             if (this is ICollidable2D)
             {
                 m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;
+            }
+
+            if (this is IAnimated)
+            {
+                IAnimationManager animationManager = this.Game.Services.GetService(typeof(IAnimationManager)) as IAnimationManager;
+                animationManager.AddObjectToMonitor(this as IAnimated);
             }
         }
 

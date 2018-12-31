@@ -5,13 +5,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public class Invader : Sprite, ICollidable2D, IShooter, IEnemy
+    public class Invader : Sprite, ICollidable2D, IShooter, IEnemy, ICellAnimated
     {
         private const string k_InvadersSpriteSheet = @"Sprites\Enemies";
+        public const int k_DefaultInvaderWidth = 32, k_DefaultInvaderHeight = 32;
 
         private readonly Gun r_Gun;
         public Color BulletsColor { get; } = Color.Blue;
         public int PointsValue { get; set; }
+        public float FrameTime { get; set; } = 0.5f;
+        public int FrameIndex { get; set; }
+        public int NumOfFrames { get; set; } = 2;
+        public Rectangle SourceRectangle { get; set; }
+
         private static Texture2D s_SharedTexture;
 
         public Invader(Game i_Game, Color i_Tint, int i_PointsValue) : base(k_InvadersSpriteSheet, i_Game)
@@ -38,13 +44,25 @@ namespace SpaceInvaders
 
         protected override void SpecificTextureBounds()
         {
-            m_Width = 32;
-            m_Height = 32;
+            m_Width = k_DefaultInvaderWidth;
+            m_Height = k_DefaultInvaderHeight;
         }
 
+        // This is temp for testing the spritesheet cutting
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            FrameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (FrameTime >= 0.5)
+            {
+                FrameIndex++;
+                FrameIndex %= 2;
+                FrameTime -= 0.5f;
+            }
+        }
         protected override void SpecificDraw()
         {
-            m_SpriteBatch.Draw(Texture, DrawingPosition, new Rectangle(0, 0, Width, Height), TintColor, Rotation, RotationOrigin, Scale, SpriteEffects.None, 0);
+            m_SpriteBatch.Draw(Texture, DrawingPosition, new Rectangle(FrameIndex * 32, 0, Width, Height), TintColor, Rotation, RotationOrigin, Scale, SpriteEffects.None, 0);
         }
     }
 }
