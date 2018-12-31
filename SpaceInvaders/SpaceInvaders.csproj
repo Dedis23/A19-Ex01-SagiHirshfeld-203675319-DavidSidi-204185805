@@ -47,14 +47,17 @@
     </Compile>
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
+    <Compile Include="Drawable Objects\Bullet\BulletsFactory.cs" />
     <Compile Include="Drawable Objects\Invaders\Invader.cs" />
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightBlue.cs" />
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightYellow.cs" />
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
+    <Compile Include="Drawable Objects\Spaceship\Player1Spaceship.cs" />
+    <Compile Include="Drawable Objects\Spaceship\Player2Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
-    <Compile Include="Miscellaneous\Gun.cs" />
+    <Compile Include="Drawable Objects\Bullet\Gun.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
@@ -86,6 +89,7 @@
       <Name>Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

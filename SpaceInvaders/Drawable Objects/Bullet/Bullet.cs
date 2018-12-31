@@ -7,13 +7,12 @@ namespace SpaceInvaders
     public class Bullet : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Bullet";
-        private const int k_BulletsVelocity = 155;
+        public static Vector2 FlyingVelocity { get; } = new Vector2(0, 155);
 
         public object Shooter { get; set; }
 
         public Bullet(Game i_Game) : base(k_AssetName, i_Game)
         {
-            Velocity = new Vector2(0, -k_BulletsVelocity);
         }
 
         public override void Update(GameTime i_GameTime)
@@ -24,6 +23,12 @@ namespace SpaceInvaders
             }
 
             base.Update(i_GameTime);
+        }
+
+        protected override void OnKilled()
+        {
+            this.Visible = false;
+            this.Enabled = false;
         }
     }
 }
