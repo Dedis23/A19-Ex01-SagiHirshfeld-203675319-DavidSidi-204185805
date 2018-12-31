@@ -8,6 +8,9 @@ namespace SpaceInvaders
     public class Invader : Sprite, ICollidable2D, IShooter, IEnemy, ICellAnimated
     {
         private const string k_InvadersSpriteSheet = @"Sprites\Enemies";
+        public const int k_DefaultInvaderWidth = 32;
+        public const int k_DefaultInvaderHeight = 32;
+        private const int k_MaxBulletsInScreen = 1;
 
         private readonly Gun r_Gun;
         public Color BulletsColor { get; } = Color.Blue;
