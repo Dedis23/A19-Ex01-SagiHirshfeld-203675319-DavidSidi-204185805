@@ -10,10 +10,13 @@ namespace SpaceInvaders
     {
         private readonly Queue<Sprite> r_KillQueue;        
         public event Action EnemyCollidedWithSpaceship;
+        private readonly Random r_RandomGenerator;
+        private const int k_ChanceToDestroyEnemyBullet = 50;
 
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
             r_KillQueue = new Queue<Sprite>();
+            r_RandomGenerator = new Random((int)DateTime.Now.Ticks);
         }
 
         protected override void RegisterAsService()
@@ -71,8 +74,12 @@ namespace SpaceInvaders
         {
             if (i_BulletA.Shooter is IEnemy && i_BulletB.Shooter is Spaceship)
             {
-                r_KillQueue.Enqueue(i_BulletA);
                 r_KillQueue.Enqueue(i_BulletB);
+
+                if(r_RandomGenerator.Next(1, 100) <= k_ChanceToDestroyEnemyBullet)
+                {
+                    r_KillQueue.Enqueue(i_BulletA);
+                }
             }
         }
 

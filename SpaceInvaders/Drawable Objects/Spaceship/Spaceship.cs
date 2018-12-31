@@ -36,7 +36,7 @@ namespace SpaceInvaders
 
         public Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
-            r_Gun = new Gun(this);
+            r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
             m_Score = 0;
         }
@@ -102,10 +102,7 @@ namespace SpaceInvaders
 
         public void Shoot()
         {
-            if (r_Gun.NumberOfShotBulletsInScreen < k_MaxBulletsInScreen)
-            {
-                r_Gun.Shoot();
-            }
+            r_Gun.Shoot();
         }
 
         public void TakeBulletHit()
