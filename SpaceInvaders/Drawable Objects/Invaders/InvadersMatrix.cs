@@ -300,18 +300,6 @@ namespace SpaceInvaders
             m_KilledInvadersList.Add(i_Invader as Invader);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            //foreach (Invader invader in m_KilledInvadersList)
-            //{
-            //    removeInvader(invader);
-            //}
-
-            //m_KilledInvadersList.Clear();
-        }
-
         private void removeInvader(object i_Invader)
         {
             Invader invader = i_Invader as Invader;

@@ -145,6 +145,7 @@ namespace Infrastructure.ObjectModel
                 m_Height = m_Texture.Height;
             }
         }
+
         public Vector2 DrawingPosition
         {
             get { return Position - PositionOrigin + RotationOrigin; }
@@ -318,10 +319,10 @@ namespace Infrastructure.ObjectModel
         public void Kill()
         {
             SpriteKilled?.Invoke(this);
-            OnKilled();
+            KilledInjectionPoint();
         }
 
-        protected virtual void OnKilled()
+        protected virtual void KilledInjectionPoint()
         {
             this.Game.Components.Remove(this);
             if (SpriteKilled != null)

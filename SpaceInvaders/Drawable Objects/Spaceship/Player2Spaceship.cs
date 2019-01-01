@@ -7,23 +7,26 @@ namespace SpaceInvaders
     public class Player2Spaceship : Spaceship
     {
         private const string k_AssetName = @"Sprites\Ship02_32x32";
+        public override Color ScoreColor { get; } = Color.Green;
+        public override string Name { get; set; } = "P2";
+
         public Player2Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
 
         protected override bool MoveLeftDetected()
         {
-            return m_InputManager.KeyboardState.IsKeyDown(Keys.A);
+            return InputManager.KeyboardState.IsKeyDown(Keys.A);
         }
 
         protected override bool MoveRightDetected()
         {
-            return m_InputManager.KeyboardState.IsKeyDown(Keys.D);
+            return InputManager.KeyboardState.IsKeyDown(Keys.D);
         }
 
         protected override bool ShootDetected()
         {
-            return m_InputManager.KeyPressed(Keys.W);
+            return InputManager.KeyPressed(Keys.W);
         }
     }
 }

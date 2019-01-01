@@ -25,7 +25,7 @@ namespace SpaceInvaders
             base.Update(i_GameTime);
         }
 
-        protected override void OnKilled()
+        protected override void KilledInjectionPoint()
         {
             this.Visible = false;
             this.Enabled = false;

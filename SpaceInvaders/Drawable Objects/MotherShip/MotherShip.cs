@@ -51,7 +51,7 @@ namespace SpaceInvaders
             this.Velocity = new Vector2(k_MotherShipVelocity, 0);
         }
 
-        protected override void OnKilled()
+        protected override void KilledInjectionPoint()
         {
             this.Visible = false;
             this.Velocity = Vector2.Zero;

@@ -7,19 +7,20 @@ using System;
 
 namespace SpaceInvaders
 {
-    public abstract class Spaceship : Sprite, ICollidable2D, IShooter
-    {
+    public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
+    {        
         private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_Velocity = 120;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
+        private const float k_LivesDrawingGapModifier = 0.7f;
+        private const float k_LivesDrawingScale = 0.5f;
+        private const float k_LivesDrawingOpacity = 0.5f;
+        private static int s_SpaceshipsCounter;
+        private readonly int r_SpaceshipIndex;
         private readonly Gun r_Gun;
+
         private int m_Score;
-        public Color BulletsColor { get; } = Color.Red;
-        protected IInputManager m_InputManager;
-
-        public int Lives { get; set; }
-
         public int Score
         {
             get
@@ -33,18 +34,26 @@ namespace SpaceInvaders
             }
         }
 
+        public Color BulletsColor { get; } = Color.Red;
+        protected IInputManager InputManager { get; private set; }
+        public int Lives { get; set; }
+        public abstract Color ScoreColor { get; }
+        public abstract String Name { get; set; }
+
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
             m_Score = 0;
+            r_SpaceshipIndex = s_SpaceshipsCounter;
+            s_SpaceshipsCounter++;
         }
 
         public override void Initialize()
         {
-            m_InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             base.Initialize();
-        }
+        }        
 
         protected override void InitBounds()
         {
@@ -102,10 +111,12 @@ namespace SpaceInvaders
         {
             return false;
         }
+
         protected virtual bool MoveRightDetected()
         {
             return false;
         }
+
         protected virtual bool ShootDetected()
         {
             return false;
@@ -127,5 +138,50 @@ namespace SpaceInvaders
 
             SetDefaultPosition();
         }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            drawLives();
+        }
+
+        private void drawLives()
+        {
+            Vector2 currentPosition = LivesDrawingStartingPosition;
+            Color livesDrawingColor = LivesDrawingColor;
+
+            for (int i = 0; i < Lives; i++)
+            {
+                m_SpriteBatch.Draw(Texture, currentPosition, null, livesDrawingColor, Rotation, PositionOrigin, k_LivesDrawingScale, SpriteEffects.None, 0);
+                currentPosition.X += LivesDrawingOffset.X;
+            }
+        }
+
+        // Injection points for modifying the drawing of the lives
+        protected virtual Vector2 LivesDrawingStartingPosition
+        {
+            get
+            {
+                return new Vector2(Game.GraphicsDevice.Viewport.Width + LivesDrawingOffset.X, LivesDrawingOffset.Y * (0.5f) + r_SpaceshipIndex * LivesDrawingOffset.Y);
+            }
+        }
+
+        protected virtual Color LivesDrawingColor
+        {
+            get
+            {
+                return new Color(TintColor, k_LivesDrawingOpacity);
+            }
+        }
+
+        protected virtual Vector2 LivesDrawingOffset
+        {
+            get
+            {
+                return new Vector2(-k_LivesDrawingGapModifier * this.Width, k_LivesDrawingGapModifier * this.Height);
+            }
+        }
+
+
     }
 }

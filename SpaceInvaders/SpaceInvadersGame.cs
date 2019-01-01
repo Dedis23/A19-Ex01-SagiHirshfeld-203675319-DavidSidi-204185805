@@ -7,67 +7,40 @@ using Infrastructure.Managers;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel;
 using System;
+using System.Text;
 
 namespace SpaceInvaders
 {
-    public class SpaceInvadersGame : Game
-    {
-        private readonly GraphicsDeviceManager r_Graphics;
-        private SpriteBatch m_SpriteBatch;        
+    public class SpaceInvadersGame : Game2D
+    {      
         private List<Spaceship> m_SpaceshipList;
         private MothershipSpawner m_MothershipSpawner;
         private InvadersMatrix m_InvadersMatrix;
         private Sprite m_Background;
-
-        private IInputManager m_InputManager;
-        private ICollisionsManager m_CollisionsManager;
         private CollisionHandler m_CollisionHandler;
-        private AnimationManager m_AnimationManager;
-
-        // Test
-        //SpriteFont m_Arial;
+        private ScorePrinter m_ScorePrinter;
 
         public SpaceInvadersGame()
         {
-            r_Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             this.Window.Title = "Space Invaders";
             this.IsMouseVisible = true;
 
-            m_InputManager = new InputManager(this);
-
-            m_CollisionsManager = new CollisionsManager(this);
-
             m_CollisionHandler = new CollisionHandler(this);
             m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
 
-            m_AnimationManager = new AnimationManager(this);
-
             m_Background = new SpaceBG(this);
-
-            loadSpaceships();
-
             m_MothershipSpawner = new MothershipSpawner(this);
-
+            loadSpaceships();
             loadInvadersMatrix();
-        }
-
-        protected override void Initialize()
-        {
-            m_SpriteBatch = new SpriteBatch(GraphicsDevice);
-            this.Services.AddService(m_SpriteBatch.GetType(), m_SpriteBatch);
-
-            base.Initialize();
+            
+            m_ScorePrinter = new ScorePrinter(this, m_SpaceshipList.Cast<IPlayer>());
         }
 
         protected override void LoadContent()
         {
             fitViewportToBackground();
-            setSpaceshipsAtDefaultPosition();
-
-            // Test
-            //m_Arial = Content.Load<SpriteFont>(@"Fonts\ComicSansMS");
-           
+            setSpaceshipsAtDefaultPosition();            
             base.LoadContent();
         }
 
@@ -109,22 +82,17 @@ namespace SpaceInvaders
 
         protected override void Update(GameTime gameTime)
         {
-            if( m_InputManager.KeyPressed(Keys.Escape))
+            base.Update(gameTime);
+
+            if (m_InputManager.KeyPressed(Keys.Escape))
             {
                 Exit();
             }
-
-            base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        protected override void DrawInjectionPoint()
         {
-            GraphicsDevice.Clear(Color.White);
-
-            m_SpriteBatch.Begin();
-            base.Draw(gameTime);
-            //m_SpriteBatch.DrawString(m_Arial, "TEXT ON SCREEN", Vector2.Zero, Color.Black);
-            m_SpriteBatch.End();
+            m_ScorePrinter.DrawScore(m_SpriteBatch);
         }
 
         private void onSpaceshipKilled(object i_Object)
@@ -164,7 +132,7 @@ namespace SpaceInvaders
 
         private void gameOver()
         {
-            System.Windows.Forms.MessageBox.Show("GG! Your score is " + m_SpaceshipList[0].Score.ToString(), "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+            m_ScorePrinter.ShowGameOverWindow();            
             Exit();
         }
     }

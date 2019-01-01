@@ -41,6 +41,7 @@ namespace SpaceInvaders
             {
                 s_SharedTexture = Game.Content.Load<Texture2D>(m_AssetName);
             }
+
             Texture = s_SharedTexture;
         }
 
