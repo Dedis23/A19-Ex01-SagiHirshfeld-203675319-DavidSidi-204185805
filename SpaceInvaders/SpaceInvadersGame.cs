@@ -75,8 +75,8 @@ namespace SpaceInvaders
 
         private void fitViewportToBackground()
         {
-            r_Graphics.PreferredBackBufferWidth = m_Background.Width;
-            r_Graphics.PreferredBackBufferHeight = m_Background.Height;
+            r_Graphics.PreferredBackBufferWidth = (int)m_Background.Width;
+            r_Graphics.PreferredBackBufferHeight = (int)m_Background.Height;
             r_Graphics.ApplyChanges();
         }
 

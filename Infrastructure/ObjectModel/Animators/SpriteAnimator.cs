@@ -30,7 +30,7 @@ namespace Infrastructure.ObjectModel.Animators
 
             if (Finished != null)
             {
-                Finished(this, EventArgs.Empty);
+                Finished.Invoke(this, EventArgs.Empty);
             }
         }
 

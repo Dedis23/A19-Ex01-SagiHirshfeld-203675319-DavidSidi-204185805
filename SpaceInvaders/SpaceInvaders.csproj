@@ -54,8 +54,8 @@
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
-    <Compile Include="Drawable Objects\Spaceship\Player1Spaceship.cs" />
-    <Compile Include="Drawable Objects\Spaceship\Player2Spaceship.cs" />
+    <Compile Include="Drawable Objects\Spaceship\Presets\Player1Spaceship.cs" />
+    <Compile Include="Drawable Objects\Spaceship\Presets\Player2Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Drawable Objects\Bullet\Gun.cs" />
     <Compile Include="Miscellaneous\IEnemy.cs" />

@@ -12,7 +12,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
         private int m_CurrCellIdx = 0;
         private readonly int r_NumOfCells = 1;
 
-        // CTORs
+        public Action FinishedCellAnimationCycle;
+
         public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength)
             : base("CelAnimation", i_AnimationLength)
         {
@@ -21,6 +22,12 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
             this.r_NumOfCells = i_NumOfCells;
 
             m_Loop = i_AnimationLength == TimeSpan.Zero;
+        }
+
+        public TimeSpan CellTime
+        {
+            get { return m_CellTime; }
+            set { m_CellTime = value; }
         }
 
         private void goToNextFrame()
@@ -34,9 +41,10 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
                 }
                 else
                 {
-                    m_CurrCellIdx = r_NumOfCells - 1; /// lets stop at the last frame
+                    m_CurrCellIdx = r_NumOfCells - 1;
                     this.IsFinished = true;
                 }
+                FinishedCellAnimationCycle?.Invoke();
             }
         }
 
@@ -52,7 +60,6 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
                 m_TimeLeftForCell -= i_GameTime.ElapsedGameTime;
                 if (m_TimeLeftForCell.TotalSeconds <= 0)
                 {
-                    /// we have elapsed, so blink
                     goToNextFrame();
                     m_TimeLeftForCell = m_CellTime;
                 }

@@ -29,37 +29,21 @@ namespace Infrastructure.ObjectModel
                 return new Rectangle(
                     (int)m_Position.X,
                     (int)m_Position.Y,
-                    m_Width,
-                    m_Height);
+                    (int)Width,
+                    (int)Height);
             }
         }
 
-        protected int m_Width;
-        public int Width
+        public float Width
         {
-            get { return m_Width; }
-            set
-            {
-                if (m_Width != value)
-                {
-                    m_Width = value;
-                    OnSizeChanged();
-                }
-            }
+            get { return m_WidthBeforeScale * m_Scales.X; }
+            set { m_WidthBeforeScale = value / m_Scales.X; }
         }
 
-        protected int m_Height;
-        public int Height
+        public float Height
         {
-            get { return m_Height; }
-            set
-            {
-                if (m_Height != value)
-                {
-                    m_Height = value;
-                    OnSizeChanged();
-                }
-            }
+            get { return m_HeightBeforeScale * m_Scales.Y; }
+            set { m_HeightBeforeScale = value / m_Scales.Y; }
         }
 
         protected Vector2 m_Position;
@@ -222,8 +206,8 @@ namespace Infrastructure.ObjectModel
         {
             if (m_Texture != null)
             {
-                m_Width = m_Texture.Width;
-                m_Height = m_Texture.Height;
+                m_WidthBeforeScale = m_Texture.Width;
+                m_HeightBeforeScale = m_Texture.Height;
             }
         }
 

@@ -10,7 +10,6 @@ namespace SpaceInvaders
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
         private const float k_DistanceBetweenEachInvader = 0.6f;
         private const float k_DefaultStartingPositionX = 0, k_DefaultStartingPositionY = 96;
-        private const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
         private const float k_JumpDistanceModifier = 0.5f;
         private const float k_InvadersReachedEdgeAccelerator = 0.92f;
         private const float k_FourInvadersDefeatedAccelerator = 0.96f;
@@ -44,7 +43,7 @@ namespace SpaceInvaders
         private void initializeTimers()
         {
             m_TimerForJumps = new Timer(this.Game);
-            m_TimerForJumps.Interval = k_DefaultDelayBetweenJumpsInSeconds;
+            m_TimerForJumps.Interval = Invader.k_DefaultDelayBetweenJumpsInSeconds;
             m_TimerForJumps.Notify += handleInvadersMatrixJumps;
             m_TimerForJumps.Activate();
             m_TimerForInvaderShooting = new Timer(this.Game);
@@ -104,13 +103,13 @@ namespace SpaceInvaders
             switch (i_InvaderPreset)
             {
                 case eInvaderPresets.InvaderPink:
-                    newInvader = new InvaderPink(this.Game) as Invader;
+                    newInvader = new InvaderPink(this.Game, 0) as Invader;
                     break;
                 case eInvaderPresets.InvaderLightBlue:
-                    newInvader = new InvaderLightBlue(this.Game) as Invader;
+                    newInvader = new InvaderLightBlue(this.Game, 2) as Invader;
                     break;
                 case eInvaderPresets.InvaderLightYellow:
-                    newInvader = new InvaderLightYellow(this.Game) as Invader;
+                    newInvader = new InvaderLightYellow(this.Game, 4) as Invader;
                     break;
             }
             return newInvader;
@@ -277,6 +276,13 @@ namespace SpaceInvaders
 
         private void decreaseDelayBetweenJumps(float i_AcceleratorModifier)
         {
+            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+            {
+                foreach (Invader invader in rowOfInvaders)
+                {
+                    invader.DelayBetweenJumpsInSeconds *= i_AcceleratorModifier;
+                }
+            }
             m_TimerForJumps.Interval *= i_AcceleratorModifier;
         }
 
