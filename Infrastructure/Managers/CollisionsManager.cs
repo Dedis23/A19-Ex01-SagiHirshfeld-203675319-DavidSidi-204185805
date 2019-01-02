@@ -88,8 +88,15 @@ namespace Infrastructure.Managers
                 // Informing i_Source and all the collided targets about the collision:
                 foreach (ICollidable target in collidedComponents)
                 {
-                    target.Collided(i_Source);
-                    i_Source.Collided(target);
+                    if(!i_Source.Visible)
+                    {
+                        break;
+                    }
+                    else if (target.Visible)
+                    {
+                        target.Collided(i_Source);
+                        i_Source.Collided(target);
+                    }
                 }
             }
         }
