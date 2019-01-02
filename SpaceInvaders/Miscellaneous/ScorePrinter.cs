@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
-    public class ScorePrinter : DrawableGameComponent
+    public class ScorePrinter : RegisteredComponent
     {
         private const string k_FontAssetName = @"Fonts\ComicSansMS";
         private SpriteFont m_Font;
@@ -17,13 +18,12 @@ namespace SpaceInvaders
         public ScorePrinter(Game i_Game, IEnumerable<IPlayer> i_Players) : base(i_Game)
         {
             r_Players = i_Players;
-            i_Game.Components.Add(this);
         }
 
-        protected override void LoadContent()
+        public override void Initialize()
         {
+            base.Initialize();
             m_Font = Game.Content.Load<SpriteFont>(k_FontAssetName);
-            base.LoadContent();            
         }
 
         internal void DrawScore(SpriteBatch i_SpriteBatch)
