@@ -104,5 +104,12 @@ namespace Infrastructure.ObjectModel
         }
 
         protected abstract void InitBounds();
+
+        // TODO 03: enforce the logic of drawing the bounding box to the derivies:
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+        // -- end of TODO 03
     }
 }

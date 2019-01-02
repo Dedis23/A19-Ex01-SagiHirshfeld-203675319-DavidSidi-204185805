@@ -17,14 +17,12 @@ namespace SpaceInvaders
         protected SpriteBatch m_SpriteBatch;
         protected IInputManager m_InputManager;
         protected ICollisionsManager m_CollisionsManager;
-        protected AnimationManager m_AnimationManager;
 
         public Game2D()
         {
             r_Graphics = new GraphicsDeviceManager(this);
             m_InputManager = new InputManager(this);
             m_CollisionsManager = new CollisionsManager(this);
-            m_AnimationManager = new AnimationManager(this);
         }
 
         protected override void Initialize()
@@ -37,7 +35,7 @@ namespace SpaceInvaders
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             m_SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             base.Draw(gameTime);

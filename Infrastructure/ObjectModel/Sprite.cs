@@ -3,11 +3,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
 using System;
+using Infrastructure.ObjectModel.Animators;
 
 namespace Infrastructure.ObjectModel
 {
     public class Sprite : LoadableDrawableComponent
     {
+        protected CompositeAnimator m_Animations;
+        public CompositeAnimator Animations
+        {
+            get { return m_Animations; }
+            set { m_Animations = value; }
+        }
+
         private Texture2D m_Texture;
         public Texture2D Texture
         {
@@ -73,6 +81,38 @@ namespace Infrastructure.ObjectModel
         }
         // -- end of TODO 13
 
+        protected float m_WidthBeforeScale;
+        public float WidthBeforeScale
+        {
+            get { return m_WidthBeforeScale; }
+            set { m_WidthBeforeScale = value; }
+        }
+
+        protected float m_HeightBeforeScale;
+        public float HeightBeforeScale
+        {
+            get { return m_HeightBeforeScale; }
+            set { m_HeightBeforeScale = value; }
+        }
+
+        public Rectangle BoundsBeforeScale
+        {
+            get
+            {
+                return new Rectangle(
+                    (int)TopLeftPosition.X,
+                    (int)TopLeftPosition.Y,
+                    (int)this.WidthBeforeScale,
+                    (int)this.HeightBeforeScale);
+            }
+        }
+
+        public Vector2 TopLeftPosition
+        {
+            get { return this.Position - this.PositionOrigin; }
+            set { this.Position = value + this.PositionOrigin; }
+        }
+
         protected Color m_TintColor = Color.White;
         public Color TintColor
         {
@@ -93,6 +133,16 @@ namespace Infrastructure.ObjectModel
             set { m_Velocity = value; }
         }
 
+        private float m_AngularVelocity = 0;
+        /// <summary>
+        /// Radians per Second on X Axis
+        /// </summary>
+        public float AngularVelocity
+        {
+            get { return m_AngularVelocity; }
+            set { m_AngularVelocity = value; }
+        }
+
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
         { }
@@ -104,6 +154,20 @@ namespace Infrastructure.ObjectModel
         public Sprite(string i_AssetName, Game i_Game)
             : base(i_AssetName, i_Game, int.MaxValue)
         { }
+
+        protected float m_LayerDepth;
+        public float LayerDepth
+        {
+            get { return m_LayerDepth; }
+            set { m_LayerDepth = value; }
+        }
+
+        protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
+        public SpriteEffects SpriteEffects
+        {
+            get { return m_SpriteEffects; }
+            set { m_SpriteEffects = value; }
+        }
 
         protected Rectangle GameScreenBounds
         {
@@ -118,6 +182,11 @@ namespace Infrastructure.ObjectModel
             }
         }
 
+        public Sprite ShallowClone()
+        {
+            return this.MemberwiseClone() as Sprite;
+        }
+
         /// <summary>
         /// Default initialization of bounds
         /// </summary>
@@ -125,17 +194,32 @@ namespace Infrastructure.ObjectModel
         /// Derived classes are welcome to override this to implement their specific boudns initialization
         /// </remarks>
         /// 
-        protected float Scale { get; set; }
-        protected float Rotation { get; set; }
-        protected Vector2 PositionOrigin { get; set; }
-        protected Vector2 RotationOrigin { get; set; }
+        protected Rectangle m_SourceRectangle;
+        public Rectangle SourceRectangle
+        {
+            get { return m_SourceRectangle; }
+            set { m_SourceRectangle = value; }
+        }
+
+        protected float m_Rotation = 0;
+        public float Rotation
+        {
+            get { return m_Rotation; }
+            set { m_Rotation = value; }
+        }
+
+        public Vector2 m_PositionOrigin;
+        public Vector2 PositionOrigin
+        {
+            get { return m_PositionOrigin; }
+            set { m_PositionOrigin = value; }
+        }
         protected override void InitBounds()
         {
             // default initialization of bounds
             SpecificTextureBounds();
-            Scale = 1.0f;
             PositionOrigin = Vector2.Zero;
-            RotationOrigin = Vector2.Zero;
+            InitSourceRectangle();
         }
         protected virtual void SpecificTextureBounds()
         {
@@ -145,10 +229,29 @@ namespace Infrastructure.ObjectModel
                 m_Height = m_Texture.Height;
             }
         }
+        protected virtual void InitSourceRectangle()
+        {
+            m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
+        }
 
         public Vector2 DrawingPosition
         {
             get { return Position - PositionOrigin + RotationOrigin; }
+        }
+
+        protected Vector2 m_Scales = Vector2.One;
+        public Vector2 Scales
+        {
+            get { return m_Scales; }
+            set
+            {
+                if (m_Scales != value)
+                {
+                    m_Scales = value;
+                    // Notify the Collision Detection mechanism:
+                    OnPositionChanged();
+                }
+            }
         }
 
         private bool m_UseSharedBatch = true;
@@ -182,6 +285,13 @@ namespace Infrastructure.ObjectModel
             base.LoadContent();
         }
 
+        public Vector2 m_RotationOrigin = Vector2.Zero;
+        public Vector2 RotationOrigin
+        {
+            get { return m_RotationOrigin; }// r_SpriteParameters.RotationOrigin; }
+            set { m_RotationOrigin = value; }
+        }
+
         // this turned into injection point in case derived class want to make a specific type of Load
         protected virtual void LoadTexture()
         {
@@ -197,9 +307,14 @@ namespace Infrastructure.ObjectModel
         /// </remarks>
         public override void Update(GameTime gameTime)
         {
-            this.Position += this.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float totalSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            this.Position += this.Velocity * totalSeconds;
+            this.Rotation += this.AngularVelocity * totalSeconds;
 
             base.Update(gameTime);
+
+            this.Animations.Update(gameTime);
         }
 
         /// <summary>
@@ -213,7 +328,10 @@ namespace Infrastructure.ObjectModel
                 m_SpriteBatch.Begin();
             }
 
-            SpecificDraw();
+            m_SpriteBatch.Draw(m_Texture, this.DrawingPosition,
+                this.SourceRectangle, this.TintColor,
+                this.Rotation, this.RotationOrigin, this.Scales,
+                SpriteEffects.None, this.LayerDepth);
 
             if (!m_UseSharedBatch)
             {
@@ -221,12 +339,6 @@ namespace Infrastructure.ObjectModel
             }
 
             base.Draw(gameTime);
-        }
-
-        // this turned into injection point in case derived class want to make a specific draw
-        protected virtual void SpecificDraw()
-        {
-            m_SpriteBatch.Draw(m_Texture, DrawingPosition, m_TintColor);
         }
 
         // TODO 14: Implement a basic collision detection between two ICollidable2D objects:
@@ -293,16 +405,10 @@ namespace Infrastructure.ObjectModel
         public override void Initialize()
         {
             base.Initialize();
-
+            m_Animations = new CompositeAnimator(this);
             if (this is ICollidable2D)
             {
                 m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;
-            }
-
-            if (this is IAnimated)
-            {
-                IAnimationManager animationManager = this.Game.Services.GetService(typeof(IAnimationManager)) as IAnimationManager;
-                animationManager.AddObjectToMonitor(this as IAnimated);
             }
         }
 
