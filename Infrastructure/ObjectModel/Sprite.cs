@@ -1,4 +1,3 @@
-//*** Guy Ronen © 2008-2011 ***//
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
@@ -23,7 +22,6 @@ namespace Infrastructure.ObjectModel
             set { m_Texture = value; }
         }
 
-        // TODO 01: The Bounds property for collision detection
         public Rectangle Bounds
         {
             get
@@ -35,9 +33,7 @@ namespace Infrastructure.ObjectModel
                     m_Height);
             }
         }
-        // -- end of TODO 01
 
-        // TODO 13: Notify about  change:
         protected int m_Width;
         public int Width
         {
@@ -79,7 +75,6 @@ namespace Infrastructure.ObjectModel
                 }
             }
         }
-        // -- end of TODO 13
 
         protected float m_WidthBeforeScale;
         public float WidthBeforeScale
@@ -187,13 +182,6 @@ namespace Infrastructure.ObjectModel
             return this.MemberwiseClone() as Sprite;
         }
 
-        /// <summary>
-        /// Default initialization of bounds
-        /// </summary>
-        /// <remarks>
-        /// Derived classes are welcome to override this to implement their specific boudns initialization
-        /// </remarks>
-        /// 
         protected Rectangle m_SourceRectangle;
         public Rectangle SourceRectangle
         {
@@ -214,6 +202,7 @@ namespace Infrastructure.ObjectModel
             get { return m_PositionOrigin; }
             set { m_PositionOrigin = value; }
         }
+
         protected override void InitBounds()
         {
             // default initialization of bounds
@@ -221,6 +210,14 @@ namespace Infrastructure.ObjectModel
             PositionOrigin = Vector2.Zero;
             InitSourceRectangle();
         }
+
+        /// <summary>
+        /// Default initialization of bounds
+        /// </summary>
+        /// <remarks>
+        /// Derived classes are welcome to override this to implement their specific boundns initialization
+        /// </remarks>
+        ///
         protected virtual void SpecificTextureBounds()
         {
             if (m_Texture != null)
@@ -229,6 +226,7 @@ namespace Infrastructure.ObjectModel
                 m_Height = m_Texture.Height;
             }
         }
+
         protected virtual void InitSourceRectangle()
         {
             m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
@@ -248,7 +246,6 @@ namespace Infrastructure.ObjectModel
                 if (m_Scales != value)
                 {
                     m_Scales = value;
-                    // Notify the Collision Detection mechanism:
                     OnPositionChanged();
                 }
             }
@@ -285,17 +282,17 @@ namespace Infrastructure.ObjectModel
             base.LoadContent();
         }
 
+        // This turned into injection point in case derived class want to make a specific type of Load
+        protected virtual void LoadTexture()
+        {
+            m_Texture = Game.Content.Load<Texture2D>(m_AssetName);
+        }
+
         public Vector2 m_RotationOrigin = Vector2.Zero;
         public Vector2 RotationOrigin
         {
             get { return m_RotationOrigin; }// r_SpriteParameters.RotationOrigin; }
             set { m_RotationOrigin = value; }
-        }
-
-        // this turned into injection point in case derived class want to make a specific type of Load
-        protected virtual void LoadTexture()
-        {
-            m_Texture = Game.Content.Load<Texture2D>(m_AssetName);
         }
 
         /// <summary>
