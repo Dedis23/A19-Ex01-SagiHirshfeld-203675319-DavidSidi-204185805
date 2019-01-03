@@ -10,8 +10,8 @@ namespace SpaceInvaders
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
     {        
         private const int k_ScorePenaltyForBulletHit = 1100;
-        private const int k_Velocity = 120;
-        private const int k_MaxBulletsInScreen = 3;
+        private const int k_VelocityScalar = 120;
+        private const int k_MaxBulletsInScreen = 3;        
         private const int k_StartingLivesCount = 3;
         private const float k_LivesDrawingGapModifier = 0.7f;
         private const float k_LivesDrawingScale = 0.5f;
@@ -19,6 +19,7 @@ namespace SpaceInvaders
         private static int s_SpaceshipsCounter;
         private readonly int r_SpaceshipIndex;
         private readonly Gun r_Gun;
+        private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
 
         private int m_Score;
         public int Score
@@ -89,11 +90,11 @@ namespace SpaceInvaders
         {
             if (MoveLeftDetected())
             {
-                m_Velocity.X = k_Velocity * -1;
+                m_Velocity.X = k_VelocityScalar * -1;
             }
             else if (MoveRightDetected())
             {
-                m_Velocity.X = k_Velocity;
+                m_Velocity.X = k_VelocityScalar;
             }
             else
             {
@@ -124,7 +125,7 @@ namespace SpaceInvaders
 
         private void Shoot()
         {
-            r_Gun.Shoot();
+            r_Gun.Shoot(r_ShootingDirectionVector);
         }
 
         public void TakeBulletHit()

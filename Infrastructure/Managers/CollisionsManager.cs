@@ -30,7 +30,6 @@ namespace Infrastructure.Managers
                 i_Collidable.SizeChanged += collidable_Changed;
                 i_Collidable.VisibleChanged += collidable_Changed;
                 i_Collidable.Disposed += collidable_Disposed;
-                i_Collidable.EnabledChanged += collidable_EnabledChanged;
             }
         }
 
@@ -59,24 +58,16 @@ namespace Infrastructure.Managers
             }
         }
 
-        private void collidable_EnabledChanged(object sender, EventArgs e)
-        {
-            if ((sender as ICollidable).Enabled)
-            {
-                collidable_Changed(sender, e);
-            }
-        }
-
         private void checkCollision(ICollidable i_Source)
         {
-            if (i_Source.Visible && i_Source.Enabled)
+            if (i_Source.Visible)
             {
                 List<ICollidable> collidedComponents = new List<ICollidable>();
 
                 // finding who collided with i_Source:
                 foreach (ICollidable target in m_Collidables)
                 {
-                    if (i_Source != target && target.Visible && target.Enabled)
+                    if (target.Visible)
                     {
                         if (target.CheckCollision(i_Source))
                         {
@@ -92,6 +83,7 @@ namespace Infrastructure.Managers
                     {
                         break;
                     }
+
                     else if (target.Visible)
                     {
                         target.Collided(i_Source);

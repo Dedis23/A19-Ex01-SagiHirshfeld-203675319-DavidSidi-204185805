@@ -15,6 +15,7 @@ namespace SpaceInvaders
         public const int k_NumOfCells = 2;
         public const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
         private readonly Gun r_Gun;
+        private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
         public Color BulletsColor { get; } = Color.Blue;
         public int PointsValue { get; set; }
         public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
@@ -68,7 +69,7 @@ namespace SpaceInvaders
 
         public void Shoot()
         {
-            r_Gun.Shoot();
+            r_Gun.Shoot(r_ShootingDirectionVector);
         }
 
         protected override void SpecificTextureBounds()

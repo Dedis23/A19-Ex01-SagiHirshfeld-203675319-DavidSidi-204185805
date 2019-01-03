@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
+using System;
 
 namespace SpaceInvaders
 {
     public class Bullet : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Bullet";
-        public static Vector2 FlyingVelocity { get; } = new Vector2(0, 155);
+        public const float k_VelocityScalar = 155;
 
         public object Shooter { get; set; }
 
@@ -25,9 +26,17 @@ namespace SpaceInvaders
             base.Update(i_GameTime);
         }
 
+        public void Fly(Vector2 i_DirectionVector)
+        {
+            Visible = true;
+            Enabled = true;
+            i_DirectionVector.Normalize();
+            Velocity = i_DirectionVector * k_VelocityScalar;
+        }
+
         protected override void KilledInjectionPoint()
         {
-            //this.Visible = false;
+            this.Visible = false;
             this.Enabled = false;
         }
     }

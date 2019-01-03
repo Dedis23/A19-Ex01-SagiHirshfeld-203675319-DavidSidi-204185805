@@ -21,8 +21,6 @@ namespace Infrastructure.ObjectModel
             base.Dispose(disposing);
             OnDisposed(this, EventArgs.Empty);
         }
-
-        //public event EventHandler<EventArgs>
         
         protected string m_AssetName;
 
@@ -77,8 +75,6 @@ namespace Infrastructure.ObjectModel
             : this(i_AssetName, i_Game, i_CallsOrder, i_CallsOrder)
         { }
 
-        
-
         public override void Initialize()
         {
             base.Initialize();
@@ -96,10 +92,6 @@ namespace Infrastructure.ObjectModel
                 }
             }
 
-            // -- end of TODO 12
-
-            // After everything is loaded and initialzied,
-            // lets init graphical aspects:
             InitBounds();   // a call to an abstract method;
         }
 

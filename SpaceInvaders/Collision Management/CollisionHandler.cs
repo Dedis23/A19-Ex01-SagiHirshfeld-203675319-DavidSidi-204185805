@@ -116,9 +116,9 @@ namespace SpaceInvaders
 
         private void killComponentsInQueue()
         {
-            foreach (Sprite killableComponent in r_KillQueue)
+            foreach (Sprite sprite in r_KillQueue)
             {
-                killableComponent.Kill();
+                sprite.Kill();
             }
 
             r_KillQueue.Clear();

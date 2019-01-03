@@ -5,9 +5,10 @@ namespace SpaceInvaders
 {
     public class Gun
     {
-        private readonly HashSet<Bullet> r_BulletsFired;
+        private readonly HashSet<Bullet> r_BulletsFired;       
         private readonly IShooter r_Shooter;
         private readonly int r_MaxBulletsInScreen;
+        private readonly BulletsFactory r_BulletsFactory;
 
         public int NumberOfShotBulletsInScreen
         {
@@ -21,28 +22,34 @@ namespace SpaceInvaders
         {
             r_BulletsFired = new HashSet<Bullet>();
             r_Shooter = i_Shooter;
-            r_MaxBulletsInScreen = i_MaxBulletsInScreen;            
-        }
+            r_MaxBulletsInScreen = i_MaxBulletsInScreen;
 
-        public void Shoot()
-        {
-            if (NumberOfShotBulletsInScreen < r_MaxBulletsInScreen)
+            r_BulletsFactory = r_Shooter.Game.Services.GetService(typeof(BulletsFactory)) as BulletsFactory;
+            if (r_BulletsFactory == null)
             {
-                shootBullet();
+                r_BulletsFactory = new BulletsFactory(r_Shooter.Game);
             }
         }
 
-        private void shootBullet()
+        public void Shoot(Vector2 i_DirectionVector)
         {
-            Bullet newBullet = BulletsFactory.Instance.GetBulletForShooter(r_Shooter);
+            if (NumberOfShotBulletsInScreen < r_MaxBulletsInScreen)
+            { 
+                shootBullet(i_DirectionVector);
+            }
+        }
+
+        private void shootBullet(Vector2 i_DirectionVector)
+        {
+            Bullet newBullet = r_BulletsFactory.GetBullet();
 
             newBullet.Position = getCentralizedShootingPosition(newBullet, r_Shooter);
             newBullet.TintColor = r_Shooter.BulletsColor;
             newBullet.Shooter = r_Shooter;
-            newBullet.Velocity = r_Shooter is IEnemy ? Bullet.FlyingVelocity : -Bullet.FlyingVelocity;
-
-            r_BulletsFired.Add(newBullet);
             newBullet.SpriteKilled += onBulletDestroyed;
+
+            newBullet.Fly(i_DirectionVector);
+            r_BulletsFired.Add(newBullet);
         }
 
         private Vector2 getCentralizedShootingPosition(Bullet i_Bullet, IShooter i_Shooter)
