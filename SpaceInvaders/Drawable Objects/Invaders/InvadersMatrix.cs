@@ -57,19 +57,25 @@ namespace SpaceInvaders
             Vector2 currentRowPosition = new Vector2(k_DefaultStartingPositionX, k_DefaultStartingPositionY);
             for (int i = 0; i < k_NumOfRowsWithPinkInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderPink));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                    eInvaderPresets.InvaderPink,
+                    i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
 
             for (int i = 0; i < k_NumOfRowsWithLightBlueInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderLightBlue));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                    eInvaderPresets.InvaderLightBlue,
+                    i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
 
             for (int i = 0; i < k_NumOfRowsWithLightYellowInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition, eInvaderPresets.InvaderLightYellow));
+                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                    eInvaderPresets.InvaderLightYellow,
+                    i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
             }
         }
@@ -81,13 +87,13 @@ namespace SpaceInvaders
             InvaderLightYellow
         }
 
-        private List<Invader> createARowOfInvaders(Vector2 i_PositionOfFirstInvaderInTheRow, eInvaderPresets i_InvaderPreset)
+        private List<Invader> createARowOfInvaders(Vector2 i_PositionOfFirstInvaderInTheRow, eInvaderPresets i_InvaderPreset, int i_StartingCell)
         {
             List<Invader> rowOfInvaders = new List<Invader>();
             Vector2 nextInvaderPosition = i_PositionOfFirstInvaderInTheRow;
             for (int i = 0; i < k_NumOfInvadersInARow; i++)
             {
-                Invader currentInvader = createInvaderBasedOnPreset(i_InvaderPreset);
+                Invader currentInvader = createInvaderBasedOnPreset(i_InvaderPreset, i_StartingCell);
                 currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
                 nextInvaderPosition.X += k_XGapBetweenInvaders;
                 currentInvader.SpriteKilled += removeInvader;
@@ -97,19 +103,19 @@ namespace SpaceInvaders
             return rowOfInvaders;
         }
 
-        private Invader createInvaderBasedOnPreset(eInvaderPresets i_InvaderPreset)
+        private Invader createInvaderBasedOnPreset(eInvaderPresets i_InvaderPreset, int i_StartingCell)
         {
             Invader newInvader = null;
             switch (i_InvaderPreset)
             {
                 case eInvaderPresets.InvaderPink:
-                    newInvader = new InvaderPink(this.Game, 0) as Invader;
+                    newInvader = new InvaderPink(this.Game, i_StartingCell) as Invader;
                     break;
                 case eInvaderPresets.InvaderLightBlue:
-                    newInvader = new InvaderLightBlue(this.Game, 2) as Invader;
+                    newInvader = new InvaderLightBlue(this.Game, i_StartingCell) as Invader;
                     break;
                 case eInvaderPresets.InvaderLightYellow:
-                    newInvader = new InvaderLightYellow(this.Game, 4) as Invader;
+                    newInvader = new InvaderLightYellow(this.Game, i_StartingCell) as Invader;
                     break;
             }
             return newInvader;

@@ -12,20 +12,24 @@ namespace SpaceInvaders
         public const int k_DefaultInvaderWidth = 32;
         public const int k_DefaultInvaderHeight = 32;
         private const int k_MaxBulletsInScreen = 1;
-        private const int k_NumOfCells = 2;
+        public const int k_NumOfCells = 2;
         public const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
         private readonly Gun r_Gun;
         public Color BulletsColor { get; } = Color.Blue;
         public int PointsValue { get; set; }
         public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
-        private int m_StartingCellAnimationIndexInSpriteSheet;
+        private int m_ColIndexInSpriteSheet;
+        private int m_RowIndexInSpriteSheet;
 
-        public Invader(Game i_Game, Color i_Tint, int i_PointsValue, int i_StartingCellAnimationIndexInSpriteSheet) 
+        public Invader(Game i_Game, Color i_Tint, int i_PointsValue,
+            int i_ColIndexInSpriteSheet,
+            int i_RowIndexInSpriteSheet) 
             : base(k_InvadersSpriteSheet, i_Game)
         {
             TintColor = i_Tint;
             PointsValue = i_PointsValue;
-            m_StartingCellAnimationIndexInSpriteSheet = i_StartingCellAnimationIndexInSpriteSheet;
+            m_ColIndexInSpriteSheet = i_ColIndexInSpriteSheet;
+            m_RowIndexInSpriteSheet = i_RowIndexInSpriteSheet;
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
         }
 
@@ -38,8 +42,8 @@ namespace SpaceInvaders
         protected override void InitSourceRectangle()
         {
             this.SourceRectangle = new Rectangle(
-                (int)(0 + m_StartingCellAnimationIndexInSpriteSheet * Width),
-                0,
+                (int)(0 + m_ColIndexInSpriteSheet * k_DefaultInvaderWidth),
+                (int)(0 + m_RowIndexInSpriteSheet * k_DefaultInvaderHeight),
                 k_DefaultInvaderWidth,
                 k_DefaultInvaderHeight);
         }
@@ -47,7 +51,7 @@ namespace SpaceInvaders
         private void initializeAnimations()
         {
             CellAnimator cellAnimator = new CellAnimator(TimeSpan.FromSeconds(k_DefaultDelayBetweenJumpsInSeconds),
-                k_NumOfCells, TimeSpan.Zero);
+                k_NumOfCells, TimeSpan.Zero, m_ColIndexInSpriteSheet);
             cellAnimator.FinishedCellAnimationCycle += onFinishedCellAnimationCycle;
             Animations.Add(cellAnimator);
             Animations.Enabled = true;
@@ -58,6 +62,7 @@ namespace SpaceInvaders
             if (DelayBetweenJumpsInSeconds < (Animations["CelAnimation"] as CellAnimator).CellTime.TotalSeconds)
             {
                 (Animations["CelAnimation"] as CellAnimator).CellTime = TimeSpan.FromSeconds(DelayBetweenJumpsInSeconds);
+                this.Game.Window.Title = (Animations["CelAnimation"] as CellAnimator).CellTime.TotalSeconds.ToString();
             }
         }
 

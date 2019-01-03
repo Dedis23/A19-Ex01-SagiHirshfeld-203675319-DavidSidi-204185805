@@ -9,17 +9,19 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
         private TimeSpan m_CellTime;
         private TimeSpan m_TimeLeftForCell;
         private bool m_Loop = true;
-        private int m_CurrCellIdx = 0;
+        private int m_CurrCellIdx;
         private readonly int r_NumOfCells = 1;
+        private int m_StartCell;
 
         public Action FinishedCellAnimationCycle;
 
-        public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength)
+        public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength, int i_StartCell)
             : base("CelAnimation", i_AnimationLength)
         {
             this.m_CellTime = i_CellTime;
             this.m_TimeLeftForCell = i_CellTime;
             this.r_NumOfCells = i_NumOfCells;
+            m_StartCell = m_CurrCellIdx = i_StartCell;
 
             m_Loop = i_AnimationLength == TimeSpan.Zero;
         }
@@ -41,7 +43,7 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
                 }
                 else
                 {
-                    m_CurrCellIdx = r_NumOfCells - 1;
+                    m_CurrCellIdx = 0;
                     this.IsFinished = true;
                 }
                 FinishedCellAnimationCycle?.Invoke();

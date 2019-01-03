@@ -27,7 +27,7 @@ namespace SpaceInvaders
 
         protected override void KilledInjectionPoint()
         {
-            this.Visible = false;
+            //this.Visible = false;
             this.Enabled = false;
         }
     }
