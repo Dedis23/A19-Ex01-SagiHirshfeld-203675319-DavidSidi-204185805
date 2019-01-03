@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
@@ -42,32 +43,35 @@ namespace SpaceInvaders
         private void shootBullet(Vector2 i_DirectionVector)
         {
             Bullet newBullet = r_BulletsFactory.GetBullet();
-
-            newBullet.Position = getCentralizedShootingPosition(newBullet, r_Shooter);
-            newBullet.TintColor = r_Shooter.BulletsColor;
-            newBullet.Shooter = r_Shooter;
-            newBullet.SpriteKilled += onBulletDestroyed;
-
+            configureBullet(newBullet);
             newBullet.Fly(i_DirectionVector);
-            r_BulletsFired.Add(newBullet);
         }
 
-        private Vector2 getCentralizedShootingPosition(Bullet i_Bullet, IShooter i_Shooter)
+        private void configureBullet(Bullet i_Bullet)
         {
-            float centralizedX = 0;
-            float centralizedY = 0;
+            i_Bullet.Position = getBulletDeploymentPos(i_Bullet);
+            i_Bullet.TintColor = r_Shooter.BulletsColor;
+            i_Bullet.Shooter = r_Shooter;
+            i_Bullet.SpriteKilled += onBulletDestroyed;
+            r_BulletsFired.Add(i_Bullet);
 
-            centralizedX = i_Shooter.Position.X + (0.5f * i_Shooter.Bounds.Width) - (0.5f * i_Bullet.Width);
-            if (i_Shooter is IEnemy)
+        }
+
+        private Vector2 getBulletDeploymentPos(Bullet i_Bullet)
+        {
+            Vector2 deploymentPos = Vector2.Zero;
+
+            deploymentPos.X = r_Shooter.Position.X + (r_Shooter.Bounds.Width / 2) - (i_Bullet.Width / 2);
+            if (r_Shooter is IEnemy)
             {
-                centralizedY = i_Shooter.Bounds.Bottom + 1;
+                deploymentPos.Y = r_Shooter.Bounds.Bottom + 1;
             }
             else
             {
-                centralizedY = i_Shooter.Bounds.Top - 1 - i_Bullet.Height;
+                deploymentPos.Y = r_Shooter.Bounds.Top - 1 - i_Bullet.Height;
             }
 
-            return new Vector2(centralizedX, centralizedY);
+            return deploymentPos;
         }
 
         private void onBulletDestroyed(object i_Bullet)

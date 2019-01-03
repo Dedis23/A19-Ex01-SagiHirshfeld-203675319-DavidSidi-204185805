@@ -8,7 +8,7 @@ namespace SpaceInvaders
     public class Bullet : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Bullet";
-        public const float k_VelocityScalar = 155;
+        private const float k_VelocityScalar = 155;
 
         public object Shooter { get; set; }
 
