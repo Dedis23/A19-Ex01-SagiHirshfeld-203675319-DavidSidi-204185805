@@ -7,14 +7,14 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
     {
         private float m_RotationVelocity;
 
-        public RotateAnimator(string i_Name, float i_NumOfCycles, TimeSpan i_AnimationLength)
+        public RotateAnimator(string i_Name, float i_NumOfCyclesPerSecond, TimeSpan i_AnimationLength)
             : base(i_Name, i_AnimationLength)
         {
-            m_RotationVelocity = i_NumOfCycles * MathHelper.TwoPi;
+            m_RotationVelocity = i_NumOfCyclesPerSecond * MathHelper.TwoPi;
         }
 
-        public RotateAnimator(float i_NumOfCycles, TimeSpan i_AnimationLength)
-            : this("RotateAnimator", i_NumOfCycles, i_AnimationLength)
+        public RotateAnimator(float i_NumOfCyclesPerSecond, TimeSpan i_AnimationLength)
+            : this("RotateAnimator", i_NumOfCyclesPerSecond, i_AnimationLength)
         { }
 
         protected override void DoFrame(GameTime i_GameTime)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Infrastructure.ObjectModel.Animators;
+using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
@@ -14,14 +15,27 @@ namespace SpaceInvaders
             r_Spawner = new Spawner(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);            
             m_MotherShip = new Mothership(i_Game);
 
-            r_Spawner.Spawned += spawnMotherShip;
+            r_Spawner.Spawned += checkAnimationStatusAndSpawn;
             m_MotherShip.SpriteKilled += OnMothershipKilled;
             r_Spawner.Activate();
         }
 
-        public void spawnMotherShip()
+        private void checkAnimationStatusAndSpawn()
         {
-            m_MotherShip.SpawnAndFly();            
+            SpriteAnimator deathanimation = m_MotherShip.Animations["DeathAnimation"];
+            if (deathanimation == null)
+            {
+                spawnMotherShip();
+            }
+            else if (deathanimation.Enabled == false)
+            {
+                spawnMotherShip();
+            }
+        }
+
+        private void spawnMotherShip()
+        {
+            m_MotherShip.SpawnAndFly();
             r_Spawner.DeActivate();
         }
 

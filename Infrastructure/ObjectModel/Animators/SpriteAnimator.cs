@@ -173,7 +173,7 @@ namespace Infrastructure.ObjectModel.Animators
                     }
                 }
 
-                if (!this.IsFinished)
+                if (!this.IsFinished && this.Enabled)
                 {
                     // we are still required to animate:
                     DoFrame(i_GameTime);

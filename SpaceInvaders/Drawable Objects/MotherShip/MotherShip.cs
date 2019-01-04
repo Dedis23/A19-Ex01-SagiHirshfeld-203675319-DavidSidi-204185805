@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
+using Infrastructure.ObjectModel.Animators;
+using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 
 namespace SpaceInvaders
 {
@@ -10,6 +12,8 @@ namespace SpaceInvaders
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
+        private const float k_DeathAnimationTime = 2.2f;
+        private const float k_BlinkingAnimationLength = 0.1375f;
 
         public int PointsValue { get; set; }
 
@@ -22,27 +26,56 @@ namespace SpaceInvaders
             PointsValue = k_MotherShipPointsValue;
         }
 
-        protected override void InitBounds()
+        public override void Initialize()
         {
-            base.InitBounds();
+            base.Initialize();
+            initializeAnimations();
+        }
+        private void initializeAnimations()
+        {
+            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
+            FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
+            BlinkAnimator blinkAnimator = new BlinkAnimator(TimeSpan.FromSeconds(k_BlinkingAnimationLength),
+                TimeSpan.FromSeconds(k_DeathAnimationTime));
 
-            setDefaultPosition();
+            CompositeAnimator deathAnimation = new CompositeAnimator
+                ("DeathAnimation",
+                TimeSpan.FromSeconds(k_DeathAnimationTime),
+                this,
+                shrinkAnimator, faderAnimator, blinkAnimator);
+            deathAnimation.Finished += onFinishedDeathAnimation;
+            Animations.Add(deathAnimation);
+            deathAnimation.Pause();
+
+            Animations.Resume();
         }
 
-        public override void Update(GameTime i_GameTime)
+        protected override void KilledInjectionPoint()
         {
-            base.Update(i_GameTime);
-
-            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            // if we got hit, we start death animation
+            if (this.Vulnerable == false)
             {
-                this.Kill();
+                Animations["DeathAnimation"].Resume();
+                this.Velocity = Vector2.Zero;
+            }
+            else // else means the mothership moved accross the screen
+            {
+                hideAndWaitForNextSpawn();
             }
         }
 
-        private void setDefaultPosition()
+        private void onFinishedDeathAnimation(object sender, EventArgs e)
         {
-            // Default MotherShip position (coming from the left of the screen) 
-            this.Position = new Vector2(-this.Width, this.Height);
+            CompositeAnimator deathAnimation = sender as CompositeAnimator;
+            deathAnimation.Reset(); // reset animation to original state
+            deathAnimation.Pause(); // (enable = false)
+            hideAndWaitForNextSpawn();
+        }
+
+        private void hideAndWaitForNextSpawn()
+        {
+            this.Visible = false;
+            this.Velocity = Vector2.Zero;
         }
 
         public void SpawnAndFly()
@@ -53,10 +86,29 @@ namespace SpaceInvaders
             this.Velocity = new Vector2(k_MotherShipVelocity, 0);
         }
 
-        protected override void KilledInjectionPoint()
+        public override void Update(GameTime i_GameTime)
         {
-            this.Visible = false;
-            this.Velocity = Vector2.Zero;
+            base.Update(i_GameTime);
+
+            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            {
+                this.Kill();
+            }
+
+            this.Game.Window.Title = this.Opacity.ToString();
+        }
+
+        protected override void InitBounds()
+        {
+            base.InitBounds();
+
+            setDefaultPosition();
+        }
+
+        private void setDefaultPosition()
+        {
+            // Default MotherShip position (coming from the left of the screen) 
+            this.Position = new Vector2(-this.Width, this.Height);
         }
     }
 }
