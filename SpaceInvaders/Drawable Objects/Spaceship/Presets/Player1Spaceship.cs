@@ -11,8 +11,7 @@ namespace SpaceInvaders
         public override string Name { get; set; } = "P1";
 
         public Player1Spaceship(Game i_Game) : base(k_AssetName ,i_Game)
-        {
-        }
+        {}
 
         protected override void TakeInput()
         {

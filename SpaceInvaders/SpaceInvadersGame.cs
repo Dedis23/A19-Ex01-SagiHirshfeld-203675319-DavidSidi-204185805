@@ -39,9 +39,9 @@ namespace SpaceInvaders
 
         protected override void LoadContent()
         {
-            fitViewportToBackground();
-            setSpaceshipsAtDefaultPosition();            
             base.LoadContent();
+            fitViewportToBackground();
+            SetMotherShipsPositions();
         }
 
         private void loadSpaceships()
@@ -58,7 +58,7 @@ namespace SpaceInvaders
             m_SpaceshipList.Add(newSpaceship);
         }
 
-        private void setSpaceshipsAtDefaultPosition()
+        private void SetMotherShipsPositions()
         {
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
@@ -97,19 +97,11 @@ namespace SpaceInvaders
 
         private void onSpaceshipKilled(object i_Object)
         {
-            (i_Object as Spaceship).Enabled = false;
+            Spaceship killedSpaceship = i_Object as Spaceship;
 
-            bool allSpaceshipsDisabled = true;
-            foreach (Spaceship spaceship in m_SpaceshipList)
-            {
-                if (spaceship.Enabled)
-                {
-                    allSpaceshipsDisabled = false;
-                    break;
-                }
-            }
+            //m_SpaceshipList.Remove(killedSpaceship);
 
-            if (allSpaceshipsDisabled)
+            if (m_SpaceshipList.Count == 0)
             {
                 gameOver();
             }         

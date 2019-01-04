@@ -4,6 +4,8 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Infrastructure.ObjectModel.Animators;
+using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 
 namespace SpaceInvaders
 {
@@ -20,6 +22,10 @@ namespace SpaceInvaders
         private readonly int r_SpaceshipIndex;
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
+        private const float k_LoseLifeAnimationLength = 2.5f;
+        private const float k_NumOfBlinksInSecondInLoseLifeAnimation = 6.0f;
+        private const float k_DeathAnimationLength = 2.5f;
+        private float k_NumOfCyclesPerSecondsInDeathAnimation = 4.0f;
 
         private int m_Score;
         public int Score
@@ -53,15 +59,53 @@ namespace SpaceInvaders
 
         public override void Initialize()
         {
-            InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             base.Initialize();
-        }        
-
-        protected override void InitBounds()
-        {
-            base.InitBounds();
-
+            InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            initializeAnimations();
             SetDefaultPosition();
+        }
+
+        private void initializeAnimations()
+        {
+            BlinkAnimator loseLifeAnimation = new BlinkAnimator("LoseLifeAnimation",
+                k_NumOfBlinksInSecondInLoseLifeAnimation,
+                TimeSpan.FromSeconds(k_LoseLifeAnimationLength));
+            loseLifeAnimation.Finished += onFinishedLoseLifeAnimation;
+            Animations.Add(loseLifeAnimation);
+            loseLifeAnimation.Pause();
+
+            RotateAnimator rotateAnimator = new RotateAnimator(k_NumOfCyclesPerSecondsInDeathAnimation,
+                TimeSpan.FromSeconds(k_DeathAnimationLength));
+            FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
+
+            CompositeAnimator deathAnimation = new CompositeAnimator
+                ("DeathAnimation",
+                TimeSpan.FromSeconds(k_DeathAnimationLength),
+                this,
+                rotateAnimator,
+                faderAnimator);
+            deathAnimation.Finished += onFinishedDeathAnimation;
+            Animations.Add(deathAnimation);
+            deathAnimation.Pause();
+
+            Animations.Resume();
+        }
+
+        protected override void KilledInjectionPoint()
+        {
+            Animations["DeathAnimation"].Resume();
+            this.r_Gun.Enabled = false;
+        }
+
+        private void onFinishedLoseLifeAnimation(object sender, EventArgs e)
+        {
+            Animations["LoseLifeAnimation"].Reset();
+            Animations["LoseLifeAnimation"].Pause();
+            this.Vulnerable = true;
+        }
+
+        private void onFinishedDeathAnimation(object sender, EventArgs e)
+        {
         }
 
         public void SetDefaultPosition()
@@ -137,8 +181,12 @@ namespace SpaceInvaders
             {
                 this.Kill();
             }
-
-            SetDefaultPosition();
+            else
+            {
+                this.Vulnerable = false;
+                Animations["LoseLifeAnimation"].Resume();
+                SetDefaultPosition();
+            }
         }
 
         public override void Draw(GameTime gameTime)
