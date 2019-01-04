@@ -5,7 +5,7 @@ namespace SpaceInvaders
 {
     public class MothershipSpawner
     {
-        private const int k_ChanceToSpawn = 10;
+        private const int k_ChanceToSpawn = 100;
         private const float k_TimeBetweenRolls = 1;
         private readonly Spawner r_Spawner;
         private Mothership m_MotherShip;
