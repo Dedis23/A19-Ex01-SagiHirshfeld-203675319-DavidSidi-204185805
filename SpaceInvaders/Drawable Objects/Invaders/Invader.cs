@@ -32,7 +32,6 @@ namespace SpaceInvaders
         {
             TintColor = i_Tint;
             PointsValue = i_PointsValue;
-            this.Vulnerable = true;
             m_ColIndexInSpriteSheet = i_ColIndexInSpriteSheet;
             m_RowIndexInSpriteSheet = i_RowIndexInSpriteSheet;
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
@@ -46,6 +45,9 @@ namespace SpaceInvaders
 
         protected override void InitSourceRectangle()
         {
+            m_WidthBeforeScale = k_DefaultInvaderWidth;
+            m_HeightBeforeScale = k_DefaultInvaderHeight;
+
             this.SourceRectangle = new Rectangle(
                 (int)(0 + m_ColIndexInSpriteSheet * k_DefaultInvaderWidth),
                 (int)(0 + m_RowIndexInSpriteSheet * k_DefaultInvaderHeight),
@@ -88,6 +90,7 @@ namespace SpaceInvaders
 
         protected override void KilledInjectionPoint()
         {
+            Vulnerable = false;
             Animations["DeathAnimation"].Resume();
         }
 
@@ -99,13 +102,6 @@ namespace SpaceInvaders
         public void Shoot()
         {
             r_Gun.Shoot(r_ShootingDirectionVector);
-        }
-
-        protected override void SpecificTextureBounds()
-        {
-            // manually set the texture height and width of the invader because now we are using a sprite sheet
-            WidthBeforeScale = k_DefaultInvaderWidth;
-            HeightBeforeScale = k_DefaultInvaderHeight;
         }
 
         protected override void InitRotationOrigin()

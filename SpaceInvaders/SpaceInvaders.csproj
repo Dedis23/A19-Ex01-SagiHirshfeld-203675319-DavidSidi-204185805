@@ -46,6 +46,8 @@
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
+    <Compile Include="Drawable Objects\Barriers\Barrier.cs" />
+    <Compile Include="Drawable Objects\Barriers\DancingBarriersRow.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
     <Compile Include="Drawable Objects\Bullet\BulletsFactory.cs" />
     <Compile Include="Drawable Objects\Invaders\Invader.cs" />

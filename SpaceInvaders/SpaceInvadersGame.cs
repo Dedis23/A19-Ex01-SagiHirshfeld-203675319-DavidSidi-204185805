@@ -12,13 +12,15 @@ using System.Text;
 namespace SpaceInvaders
 {
     public class SpaceInvadersGame : Game2D
-    {      
+    {
         private List<Spaceship> m_SpaceshipList;
         private MothershipSpawner m_MothershipSpawner;
         private InvadersMatrix m_InvadersMatrix;
         private Sprite m_Background;
         private CollisionHandler m_CollisionHandler;
         private ScorePrinter m_ScorePrinter;
+        private DancingBarriersRow m_DancingBarriersRow;
+
 
         public SpaceInvadersGame()
         {
@@ -33,14 +35,16 @@ namespace SpaceInvaders
             m_MothershipSpawner = new MothershipSpawner(this);
             loadSpaceships();
             loadInvadersMatrix();
-            
+            m_DancingBarriersRow = new DancingBarriersRow(this);
+
             m_ScorePrinter = new ScorePrinter(this, m_SpaceshipList.Cast<IPlayer>());
         }
 
         protected override void LoadContent()
         {
             fitViewportToBackground();
-            setSpaceshipsAtDefaultPosition();            
+            setSpaceshipsPositions();
+            setBarriersPosition();
             base.LoadContent();
         }
 
@@ -58,12 +62,19 @@ namespace SpaceInvaders
             m_SpaceshipList.Add(newSpaceship);
         }
 
-        private void setSpaceshipsAtDefaultPosition()
+        private void setSpaceshipsPositions()
         {
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                spaceship.SetDefaultPosition();
+                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - spaceship.Height * 1.5f);
+                spaceship.Position = spaceship.DefaultPosition;
             }
+        }
+
+        private void setBarriersPosition()
+        {
+            float distanceFromScreenHorizondalBounds = (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2;
+            m_DancingBarriersRow.Position = new Vector2(distanceFromScreenHorizondalBounds, m_SpaceshipList[0].DefaultPosition.Y - m_DancingBarriersRow.Height * 2);
         }
 
         private void loadInvadersMatrix()
@@ -72,6 +83,8 @@ namespace SpaceInvaders
             m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
             m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
         }
+
+
 
         private void fitViewportToBackground()
         {

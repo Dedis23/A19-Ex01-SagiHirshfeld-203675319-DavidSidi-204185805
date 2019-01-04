@@ -7,7 +7,6 @@ using Infrastructure.ServiceInterfaces;
 
 namespace Infrastructure.Managers
 {
-    // TODO 10: Implement the collisions manager service:
     public class CollisionsManager : GameService, ICollisionsManager
     {
         protected readonly List<ICollidable> m_Collidables = new List<ICollidable>();
@@ -53,21 +52,21 @@ namespace Infrastructure.Managers
         private void collidable_Changed(object sender, EventArgs e)
         {
             if (sender is ICollidable)
-            {// to be on the safe side :)
+            {
                 checkCollision(sender as ICollidable);
             }
         }
 
         private void checkCollision(ICollidable i_Source)
         {
-            if (i_Source.Visible)
+            if (i_Source.Visible && i_Source.Vulnerable)
             {
                 List<ICollidable> collidedComponents = new List<ICollidable>();
 
-                // finding who collided with i_Source:
+                // Finding who collided with i_Source:
                 foreach (ICollidable target in m_Collidables)
                 {
-                    if (target.Visible)
+                    if (target.Visible && target.Vulnerable)
                     {
                         if (target.CheckCollision(i_Source))
                         {
@@ -79,12 +78,12 @@ namespace Infrastructure.Managers
                 // Informing i_Source and all the collided targets about the collision:
                 foreach (ICollidable target in collidedComponents)
                 {
-                    if(!i_Source.Visible)
+                    if(!(i_Source.Visible && i_Source.Vulnerable))
                     {
                         break;
                     }
 
-                    else if (target.Visible)
+                    else if (target.Visible && target.Vulnerable)
                     {
                         target.Collided(i_Source);
                         i_Source.Collided(target);
@@ -93,5 +92,4 @@ namespace Infrastructure.Managers
             }
         }
     }
-    // -- end of TODO 10
 }

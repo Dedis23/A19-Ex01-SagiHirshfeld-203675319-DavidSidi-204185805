@@ -60,6 +60,14 @@ namespace Infrastructure.ObjectModel
             }
         }
 
+        protected Vector2 m_DefaultPosition;
+        public Vector2 DefaultPosition
+        {
+            get { return m_DefaultPosition; }
+            set { m_DefaultPosition = value; }
+        }
+
+
         protected float m_WidthBeforeScale;
         public float WidthBeforeScale
         {
@@ -138,11 +146,18 @@ namespace Infrastructure.ObjectModel
             set { m_SpriteEffects = value; }
         }
 
-        protected bool m_Vulnerable = false;
+        protected bool m_Vulnerable = true;
         public bool Vulnerable
         {
             get { return m_Vulnerable; }
-            set { m_Vulnerable = value; }
+            set
+            {
+                if(m_Vulnerable == false)
+                {
+                    m_Vulnerable = value;
+                    OnVulnerableChanged();
+                }
+            }
         }
 
         protected Rectangle GameScreenBounds
@@ -195,7 +210,8 @@ namespace Infrastructure.ObjectModel
         protected override void InitBounds()
         {
             // default initialization of bounds
-            SpecificTextureBounds();
+            m_WidthBeforeScale = m_Texture.Width;
+            m_HeightBeforeScale = m_Texture.Height;
             PositionOrigin = Vector2.Zero;
             InitSourceRectangle();
             InitRotationOrigin();
@@ -211,15 +227,6 @@ namespace Infrastructure.ObjectModel
         protected virtual void InitSourceRectangle()
         {
             m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
-        }
-
-        protected virtual void SpecificTextureBounds()
-        {
-            if (m_Texture != null)
-            {
-                m_WidthBeforeScale = m_Texture.Width;
-                m_HeightBeforeScale = m_Texture.Height;
-            }
         }
 
         // Default rotation origin is the texture cetner, this turned into injection point in case using sprite sheet
@@ -364,19 +371,13 @@ namespace Infrastructure.ObjectModel
             spriteA.GetData(colorDataA);
             spriteB.GetData(colorDataB);
 
-            // Calculate the boundaries of the rectangle which is the overlap between i_CollideableA and i_CollideableB
-            // float is used instead of int for numerical capacity
-            int top, bottom, left, right;
-            top = Math.Max(this.Bounds.Top, i_Source.Bounds.Top);
-            bottom = Math.Min(this.Bounds.Bottom, i_Source.Bounds.Bottom);
-            left = Math.Max(this.Bounds.Left, i_Source.Bounds.Left);
-            right = Math.Min(this.Bounds.Right, i_Source.Bounds.Right);
+            Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Source.Bounds);
 
-            // Scan the pixels of the rectangle which defines the overlap
+            // Scan the pixels of both sprites within their intersection
             // and look for a pixel in which both textures are not transparent
-            for (int y = top; y < bottom && !collisionDetected; y++)
+            for (int y = intersection.Top; y < intersection.Bottom && !collisionDetected; y++)
             {
-                for (int x = left; x < right && !collisionDetected; x++)
+                for (int x = intersection.Left; x < intersection.Right && !collisionDetected; x++)
                 {
                     int pixelIndexA = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
                     int pixelIndexB = (y - i_Source.Bounds.Top) * (i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);

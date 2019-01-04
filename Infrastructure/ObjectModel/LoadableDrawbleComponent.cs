@@ -16,21 +16,13 @@ namespace Infrastructure.ObjectModel
                 Disposed.Invoke(sender, args);
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
             OnDisposed(this, EventArgs.Empty);
         }
-        
-        protected string m_AssetName;
 
-        // used to load the sprite:
-        protected ContentManager ContentManager
-        {
-            get { return this.Game.Content; }
-        }
-
-        // TODO 11: Implement the PositionChanged event:
         public event EventHandler<EventArgs> PositionChanged;
         protected virtual void OnPositionChanged()
         {
@@ -48,8 +40,22 @@ namespace Infrastructure.ObjectModel
                 SizeChanged(this, EventArgs.Empty);
             }
         }
-        // -- end of TODO 11
 
+        public event EventHandler<EventArgs> VulnerableChanged;
+        protected virtual void OnVulnerableChanged()
+        {
+            if (VulnerableChanged != null)
+            {
+                VulnerableChanged(this, EventArgs.Empty);
+            }
+        }
+
+        protected ContentManager ContentManager
+        {
+            get { return this.Game.Content; }
+        }
+
+        protected string m_AssetName;
         public string AssetName
         {
             get { return m_AssetName; }
@@ -64,7 +70,6 @@ namespace Infrastructure.ObjectModel
             this.UpdateOrder = i_UpdateOrder;
             this.DrawOrder = i_DrawOrder;
 
-            // register in the game:
             this.Game.Components.Add(this);
         }
 
@@ -79,7 +84,6 @@ namespace Infrastructure.ObjectModel
         {
             base.Initialize();
             
-            // TODO 12: Register in the collisions manager:
             if (this is ICollidable)
             {
                 ICollisionsManager collisionMgr =
@@ -96,12 +100,5 @@ namespace Infrastructure.ObjectModel
         }
 
         protected abstract void InitBounds();
-
-        // TODO 03: enforce the logic of drawing the bounding box to the derivies:
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-        }
-        // -- end of TODO 03
     }
 }

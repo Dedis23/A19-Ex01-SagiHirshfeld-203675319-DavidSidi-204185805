@@ -14,6 +14,7 @@ namespace SpaceInvaders
         {
             r_Spawner = new Spawner(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);            
             m_MotherShip = new Mothership(i_Game);
+            m_MotherShip.DefaultPosition = new Vector2(-m_MotherShip.Width, m_MotherShip.Height);
 
             r_Spawner.Spawned += checkAnimationStatusAndSpawn;
             m_MotherShip.SpriteKilled += OnMothershipKilled;

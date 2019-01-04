@@ -15,9 +15,8 @@ namespace SpaceInvaders
 
         protected override void InitBounds()
         {
-            base.InitBounds();
-
             this.DrawOrder = int.MinValue;
-        }
+            base.InitBounds();            
+        } 
     }
 }

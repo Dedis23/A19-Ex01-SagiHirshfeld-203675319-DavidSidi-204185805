@@ -8,10 +8,10 @@ namespace SpaceInvaders
 {
     public class CollisionHandler : GameService, ICollisionHandler
     {
+        private const int k_ChanceToDestroyEnemyBullet = 50;
         private readonly Queue<Sprite> r_KillQueue;        
         public event Action EnemyCollidedWithSpaceship;
         private readonly Random r_RandomGenerator;
-        private const int k_ChanceToDestroyEnemyBullet = 50;
 
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
@@ -24,53 +24,66 @@ namespace SpaceInvaders
             this.Game.Services.AddService(typeof(ICollisionHandler), this);
         }
 
-        public void HandleCollision(ICollidable i_CollideableA, ICollidable i_CollideableB)
+        public void HandleCollision(ICollidable i_CollidableA, ICollidable i_CollidableB)
         {
-            if(i_CollideableA is ICollidable2D && i_CollideableB is ICollidable2D)
+            if(i_CollidableA is ICollidable2D && i_CollidableB is ICollidable2D)
             {
-                ICollidable2D collidableA = i_CollideableA as ICollidable2D;
-                ICollidable2D collidableB = i_CollideableB as ICollidable2D;
+                ICollidable2D collidableA = i_CollidableA as ICollidable2D;
+                ICollidable2D collidableB = i_CollidableB as ICollidable2D;
 
                 handleCollisionForPermutation(collidableA, collidableB);
                 handleCollisionForPermutation(collidableB, collidableA);
             }
         }
 
-        private void handleCollisionForPermutation(ICollidable2D i_CollideableA, ICollidable2D i_CollideableB)
+        private void handleCollisionForPermutation(ICollidable2D i_CollidableA, ICollidable2D i_CollidableB)
         {
-            if (i_CollideableA is Bullet && i_CollideableB is Sprite)
+            if (i_CollidableA is Bullet && i_CollidableB is Sprite)
             {
-                if ((i_CollideableB as Sprite).Vulnerable)
-                {
-                    handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as Sprite);
-                }
+                handleBulletHitsSprite(i_CollidableA as Bullet, i_CollidableB as Sprite);
             }
 
-            else if (i_CollideableA is Invader && i_CollideableB is Spaceship)
+            else if (i_CollidableA is Invader && i_CollidableB is Spaceship)
             {
-                handleEnemyHitsSpaceship(i_CollideableA as Invader, i_CollideableB as Spaceship);
+                handleInvaderCollidedWithSpaceship(i_CollidableA as Invader, i_CollidableB as Spaceship);
+            }
+
+            else if(i_CollidableA is Invader && i_CollidableB is Barrier)
+            {
+                handleInvaderCollidedWithBarrier(i_CollidableA as Invader, i_CollidableB as Barrier);
             }
         }
 
-        private void handleBulletHitsKillable(Bullet i_Bullet, Sprite i_Killable)
+        private void handleBulletHitsSprite(Bullet i_Bullet, Sprite i_Sprite)
         {
-            if (!r_KillQueue.Contains(i_Bullet) && !r_KillQueue.Contains(i_Killable))
+            if (!r_KillQueue.Contains(i_Bullet) && !r_KillQueue.Contains(i_Sprite))
             {
-                if (i_Killable is Bullet)
+                if (i_Sprite is Bullet)
                 {
-                    handleBulletHitsBullet(i_Bullet, i_Killable as Bullet);
+                    handleBulletHitsBullet(i_Bullet, i_Sprite as Bullet);
                 }
 
-                else if (i_Killable is IEnemy)
+                else if (i_Sprite is IEnemy)
                 {
-                    handleBulletHitsEnemy(i_Bullet, i_Killable as IEnemy);
+                    handleBulletHitsEnemy(i_Bullet, i_Sprite as IEnemy);
                 }
 
-                else if (i_Killable is Spaceship)
+                else if (i_Sprite is Spaceship)
                 {
-                    handleBulletHitsSpaceship(i_Bullet, i_Killable as Spaceship);
+                    handleBulletHitsSpaceship(i_Bullet, i_Sprite as Spaceship);
+                }
+
+                else if(i_Sprite is Barrier)
+                {
+                    handleBulletHitsBarrier(i_Bullet, i_Sprite as Barrier);
                 }
             }
+        }
+
+        private void handleBulletHitsBarrier(Bullet i_Bullet, Barrier i_Barrier)
+        {
+            i_Barrier.ReceiveBulletDamage(i_Bullet);
+            r_KillQueue.Enqueue(i_Bullet);
         }
 
         private void handleBulletHitsBullet(Bullet i_BulletA, Bullet i_BulletB)
@@ -93,7 +106,6 @@ namespace SpaceInvaders
                 r_KillQueue.Enqueue(i_Bullet);
                 if(i_Enemy is Sprite)
                 {
-                    (i_Enemy as Sprite).Vulnerable = false;
                     r_KillQueue.Enqueue(i_Enemy as Sprite);
                 }
                 
@@ -107,9 +119,14 @@ namespace SpaceInvaders
             i_Spaceship.TakeBulletHit();
         }
 
-        private void handleEnemyHitsSpaceship(Invader i_Enemy, Spaceship i_Spaceship)
+        private void handleInvaderCollidedWithSpaceship(Invader i_Enemy, Spaceship i_Spaceship)
         {
             EnemyCollidedWithSpaceship.Invoke();
+        }
+
+        private void handleInvaderCollidedWithBarrier(Invader i_Invader, Barrier i_Barrier)
+        {
+            i_Barrier.ErasePixelsThatIntersectWith(i_Invader);
         }
 
         public override void Update(GameTime gameTime)

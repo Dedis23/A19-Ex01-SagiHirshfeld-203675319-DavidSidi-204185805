@@ -45,7 +45,6 @@ namespace SpaceInvaders
         {
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
-            this.Vulnerable = true;
             m_Score = 0;
             r_SpaceshipIndex = s_SpaceshipsCounter;
             s_SpaceshipsCounter++;
@@ -55,26 +54,7 @@ namespace SpaceInvaders
         {
             InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             base.Initialize();
-        }        
-
-        protected override void InitBounds()
-        {
-            base.InitBounds();
-
-            SetDefaultPosition();
-        }
-
-        public void SetDefaultPosition()
-        {
-            // Get the bottom and center:
-            float x = 0;
-            float y = (float)GraphicsDevice.Viewport.Height;
-
-            // Offset:
-            y -= Texture.Height * 1.5f;
-
-            Position = new Vector2(x, y);
-        }
+        }  
 
         public override void Update(GameTime i_GameTime)
         {
@@ -138,7 +118,7 @@ namespace SpaceInvaders
                 this.Kill();
             }
 
-            SetDefaultPosition();
+            this.Position = DefaultPosition;
         }
 
         public override void Draw(GameTime gameTime)
