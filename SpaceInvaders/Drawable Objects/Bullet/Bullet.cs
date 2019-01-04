@@ -14,6 +14,7 @@ namespace SpaceInvaders
 
         public Bullet(Game i_Game) : base(k_AssetName, i_Game)
         {
+            this.Vulnerable = true;
         }
 
         public override void Update(GameTime i_GameTime)

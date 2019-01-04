@@ -51,7 +51,10 @@
     <Compile Include="ObjectModel\Animators\CompositeAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\BlinkAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\CellAnimator.cs" />
+    <Compile Include="ObjectModel\Animators\ConcreteAnimators\FaderAnimator.cs" />
+    <Compile Include="ObjectModel\Animators\ConcreteAnimators\RotateAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\SequencialAnimator.cs" />
+    <Compile Include="ObjectModel\Animators\ConcreteAnimators\ShrinkAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\WaypointsAnymator.cs" />
     <Compile Include="ObjectModel\Animators\SpriteAnimator.cs" />
     <Compile Include="ObjectModel\Game2D.cs" />

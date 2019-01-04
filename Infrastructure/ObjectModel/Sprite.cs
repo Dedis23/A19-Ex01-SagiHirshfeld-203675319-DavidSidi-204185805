@@ -112,16 +112,6 @@ namespace Infrastructure.ObjectModel
             set { m_Velocity = value; }
         }
 
-        private float m_AngularVelocity = 0;
-        /// <summary>
-        /// Radians per Second on X Axis
-        /// </summary>
-        public float AngularVelocity
-        {
-            get { return m_AngularVelocity; }
-            set { m_AngularVelocity = value; }
-        }
-
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
         { }
@@ -148,6 +138,13 @@ namespace Infrastructure.ObjectModel
             set { m_SpriteEffects = value; }
         }
 
+        protected bool m_Vulnerable = false;
+        public bool Vulnerable
+        {
+            get { return m_Vulnerable; }
+            set { m_Vulnerable = value; }
+        }
+
         protected Rectangle GameScreenBounds
         {
             get { return new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height); }
@@ -160,6 +157,14 @@ namespace Infrastructure.ObjectModel
                 return this.Bounds.Intersects(GameScreenBounds);
             }
         }
+        public Vector2 TextureCenter
+        {
+            get
+            {
+                return new Vector2((float)(m_Texture.Width / 2), (float)(m_Texture.Height / 2));
+            }
+        }
+
 
         public Sprite ShallowClone()
         {
@@ -193,6 +198,7 @@ namespace Infrastructure.ObjectModel
             SpecificTextureBounds();
             PositionOrigin = Vector2.Zero;
             InitSourceRectangle();
+            InitRotationOrigin();
         }
 
         /// <summary>
@@ -202,6 +208,11 @@ namespace Infrastructure.ObjectModel
         /// Derived classes are welcome to override this to implement their specific boundns initialization
         /// </remarks>
         ///
+        protected virtual void InitSourceRectangle()
+        {
+            m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
+        }
+
         protected virtual void SpecificTextureBounds()
         {
             if (m_Texture != null)
@@ -211,9 +222,10 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        protected virtual void InitSourceRectangle()
+        // Default rotation origin is the texture cetner, this turned into injection point in case using sprite sheet
+        protected virtual void InitRotationOrigin()
         {
-            m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
+            RotationOrigin = TextureCenter;
         }
 
         public Vector2 DrawingPosition
@@ -291,11 +303,10 @@ namespace Infrastructure.ObjectModel
             float totalSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             this.Position += this.Velocity * totalSeconds;
-            this.Rotation += this.AngularVelocity * totalSeconds;
-
-            base.Update(gameTime);
 
             this.Animations.Update(gameTime);
+
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -410,6 +421,11 @@ namespace Infrastructure.ObjectModel
         }
 
         protected virtual void KilledInjectionPoint()
+        {
+            RemoveAndDestory();
+        }
+
+        protected virtual void RemoveAndDestory()
         {
             this.Game.Components.Remove(this);
             if (SpriteKilled != null)

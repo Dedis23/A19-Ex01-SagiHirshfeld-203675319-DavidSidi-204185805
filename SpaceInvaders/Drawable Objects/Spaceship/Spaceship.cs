@@ -10,7 +10,7 @@ namespace SpaceInvaders
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
     {        
         private const int k_ScorePenaltyForBulletHit = 1100;
-        private const int k_VelocityScalar = 120;
+        private const int k_VelocityScalar = 145;
         private const int k_MaxBulletsInScreen = 3;        
         private const int k_StartingLivesCount = 3;
         private const float k_LivesDrawingGapModifier = 0.7f;
@@ -45,6 +45,7 @@ namespace SpaceInvaders
         {
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
+            this.Vulnerable = true;
             m_Score = 0;
             r_SpaceshipIndex = s_SpaceshipsCounter;
             s_SpaceshipsCounter++;

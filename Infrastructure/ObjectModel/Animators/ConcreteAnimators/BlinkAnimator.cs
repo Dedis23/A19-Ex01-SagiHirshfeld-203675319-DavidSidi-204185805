@@ -15,7 +15,6 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
             set { m_BlinkLength = value; }
         }
 
-        // CTORs
         public BlinkAnimator(string i_Name, TimeSpan i_BlinkLength, TimeSpan i_AnimationLength)
             : base(i_Name, i_AnimationLength)
         {
@@ -24,11 +23,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
         }
 
         public BlinkAnimator(TimeSpan i_BlinkLength, TimeSpan i_AnimationLength)
-            : this("Blink", i_BlinkLength, i_AnimationLength)
-        {
-            this.m_BlinkLength = i_BlinkLength;
-            this.m_TimeLeftForNextBlink = i_BlinkLength;
-        }
+            : this("BlinkAnimator", i_BlinkLength, i_AnimationLength)
+        {}
 
         protected override void DoFrame(GameTime i_GameTime)
         {
@@ -37,9 +33,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
             {
                 // we have elapsed, so blink
                 this.BoundSprite.Visible = !this.BoundSprite.Visible;
-                m_TimeLeftForNextBlink = m_BlinkLength;
+                m_TimeLeftForNextBlink += m_BlinkLength;
             }
-
         }
 
         protected override void RevertToOriginal()

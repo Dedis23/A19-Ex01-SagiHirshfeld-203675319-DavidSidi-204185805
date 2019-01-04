@@ -18,6 +18,7 @@ namespace SpaceInvaders
             this.TintColor = Color.Red;
             this.Velocity = Vector2.Zero;
             this.Visible = false;
+            this.Vulnerable = true;
             PointsValue = k_MotherShipPointsValue;
         }
 
@@ -47,6 +48,7 @@ namespace SpaceInvaders
         public void SpawnAndFly()
         {
             setDefaultPosition();
+            this.Vulnerable = true;
             this.Visible = true;
             this.Velocity = new Vector2(k_MotherShipVelocity, 0);
         }

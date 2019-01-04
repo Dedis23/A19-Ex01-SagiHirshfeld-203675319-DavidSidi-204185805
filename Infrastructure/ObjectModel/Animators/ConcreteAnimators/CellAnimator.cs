@@ -15,8 +15,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public Action FinishedCellAnimationCycle;
 
-        public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength, int i_StartCell)
-            : base("CelAnimation", i_AnimationLength)
+        public CellAnimator(string i_Name, TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength, int i_StartCell)
+            : base(i_Name, i_AnimationLength)
         {
             this.m_CellTime = i_CellTime;
             this.m_TimeLeftForCell = i_CellTime;
@@ -25,6 +25,10 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
             m_Loop = i_AnimationLength == TimeSpan.Zero;
         }
+
+        public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength, int i_StartCell)
+            : this("CellAnimator", i_CellTime, i_NumOfCells, i_AnimationLength, i_StartCell)
+        {}
 
         public TimeSpan CellTime
         {

@@ -3,6 +3,7 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using System;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.ObjectModel.Animators;
 
 namespace SpaceInvaders
 {
@@ -14,6 +15,8 @@ namespace SpaceInvaders
         private const int k_MaxBulletsInScreen = 1;
         public const int k_NumOfCells = 2;
         public const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
+        private const float k_DeathAnimationTime = 1.2f;
+        private const float k_NumOfCyclesPerSecondsInDeathAnimation = 6.0f;
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
         public Color BulletsColor { get; } = Color.Blue;
@@ -29,6 +32,7 @@ namespace SpaceInvaders
         {
             TintColor = i_Tint;
             PointsValue = i_PointsValue;
+            this.Vulnerable = true;
             m_ColIndexInSpriteSheet = i_ColIndexInSpriteSheet;
             m_RowIndexInSpriteSheet = i_RowIndexInSpriteSheet;
             r_Gun = new Gun(this, k_MaxBulletsInScreen);
@@ -55,16 +59,41 @@ namespace SpaceInvaders
                 k_NumOfCells, TimeSpan.Zero, m_ColIndexInSpriteSheet);
             cellAnimator.FinishedCellAnimationCycle += onFinishedCellAnimationCycle;
             Animations.Add(cellAnimator);
-            Animations.Enabled = true;
+
+            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
+            RotateAnimator rotateAnimator = new RotateAnimator(
+                k_NumOfCyclesPerSecondsInDeathAnimation,
+                TimeSpan.FromSeconds(k_DeathAnimationTime));
+
+            CompositeAnimator deathAnimation = new CompositeAnimator
+                ("DeathAnimation",
+                TimeSpan.FromSeconds(k_DeathAnimationTime),
+                this,
+                shrinkAnimator, rotateAnimator);
+            deathAnimation.Finished += onFinishedDeathAnimation;
+            Animations.Add(deathAnimation);
+            deathAnimation.Pause();
+
+            Animations.Resume();
         }
 
         private void onFinishedCellAnimationCycle()
         {
-            if (DelayBetweenJumpsInSeconds < (Animations["CelAnimation"] as CellAnimator).CellTime.TotalSeconds)
+            // increase cell animation speed based on jumping speed
+            if (DelayBetweenJumpsInSeconds < (Animations["CellAnimator"] as CellAnimator).CellTime.TotalSeconds)
             {
-                (Animations["CelAnimation"] as CellAnimator).CellTime = TimeSpan.FromSeconds(DelayBetweenJumpsInSeconds);
-                this.Game.Window.Title = (Animations["CelAnimation"] as CellAnimator).CellTime.TotalSeconds.ToString();
+                (Animations["CellAnimator"] as CellAnimator).CellTime = TimeSpan.FromSeconds(DelayBetweenJumpsInSeconds);
             }
+        }
+
+        protected override void KilledInjectionPoint()
+        {
+            Animations["DeathAnimation"].Resume();
+        }
+
+        private void onFinishedDeathAnimation(object sender, EventArgs e)
+        {
+            this.RemoveAndDestory();
         }
 
         public void Shoot()
@@ -77,6 +106,11 @@ namespace SpaceInvaders
             // manually set the texture height and width of the invader because now we are using a sprite sheet
             WidthBeforeScale = k_DefaultInvaderWidth;
             HeightBeforeScale = k_DefaultInvaderHeight;
+        }
+
+        protected override void InitRotationOrigin()
+        {
+            RotationOrigin = new Vector2(k_DefaultInvaderWidth / 2, k_DefaultInvaderHeight / 2);
         }
     }
 }

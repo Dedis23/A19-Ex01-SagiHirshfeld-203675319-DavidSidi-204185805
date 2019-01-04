@@ -40,7 +40,10 @@ namespace SpaceInvaders
         {
             if (i_CollideableA is Bullet && i_CollideableB is Sprite)
             {
-                handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as Sprite);
+                if ((i_CollideableB as Sprite).Vulnerable)
+                {
+                    handleBulletHitsKillable(i_CollideableA as Bullet, i_CollideableB as Sprite);
+                }
             }
 
             else if (i_CollideableA is Invader && i_CollideableB is Spaceship)
@@ -90,6 +93,7 @@ namespace SpaceInvaders
                 r_KillQueue.Enqueue(i_Bullet);
                 if(i_Enemy is Sprite)
                 {
+                    (i_Enemy as Sprite).Vulnerable = false;
                     r_KillQueue.Enqueue(i_Enemy as Sprite);
                 }
                 
@@ -120,7 +124,6 @@ namespace SpaceInvaders
             {
                 sprite.Kill();
             }
-
             r_KillQueue.Clear();
         }
     }
