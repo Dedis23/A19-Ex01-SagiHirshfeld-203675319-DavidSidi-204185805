@@ -94,8 +94,6 @@ namespace SpaceInvaders
             {
                 this.Kill();
             }
-
-            this.Game.Window.Title = this.Opacity.ToString();
         }
 
         protected override void InitBounds()
