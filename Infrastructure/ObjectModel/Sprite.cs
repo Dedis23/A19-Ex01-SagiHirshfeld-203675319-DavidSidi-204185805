@@ -294,7 +294,7 @@ namespace Infrastructure.ObjectModel
         public Vector2 m_RotationOrigin = Vector2.Zero;
         public Vector2 RotationOrigin
         {
-            get { return m_RotationOrigin; }// r_SpriteParameters.RotationOrigin; }
+            get { return m_RotationOrigin; }
             set { m_RotationOrigin = value; }
         }
 

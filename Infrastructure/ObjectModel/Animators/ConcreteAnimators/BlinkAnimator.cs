@@ -6,34 +6,28 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 {
     public class BlinkAnimator : SpriteAnimator
     {
-        private TimeSpan m_BlinkLength;
-        private TimeSpan m_TimeLeftForNextBlink;
+        private readonly float r_BlinkTime;
+        private float m_TimeLeftForNextBlink;
 
-        public TimeSpan BlinkLength
-        {
-            get { return m_BlinkLength; }
-            set { m_BlinkLength = value; }
-        }
-
-        public BlinkAnimator(string i_Name, TimeSpan i_BlinkLength, TimeSpan i_AnimationLength)
+        public BlinkAnimator(string i_Name, float i_NumOfBlinksInSecond, TimeSpan i_AnimationLength)
             : base(i_Name, i_AnimationLength)
         {
-            this.m_BlinkLength = i_BlinkLength;
-            this.m_TimeLeftForNextBlink = i_BlinkLength;
+            // each blink is to go from Visable = true, to false to true again
+            this.r_BlinkTime = 1.0f / i_NumOfBlinksInSecond / 2.0f;
+            m_TimeLeftForNextBlink = r_BlinkTime;
         }
 
-        public BlinkAnimator(TimeSpan i_BlinkLength, TimeSpan i_AnimationLength)
-            : this("BlinkAnimator", i_BlinkLength, i_AnimationLength)
+        public BlinkAnimator(float i_NumOfBlinksInSecond, TimeSpan i_AnimationLength)
+            : this("BlinkAnimator", i_NumOfBlinksInSecond, i_AnimationLength)
         {}
 
         protected override void DoFrame(GameTime i_GameTime)
         {
-            m_TimeLeftForNextBlink -= i_GameTime.ElapsedGameTime;
-            if (m_TimeLeftForNextBlink.TotalSeconds < 0)
+            m_TimeLeftForNextBlink += (float)i_GameTime.ElapsedGameTime.TotalSeconds;
+            if (m_TimeLeftForNextBlink >= r_BlinkTime)
             {
-                // we have elapsed, so blink
                 this.BoundSprite.Visible = !this.BoundSprite.Visible;
-                m_TimeLeftForNextBlink += m_BlinkLength;
+                m_TimeLeftForNextBlink -= r_BlinkTime;
             }
         }
 

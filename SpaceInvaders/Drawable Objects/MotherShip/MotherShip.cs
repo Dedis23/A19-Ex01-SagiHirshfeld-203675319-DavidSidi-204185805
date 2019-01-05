@@ -12,8 +12,8 @@ namespace SpaceInvaders
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
-        private const float k_DeathAnimationTime = 2.2f;
-        private const float k_BlinkingAnimationLength = 0.1375f;
+        private const float k_DeathAnimationLength = 2.2f;
+        private const float k_NumOfBlinksInASecondInDeathAnimation = 4.0f;
 
         public int PointsValue { get; set; }
 
@@ -22,6 +22,7 @@ namespace SpaceInvaders
             this.TintColor = Color.Red;
             this.Velocity = Vector2.Zero;
             this.Visible = false;
+            this.Vulnerable = true;
             PointsValue = k_MotherShipPointsValue;
         }
 
@@ -32,18 +33,16 @@ namespace SpaceInvaders
         }
         private void initializeAnimations()
         {
-            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
-            FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
-            BlinkAnimator blinkAnimator = new BlinkAnimator(TimeSpan.FromSeconds(k_BlinkingAnimationLength),
-                TimeSpan.FromSeconds(k_DeathAnimationTime));
+            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
+            FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
+            BlinkAnimator blinkAnimator = new BlinkAnimator(k_NumOfBlinksInASecondInDeathAnimation,
+                TimeSpan.FromSeconds(k_DeathAnimationLength));
 
             CompositeAnimator deathAnimation = new CompositeAnimator
                 ("DeathAnimation",
-                TimeSpan.FromSeconds(k_DeathAnimationTime),
+                TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
-                shrinkAnimator,
-                faderAnimator,
-                blinkAnimator);
+                shrinkAnimator, faderAnimator, blinkAnimator);
             deathAnimation.Finished += onFinishedDeathAnimation;
             Animations.Add(deathAnimation);
             deathAnimation.Pause();
@@ -53,9 +52,16 @@ namespace SpaceInvaders
 
         protected override void KilledInjectionPoint()
         {
-            Vulnerable = false;
-            Animations["DeathAnimation"].Resume();
-            Velocity = Vector2.Zero;
+            // only if it got hit, we start death animation (vulnerable = false means it was just hit)
+            if (this.Vulnerable == false)
+            {
+                Animations["DeathAnimation"].Resume();
+                this.Velocity = Vector2.Zero;
+            }
+            else // else means the mothership moved accross the screen
+            {
+                hideAndWaitForNextSpawn();
+            }
         }
 
         private void onFinishedDeathAnimation(object sender, EventArgs e)
@@ -84,7 +90,7 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
-            if (this.Vulnerable && this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
             {
                 this.Kill();
             }

@@ -15,7 +15,7 @@ namespace SpaceInvaders
         private const int k_MaxBulletsInScreen = 1;
         public const int k_NumOfCells = 2;
         public const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
-        private const float k_DeathAnimationTime = 1.2f;
+        private const float k_DeathAnimationLength = 1.2f;
         private const float k_NumOfCyclesPerSecondsInDeathAnimation = 6.0f;
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
@@ -62,14 +62,14 @@ namespace SpaceInvaders
             cellAnimator.FinishedCellAnimationCycle += onFinishedCellAnimationCycle;
             Animations.Add(cellAnimator);
 
-            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationTime));
+            ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
             RotateAnimator rotateAnimator = new RotateAnimator(
                 k_NumOfCyclesPerSecondsInDeathAnimation,
-                TimeSpan.FromSeconds(k_DeathAnimationTime));
+                TimeSpan.FromSeconds(k_DeathAnimationLength));
 
             CompositeAnimator deathAnimation = new CompositeAnimator
                 ("DeathAnimation",
-                TimeSpan.FromSeconds(k_DeathAnimationTime),
+                TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
                 shrinkAnimator, rotateAnimator);
             deathAnimation.Finished += onFinishedDeathAnimation;
