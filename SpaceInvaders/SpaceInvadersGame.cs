@@ -18,9 +18,7 @@ namespace SpaceInvaders
         private InvadersMatrix m_InvadersMatrix;
         private Sprite m_Background;
         private CollisionHandler m_CollisionHandler;
-        private ScorePrinter m_ScorePrinter;
         private DancingBarriersRow m_DancingBarriersRow;
-
 
         public SpaceInvadersGame()
         {
@@ -36,16 +34,14 @@ namespace SpaceInvaders
             loadSpaceships();
             loadInvadersMatrix();
             m_DancingBarriersRow = new DancingBarriersRow(this);
-
-            m_ScorePrinter = new ScorePrinter(this, m_SpaceshipList.Cast<IPlayer>());
         }
 
         protected override void LoadContent()
         {
+            base.LoadContent();
             fitViewportToBackground();
             setSpaceshipsPositions();
             setBarriersPosition();
-            base.LoadContent();
         }
 
         private void loadSpaceships()
@@ -74,7 +70,9 @@ namespace SpaceInvaders
         private void setBarriersPosition()
         {
             float distanceFromScreenHorizondalBounds = (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2;
-            m_DancingBarriersRow.Position = new Vector2(distanceFromScreenHorizondalBounds, m_SpaceshipList[0].DefaultPosition.Y - m_DancingBarriersRow.Height * 2);
+            m_DancingBarriersRow.Position = new Vector2(
+                distanceFromScreenHorizondalBounds,
+                m_SpaceshipList[0].DefaultPosition.Y - m_DancingBarriersRow.Height * 2);
         }
 
         private void loadInvadersMatrix()
@@ -83,8 +81,6 @@ namespace SpaceInvaders
             m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
             m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
         }
-
-
 
         private void fitViewportToBackground()
         {
@@ -103,29 +99,15 @@ namespace SpaceInvaders
             }
         }
 
-        protected override void DrawInjectionPoint()
-        {
-            m_ScorePrinter.DrawScore(m_SpriteBatch);
-        }
-
+        private int m_SpaceshipsDestroyed = 0;
         private void onSpaceshipKilled(object i_Object)
         {
-            (i_Object as Spaceship).Enabled = false;
-
-            bool allSpaceshipsDisabled = true;
-            foreach (Spaceship spaceship in m_SpaceshipList)
-            {
-                if (spaceship.Enabled)
-                {
-                    allSpaceshipsDisabled = false;
-                    break;
-                }
-            }
-
-            if (allSpaceshipsDisabled)
+            m_SpaceshipsDestroyed++;
+            if(m_SpaceshipsDestroyed == m_SpaceshipList.Count)
             {
                 gameOver();
-            }         
+            }
+
         }
 
         private void onInvadersMatrixReachedBottomScreen()
@@ -143,10 +125,54 @@ namespace SpaceInvaders
             gameOver();
         }
 
+        bool m_FirstGameOver = true;
         private void gameOver()
         {
-            m_ScorePrinter.ShowGameOverWindow();            
-            Exit();
+            if (m_FirstGameOver)
+            {
+                m_FirstGameOver = false;
+                showGameOverWindow();
+                Exit();
+            }
+        }
+
+        private void showGameOverWindow()
+        {
+            String gameOverMessage = buildGameOverMessage();
+            System.Windows.Forms.MessageBox.Show(gameOverMessage, "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+        }
+
+        private string buildGameOverMessage()
+        {
+            StringBuilder messageBuilder = new StringBuilder();
+
+            messageBuilder.Append(String.Format("GG! The winner is {0}!", getTheNameOfTheWinner()));
+            messageBuilder.Append(Environment.NewLine);
+
+            foreach (IPlayer player in m_SpaceshipList)
+            {
+                messageBuilder.Append(String.Format("{0} Score: {1}", player.Name, player.Score));
+                messageBuilder.Append(Environment.NewLine);
+            }
+
+            return messageBuilder.ToString();
+        }
+
+        private String getTheNameOfTheWinner()
+        {
+            int maxScore = 0;
+            String winnerName = "";
+
+            foreach (IPlayer player in m_SpaceshipList)
+            {
+                if (player.Score >= maxScore)
+                {
+                    maxScore = player.Score;
+                    winnerName = player.Name;
+                }
+            }
+
+            return winnerName;
         }
     }
 }

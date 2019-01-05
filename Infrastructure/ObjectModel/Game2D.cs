@@ -39,12 +39,7 @@ namespace SpaceInvaders
 
             m_SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             base.Draw(gameTime);
-            DrawInjectionPoint();
             m_SpriteBatch.End();
-        }
-
-        protected virtual void DrawInjectionPoint()
-        {
         }
     }
 }

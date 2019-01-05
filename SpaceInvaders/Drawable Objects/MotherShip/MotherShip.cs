@@ -22,7 +22,6 @@ namespace SpaceInvaders
             this.TintColor = Color.Red;
             this.Velocity = Vector2.Zero;
             this.Visible = false;
-            this.Vulnerable = true;
             PointsValue = k_MotherShipPointsValue;
         }
 
@@ -52,16 +51,9 @@ namespace SpaceInvaders
 
         protected override void KilledInjectionPoint()
         {
-            // only if it got hit, we start death animation (vulnerable = false means it was just hit)
-            if (this.Vulnerable == false)
-            {
-                Animations["DeathAnimation"].Resume();
-                this.Velocity = Vector2.Zero;
-            }
-            else // else means the mothership moved accross the screen
-            {
-                hideAndWaitForNextSpawn();
-            }
+            Vulnerable = false;
+            Animations["DeathAnimation"].Resume();
+            Velocity = Vector2.Zero;
         }
 
         private void onFinishedDeathAnimation(object sender, EventArgs e)
@@ -90,7 +82,7 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
-            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            if (this.Vulnerable && this.Position.X >= this.GraphicsDevice.Viewport.Width)
             {
                 this.Kill();
             }

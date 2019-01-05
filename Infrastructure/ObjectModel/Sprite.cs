@@ -152,7 +152,7 @@ namespace Infrastructure.ObjectModel
             get { return m_Vulnerable; }
             set
             {
-                if(m_Vulnerable == false)
+                if (m_Vulnerable != value)
                 {
                     m_Vulnerable = value;
                     OnVulnerableChanged();

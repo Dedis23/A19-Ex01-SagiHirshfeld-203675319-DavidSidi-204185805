@@ -49,12 +49,10 @@ namespace SpaceInvaders
 
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
-            r_Gun = new Gun(this, k_MaxBulletsInScreen);
             Lives = k_StartingLivesCount;
-            this.Vulnerable = true;
-            m_Score = 0;
             r_SpaceshipIndex = s_SpaceshipsCounter;
             s_SpaceshipsCounter++;
+            r_Gun = new Gun(this, k_MaxBulletsInScreen);            
         }
 
         public override void Initialize()
@@ -62,7 +60,6 @@ namespace SpaceInvaders
             base.Initialize();
             InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             initializeAnimations();
-            SetDefaultPosition();
         }
 
         private void initializeAnimations()
@@ -91,12 +88,6 @@ namespace SpaceInvaders
             Animations.Resume();
         }
 
-        protected override void KilledInjectionPoint()
-        {
-            Animations["DeathAnimation"].Resume();
-            this.r_Gun.Enabled = false;
-        }
-
         private void onFinishedLoseLifeAnimation(object sender, EventArgs e)
         {
             Animations["LoseLifeAnimation"].Reset();
@@ -106,18 +97,7 @@ namespace SpaceInvaders
 
         private void onFinishedDeathAnimation(object sender, EventArgs e)
         {
-        }
-
-        public void SetDefaultPosition()
-        {
-            // Get the bottom and center:
-            float x = 0;
-            float y = (float)GraphicsDevice.Viewport.Height;
-
-            // Offset:
-            y -= Texture.Height * 1.5f;
-
-            Position = new Vector2(x, y);
+            this.Kill();
         }
 
         public override void Update(GameTime i_GameTime)
@@ -175,17 +155,18 @@ namespace SpaceInvaders
 
         public void TakeBulletHit()
         {
+            this.Vulnerable = false;
             Lives--;
             Score -= k_ScorePenaltyForBulletHit;
             if(Lives == 0)
             {
-                this.Kill();
+                this.r_Gun.Enabled = false;
+                Animations["DeathAnimation"].Resume();
             }
             else
             {
-                this.Vulnerable = false;
                 Animations["LoseLifeAnimation"].Resume();
-                SetDefaultPosition();
+                this.Position = DefaultPosition;
             }
         }
 
