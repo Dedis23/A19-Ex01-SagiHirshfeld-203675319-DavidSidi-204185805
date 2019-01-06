@@ -1,10 +1,13 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Infrastructure.Managers;
+using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel;
+using System;
+using System.Text;
 
 namespace SpaceInvaders
 {
@@ -72,7 +75,7 @@ namespace SpaceInvaders
         {
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - (spaceship.Height * k_SpaceshipPositionYModifier));
+                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - spaceship.Height * k_SpaceshipPositionYModifier);
                 spaceship.Position = spaceship.DefaultPosition;
             }
         }
@@ -111,9 +114,9 @@ namespace SpaceInvaders
             {
                 TextSprite newScoreSprite = new TextSprite(k_ScoreFontAsset, this);
                 newScoreSprite.TintColor = spaceship.ScoreColor;
-                newScoreSprite.Text = string.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
+                newScoreSprite.Text = String.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
                 spaceship.ScoreChanged +=
-                    () => newScoreSprite.Text = string.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
+                    () => newScoreSprite.Text = String.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
 
                 m_ScoreSprites.Add(newScoreSprite);
             }
@@ -133,7 +136,7 @@ namespace SpaceInvaders
             float distanceFromScreenHorizondalBounds = (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2;
             m_DancingBarriersRow.Position = new Vector2(
                 distanceFromScreenHorizondalBounds,
-                m_SpaceshipList[0].DefaultPosition.Y -( m_DancingBarriersRow.Height * 2));
+                m_SpaceshipList[0].DefaultPosition.Y - m_DancingBarriersRow.Height * 2);
         }
 
         private void loadInvadersMatrix()
@@ -161,7 +164,6 @@ namespace SpaceInvaders
         }
 
         private int m_SpaceshipsDestroyed = 0;
-
         private void onSpaceshipKilled(object i_Object)
         {
             m_SpaceshipsDestroyed++;
@@ -171,8 +173,7 @@ namespace SpaceInvaders
             }
         }
 
-        private bool m_FirstGameOver = true;
-
+        bool m_FirstGameOver = true;
         private void gameOver()
         {
             if (m_FirstGameOver)
@@ -185,7 +186,7 @@ namespace SpaceInvaders
 
         private void showGameOverWindow()
         {
-            string gameOverMessage = buildGameOverMessage();
+            String gameOverMessage = buildGameOverMessage();
             System.Windows.Forms.MessageBox.Show(gameOverMessage, "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
         }
 
@@ -193,12 +194,12 @@ namespace SpaceInvaders
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            messageBuilder.Append(string.Format("GG! The winner is {0}!", getTheNameOfTheWinner()));
+            messageBuilder.Append(String.Format("GG! The winner is {0}!", getTheNameOfTheWinner()));
             messageBuilder.Append(Environment.NewLine);
 
             foreach (IPlayer player in m_SpaceshipList)
             {
-                messageBuilder.Append(string.Format("{0} Score: {1}", player.Name, player.Score));
+                messageBuilder.Append(String.Format("{0} Score: {1}", player.Name, player.Score));
                 messageBuilder.Append(Environment.NewLine);
             }
 
@@ -208,7 +209,7 @@ namespace SpaceInvaders
         private String getTheNameOfTheWinner()
         {
             int maxScore = 0;
-            string winnerName = string.Empty;
+            String winnerName = "";
 
             foreach (IPlayer player in m_SpaceshipList)
             {
