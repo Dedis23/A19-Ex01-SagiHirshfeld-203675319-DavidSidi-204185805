@@ -82,7 +82,7 @@ namespace SpaceInvaders
             m_RowsOfLives = new List<SpriteRow>();
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new Sprite(spaceship.AssetName, this));
+                SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new LifeIconSprite(spaceship.AssetName, this));
                 spriteRow.InsertionOrder = SpriteRow.Order.RightToLeft;
                 spriteRow.Opacity /= 2;
                 spriteRow.Scales /= 2;

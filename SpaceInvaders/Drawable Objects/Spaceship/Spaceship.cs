@@ -7,6 +7,7 @@ using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 
 namespace SpaceInvaders
 {
+    [DontPremultiplyAlpha]
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
     {        
         private const int k_ScorePenaltyForBulletHit = 1100;

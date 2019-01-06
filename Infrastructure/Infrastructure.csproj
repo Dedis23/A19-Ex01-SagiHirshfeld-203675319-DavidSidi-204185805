@@ -60,6 +60,7 @@
     <Compile Include="ObjectModel\Game2D.cs" />
     <Compile Include="ObjectModel\GameService.cs" />
     <Compile Include="ObjectModel\LoadableDrawbleComponent.cs" />
+    <Compile Include="ObjectModel\NonPremultipliedSpriteBatch.cs" />
     <Compile Include="ObjectModel\RegisteredComponent.cs" />
     <Compile Include="ObjectModel\Sprite.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

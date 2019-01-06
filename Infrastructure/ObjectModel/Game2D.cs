@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.Managers;
+using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
@@ -8,7 +9,8 @@ namespace SpaceInvaders
     public class Game2D : Game
     {
         protected readonly GraphicsDeviceManager r_Graphics;
-        protected SpriteBatch m_SpriteBatch;
+        protected SpriteBatch m_PremultipliedSpriteBatch;
+        protected NonPremultipliedSpriteBatch m_NonPremultipliedSpriteBatch;
         protected IInputManager m_InputManager;
         protected ICollisionsManager m_CollisionsManager;
 
@@ -21,8 +23,11 @@ namespace SpaceInvaders
 
         protected override void Initialize()
         {
-            m_SpriteBatch = new SpriteBatch(GraphicsDevice);
-            this.Services.AddService(m_SpriteBatch.GetType(), m_SpriteBatch);
+            m_PremultipliedSpriteBatch = new SpriteBatch(GraphicsDevice);
+            this.Services.AddService(m_PremultipliedSpriteBatch.GetType(), m_PremultipliedSpriteBatch);
+
+            m_NonPremultipliedSpriteBatch = new NonPremultipliedSpriteBatch(GraphicsDevice);
+            this.Services.AddService(m_NonPremultipliedSpriteBatch.GetType(), m_NonPremultipliedSpriteBatch);
 
             base.Initialize();
         }
@@ -31,9 +36,11 @@ namespace SpaceInvaders
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            m_SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            m_NonPremultipliedSpriteBatch.Begin();
+            m_PremultipliedSpriteBatch.Begin();
             base.Draw(gameTime);
-            m_SpriteBatch.End();
+            m_PremultipliedSpriteBatch.End();
+            m_NonPremultipliedSpriteBatch.End();
         }
     }
 }

@@ -15,6 +15,11 @@ namespace Infrastructure.ObjectModel
         {
         }
 
+        [AttributeUsage(AttributeTargets.Class)]
+        protected class DontPremultiplyAlpha : System.Attribute
+        {
+        }
+
         private Texture2D m_Texture;
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
@@ -332,14 +337,22 @@ namespace Infrastructure.ObjectModel
         {
             LoadTexture();
 
+            bool getNonpremultipliedSB = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
+
             if (m_SpriteBatch == null)
             {
-                m_SpriteBatch =
-                    Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
+                if (getNonpremultipliedSB)
+                {
+                    m_SpriteBatch = Game.Services.GetService(typeof(NonPremultipliedSpriteBatch)) as SpriteBatch;
+                }
+                else
+                {
+                    m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
+                }
 
                 if (m_SpriteBatch == null)
                 {
-                    m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+                    m_SpriteBatch = getNonpremultipliedSB ? new NonPremultipliedSpriteBatch(Game.GraphicsDevice) : new SpriteBatch(Game.GraphicsDevice);
                     m_UseSharedBatch = false;
                 }
             }

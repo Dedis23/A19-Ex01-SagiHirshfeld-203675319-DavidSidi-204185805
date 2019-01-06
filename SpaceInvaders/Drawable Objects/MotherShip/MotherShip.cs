@@ -7,6 +7,7 @@ using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 
 namespace SpaceInvaders
 {
+    [DontPremultiplyAlpha]
     public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
