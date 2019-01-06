@@ -23,17 +23,17 @@ namespace SpaceInvaders
         private List<SpriteRow> m_RowsOfLives;
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
-
         private List<TextSprite> m_ScoreSprites;
+        private bool m_GameOver = false;
 
         public SpaceInvadersGame()
         {
             Content.RootDirectory = "Content";
             this.Window.Title = "Space Invaders";
-            this.IsMouseVisible = true;
+            //this.IsMouseVisible = true;
 
             m_CollisionHandler = new CollisionHandler(this);
-            m_CollisionHandler.EnemyCollidedWithSpaceship += gameOver;
+            m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
 
             m_Background = new SpaceBG(this);
             m_MothershipSpawner = new MothershipSpawner(this);
@@ -44,10 +44,11 @@ namespace SpaceInvaders
             m_DancingBarriersRow = new DancingBarriersRow(this);
         }
 
+
         protected override void LoadContent()
         {
             base.LoadContent();
-            fitViewportToBackground();
+            //fitViewportToBackground();
             setSpaceshipsPositions();
             setLivesPositions();
             setScoreSpritesPositions();
@@ -139,8 +140,8 @@ namespace SpaceInvaders
         private void loadInvadersMatrix()
         {
             m_InvadersMatrix = new InvadersMatrix(this);
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += gameOver;
-            m_InvadersMatrix.allInvadersWereDefeated += gameOver;
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += () => m_GameOver = true;
+            m_InvadersMatrix.allInvadersWereDefeated += () => m_GameOver = true;
         }
 
         private void fitViewportToBackground()
@@ -158,6 +159,12 @@ namespace SpaceInvaders
             {
                 Exit();
             }
+
+            if (m_GameOver)
+            {
+                showGameOverWindow();
+                Exit();
+            }
         }
 
         private int m_SpaceshipsDestroyed = 0;
@@ -167,19 +174,7 @@ namespace SpaceInvaders
             m_SpaceshipsDestroyed++;
             if(m_SpaceshipsDestroyed == m_SpaceshipList.Count)
             {
-                gameOver();
-            }
-        }
-
-        private bool m_FirstGameOver = true;
-
-        private void gameOver()
-        {
-            if (m_FirstGameOver)
-            {
-                m_FirstGameOver = false;
-                showGameOverWindow();
-                Exit();
+                m_GameOver = true;
             }
         }
 

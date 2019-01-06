@@ -153,24 +153,27 @@ namespace SpaceInvaders
 
         private float calculateJumpDistance()
         {
-            float furthestInvaderXPosition = 0.0f;
+            float amountToJump = 0.0f;
+
             if (m_CurrentfurthestInvaderInXPosition == null)
             {
                 // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
 
-            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
-            float amountToJump = 0.0f;
-            switch (m_JumpDirection)
+            if (m_CurrentfurthestInvaderInXPosition != null)
             {
-                case 1.0f:
-                    amountToJump = Math.Min(k_DefaultJumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - Invader.k_DefaultInvaderWidth);
-                    break;
+                float furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
+                switch (m_JumpDirection)
+                {
+                    case 1.0f:
+                        amountToJump = Math.Min(k_DefaultJumpDistance, Game.GraphicsDevice.Viewport.Width - furthestInvaderXPosition - Invader.k_DefaultInvaderWidth);
+                        break;
 
-                case -1.0f:
-                    amountToJump = Math.Min(k_DefaultJumpDistance, furthestInvaderXPosition);
-                    break;
+                    case -1.0f:
+                        amountToJump = Math.Min(k_DefaultJumpDistance, furthestInvaderXPosition);
+                        break;
+                }
             }
 
             return amountToJump;
@@ -186,16 +189,19 @@ namespace SpaceInvaders
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
 
-            furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
-            switch (m_JumpDirection)
+            if (m_CurrentfurthestInvaderInXPosition != null)
             {
-                case 1.0f:
-                    invadersOnEdge = furthestInvaderXPosition + Invader.k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width;
-                    break;
+                furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
+                switch (m_JumpDirection)
+                {
+                    case 1.0f:
+                        invadersOnEdge = furthestInvaderXPosition + Invader.k_DefaultInvaderWidth == Game.GraphicsDevice.Viewport.Width;
+                        break;
 
-                case -1.0f:
-                    invadersOnEdge = furthestInvaderXPosition == 0;
-                    break;
+                    case -1.0f:
+                        invadersOnEdge = furthestInvaderXPosition == 0;
+                        break;
+                }
             }
 
             return invadersOnEdge;
