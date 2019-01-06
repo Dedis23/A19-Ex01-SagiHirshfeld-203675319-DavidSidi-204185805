@@ -1,11 +1,9 @@
+using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
-using System;
 using Infrastructure.ObjectModel.Animators;
-using SpaceInvaders;
-using System.Reflection;
-using System.Linq;
 
 namespace Infrastructure.ObjectModel
 {
@@ -16,6 +14,29 @@ namespace Infrastructure.ObjectModel
         private class CopyingNotAllowed : System.Attribute
         {
         }
+
+        private Texture2D m_Texture;
+        private Color[] m_TextureData;
+        private ICollisionHandler m_CollisionHandler;
+        private bool m_UseSharedBatch = true;
+
+        protected SpriteBatch m_SpriteBatch;
+        protected CompositeAnimator m_Animations;
+
+        protected Vector2 m_Position;
+        protected Vector2 m_DefaultPosition;
+        protected Vector2 m_PositionOrigin;
+        protected Vector2 m_RotationOrigin;
+        protected Vector2 m_Scales = Vector2.One;
+        protected Vector2 m_Velocity;
+        protected float m_WidthBeforeScale;
+        protected float m_HeightBeforeScale;
+        protected float m_Rotation;
+        protected float m_LayerDepth;
+        protected Rectangle m_SourceRectangle;
+        protected Color m_TintColor = Color.White;
+        protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
+        protected bool m_Vulnerable = true;
 
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
@@ -33,8 +54,6 @@ namespace Infrastructure.ObjectModel
         {
         }
 
-        protected CompositeAnimator m_Animations;
-
         [CopyingNotAllowed]
         public CompositeAnimator Animations
         {
@@ -42,16 +61,12 @@ namespace Infrastructure.ObjectModel
             set { m_Animations = value; }
         }
 
-        private Texture2D m_Texture;
-
         [CopyingNotAllowed]
         public Texture2D Texture
         {
             get { return m_Texture; }
             set { m_Texture = value; }
         }
-
-        Color[] m_TextureData;
 
         [CopyingNotAllowed]
         public Color[] TextureData
@@ -63,8 +78,10 @@ namespace Infrastructure.ObjectModel
                     m_TextureData = new Color[Texture.Width * Texture.Height];
                     Texture.GetData(m_TextureData);
                 }
+
                 return m_TextureData;
             }
+
             set
             {
                 m_TextureData = value;
@@ -96,7 +113,6 @@ namespace Infrastructure.ObjectModel
             set { m_HeightBeforeScale = value / m_Scales.Y; }
         }
 
-        protected Vector2 m_Position;
         public Vector2 Position
         {
             get { return m_Position; }
@@ -110,22 +126,18 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        protected Vector2 m_DefaultPosition;
         public Vector2 DefaultPosition
         {
             get { return m_DefaultPosition; }
             set { m_DefaultPosition = value; }
         }
 
-
-        protected float m_WidthBeforeScale;
         public float WidthBeforeScale
         {
             get { return m_WidthBeforeScale; }
             set { m_WidthBeforeScale = value; }
         }
 
-        protected float m_HeightBeforeScale;
         public float HeightBeforeScale
         {
             get { return m_HeightBeforeScale; }
@@ -150,7 +162,6 @@ namespace Infrastructure.ObjectModel
             set { this.Position = value + this.PositionOrigin; }
         }
 
-        protected Color m_TintColor = Color.White;
         public Color TintColor
         {
             get { return m_TintColor; }
@@ -163,7 +174,6 @@ namespace Infrastructure.ObjectModel
             set { m_TintColor.A = (byte)(value * (float)byte.MaxValue); }
         }
 
-        protected Vector2 m_Velocity = Vector2.Zero;
         public Vector2 Velocity
         {
             get { return m_Velocity; }
@@ -178,21 +188,18 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        protected float m_LayerDepth;
         public float LayerDepth
         {
             get { return m_LayerDepth; }
             set { m_LayerDepth = value; }
         }
 
-        protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
         public SpriteEffects SpriteEffects
         {
             get { return m_SpriteEffects; }
             set { m_SpriteEffects = value; }
         }
 
-        protected bool m_Vulnerable = true;
         public bool Vulnerable
         {
             get { return m_Vulnerable; }
@@ -218,6 +225,7 @@ namespace Infrastructure.ObjectModel
                 return this.Bounds.Intersects(GameScreenBounds);
             }
         }
+
         public Vector2 TextureCenter
         {
             get
@@ -225,7 +233,6 @@ namespace Infrastructure.ObjectModel
                 return new Vector2((float)(m_Texture.Width / 2), (float)(m_Texture.Height / 2));
             }
         }
-
 
         public Sprite ShallowClone()
         {
@@ -246,7 +253,6 @@ namespace Infrastructure.ObjectModel
                     {
                         break;
                     }
-
                     else if (newProperty.Name == firstProperty.Name)
                     {
                         newProperty.SetValue(this, firstProperty.GetValue(i_Source));
@@ -256,21 +262,18 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        protected Rectangle m_SourceRectangle;
         public Rectangle SourceRectangle
         {
             get { return m_SourceRectangle; }
             set { m_SourceRectangle = value; }
         }
 
-        protected float m_Rotation = 0;
         public float Rotation
         {
             get { return m_Rotation; }
             set { m_Rotation = value; }
         }
 
-        public Vector2 m_PositionOrigin;
         public Vector2 PositionOrigin
         {
             get { return m_PositionOrigin; }
@@ -287,13 +290,6 @@ namespace Infrastructure.ObjectModel
             InitRotationOrigin();
         }
 
-        /// <summary>
-        /// Default initialization of bounds
-        /// </summary>
-        /// <remarks>
-        /// Derived classes are welcome to override this to implement their specific boundns initialization
-        /// </remarks>
-        ///
         protected virtual void InitSourceRectangle()
         {
             m_SourceRectangle = new Rectangle(0, 0, (int)m_WidthBeforeScale, (int)m_HeightBeforeScale);
@@ -310,7 +306,6 @@ namespace Infrastructure.ObjectModel
             get { return Position - PositionOrigin + RotationOrigin; }
         }
 
-        protected Vector2 m_Scales = Vector2.One;
         public Vector2 Scales
         {
             get { return m_Scales; }
@@ -324,9 +319,6 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        private bool m_UseSharedBatch = true;
-
-        protected SpriteBatch m_SpriteBatch;
         public SpriteBatch SpriteBatch
         {
             set
@@ -361,20 +353,12 @@ namespace Infrastructure.ObjectModel
             m_Texture = Game.Content.Load<Texture2D>(m_AssetName);
         }
 
-        public Vector2 m_RotationOrigin = Vector2.Zero;
         public Vector2 RotationOrigin
         {
             get { return m_RotationOrigin; }
             set { m_RotationOrigin = value; }
         }
 
-        /// <summary>
-        /// Basic movement logic (position += velocity * totalSeconds)
-        /// </summary>
-        /// <param name="gameTime"></param>
-        /// <remarks>
-        /// Derived classes are welcome to extend this logic.
-        /// </remarks>
         public override void Update(GameTime gameTime)
         {
             float totalSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -386,10 +370,6 @@ namespace Infrastructure.ObjectModel
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// Basic texture draw behavior, using a shared/own sprite batch
-        /// </summary>
-        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             if (!m_UseSharedBatch)
@@ -409,10 +389,16 @@ namespace Infrastructure.ObjectModel
 
         protected virtual void SpecificSpriteBatchDraw()
         {
-            m_SpriteBatch.Draw(m_Texture, this.DrawingPosition,
-            this.SourceRectangle, this.TintColor,
-            this.Rotation, this.RotationOrigin, this.Scales,
-            SpriteEffects.None, this.LayerDepth);
+            m_SpriteBatch.Draw(
+                m_Texture,
+                this.DrawingPosition,
+            this.SourceRectangle,
+            this.TintColor,
+            this.Rotation,
+            this.RotationOrigin,
+            this.Scales,
+            SpriteEffects.None,
+            this.LayerDepth);
         }
 
         public virtual bool CheckCollision(ICollidable i_Source)
@@ -436,7 +422,6 @@ namespace Infrastructure.ObjectModel
             return LookForCollidingPixels(i_Source, v_StopAfterFirstDetection);
         }
 
-
         protected bool LookForCollidingPixels(ICollidable2D i_Source, bool i_StopAfterFirstDetection)
         {
             Func<Color, Color> nulledModificationFunc = null;
@@ -456,8 +441,8 @@ namespace Infrastructure.ObjectModel
             {
                 for (int x = intersection.Left; x < intersection.Right && !done; x++)
                 {
-                    int pixelIndexA = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
-                    int pixelIndexB = (y - i_Source.Bounds.Top) * (i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
+                    int pixelIndexA = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
+                    int pixelIndexB = ((y - i_Source.Bounds.Top) * i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
 
                     // Color.A is the color's alpha component which determines opacity
                     // when a pixel's alpha == 0 that pixel is completely transparent 
@@ -468,6 +453,7 @@ namespace Infrastructure.ObjectModel
                         {
                             TextureData[pixelIndexA] = i_ModifyCollidedPixelFunc(TextureData[pixelIndexA]);
                         }
+
                         done = i_StopAfterFirstDetection;
                     }
                 }
@@ -482,7 +468,6 @@ namespace Infrastructure.ObjectModel
             return collisionDetected;
         }
 
-        public ICollisionHandler m_CollisionHandler;
         public override void Initialize()
         {
             base.Initialize();
@@ -492,7 +477,6 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        // TODO 15: Implement a basic collision reaction between two ICollidable2D objects
         public virtual void Collided(ICollidable i_Collidable)
         {
             if (this is ICollidable && m_CollisionHandler != null)
@@ -502,6 +486,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public event Action<object> SpriteKilled;
+
         public void Kill()
         {
             SpriteKilled?.Invoke(this);

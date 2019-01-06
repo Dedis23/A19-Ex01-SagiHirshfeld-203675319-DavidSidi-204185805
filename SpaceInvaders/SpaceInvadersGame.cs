@@ -171,7 +171,7 @@ namespace SpaceInvaders
             }
         }
 
-        bool m_FirstGameOver = true;
+        private bool m_FirstGameOver = true;
 
         private void gameOver()
         {
