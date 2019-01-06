@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
-using Microsoft.Xna.Framework.Input;
-using System;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 
@@ -22,10 +20,13 @@ namespace SpaceInvaders
 
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
+
         public event Action LifeLost;
+
         public event Action ScoreChanged;
 
         private int m_Score;
+
         public int Score
         {
             get
@@ -41,10 +42,14 @@ namespace SpaceInvaders
         }
 
         public Color BulletsColor { get; } = Color.Red;
+
         protected IInputManager InputManager { get; private set; }
+
         public int Lives { get; set; }
+
         public abstract Color ScoreColor { get; }
-        public abstract String Name { get; set; }
+
+        public abstract string Name { get; set; }
 
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
@@ -61,19 +66,21 @@ namespace SpaceInvaders
 
         private void initializeAnimations()
         {
-            BlinkAnimator loseLifeAnimation = new BlinkAnimator("LoseLifeAnimation",
+            BlinkAnimator loseLifeAnimation = new BlinkAnimator(
+                "LoseLifeAnimation",
                 k_NumOfBlinksInSecondInLoseLifeAnimation,
                 TimeSpan.FromSeconds(k_LoseLifeAnimationLength));
             loseLifeAnimation.Finished += onFinishedLoseLifeAnimation;
             Animations.Add(loseLifeAnimation);
             loseLifeAnimation.Pause();
 
-            RotateAnimator rotateAnimator = new RotateAnimator(k_NumOfCyclesPerSecondsInDeathAnimation,
+            RotateAnimator rotateAnimator = new RotateAnimator(
+                k_NumOfCyclesPerSecondsInDeathAnimation,
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
             FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator
-                ("DeathAnimation",
+            CompositeAnimator deathAnimation = new CompositeAnimator(
+                "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
                 rotateAnimator,

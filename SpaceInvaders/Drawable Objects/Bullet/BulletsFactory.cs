@@ -1,28 +1,25 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {
     public sealed class BulletsFactory : GameService
     {
-        Stack<Bullet> m_BulletsStack = new Stack<Bullet>();
+        private readonly Stack<Bullet> r_BulletsStack;
 
         public BulletsFactory(Game i_Game) : base(i_Game)
         {
+            r_BulletsStack = new Stack<Bullet>();
         }
 
         public Bullet GetBullet()
         {
             Bullet newBullet;
 
-            if (m_BulletsStack.Count != 0)
+            if (r_BulletsStack.Count != 0)
             {
-                newBullet = m_BulletsStack.Pop();
+                newBullet = r_BulletsStack.Pop();
             }
             else
             {
@@ -35,7 +32,7 @@ namespace SpaceInvaders
 
         private void onBulletDestroyed(object i_Bullet)
         {
-            m_BulletsStack.Push(i_Bullet as Bullet);
+            r_BulletsStack.Push(i_Bullet as Bullet);
         }
     }
 }

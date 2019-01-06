@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
-using System;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.ObjectModel.Animators;
 
@@ -19,13 +19,19 @@ namespace SpaceInvaders
         private const float k_NumOfCyclesPerSecondsInDeathAnimation = 6.0f;
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
+
         public Color BulletsColor { get; } = Color.Blue;
+
         public int PointsValue { get; set; }
+
         public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
         private int m_ColIndexInSpriteSheet;
         private int m_RowIndexInSpriteSheet;
 
-        public Invader(Game i_Game, Color i_Tint, int i_PointsValue,
+        public Invader(
+            Game i_Game,
+            Color i_Tint,
+            int i_PointsValue,
             int i_ColIndexInSpriteSheet,
             int i_RowIndexInSpriteSheet) 
             : base(k_InvadersSpriteSheet, i_Game)
@@ -49,16 +55,19 @@ namespace SpaceInvaders
             m_HeightBeforeScale = k_DefaultInvaderHeight;
 
             this.SourceRectangle = new Rectangle(
-                (int)(0 + m_ColIndexInSpriteSheet * k_DefaultInvaderWidth),
-                (int)(0 + m_RowIndexInSpriteSheet * k_DefaultInvaderHeight),
+                (int)(0 + (m_ColIndexInSpriteSheet * k_DefaultInvaderWidth)),
+                (int)(0 + (m_RowIndexInSpriteSheet * k_DefaultInvaderHeight)),
                 k_DefaultInvaderWidth,
                 k_DefaultInvaderHeight);
         }
 
         private void initializeAnimations()
         {
-            CellAnimator cellAnimator = new CellAnimator(TimeSpan.FromSeconds(k_DefaultDelayBetweenJumpsInSeconds),
-                k_NumOfCells, TimeSpan.Zero, m_ColIndexInSpriteSheet);
+            CellAnimator cellAnimator = new CellAnimator(
+                TimeSpan.FromSeconds(k_DefaultDelayBetweenJumpsInSeconds),
+                k_NumOfCells,
+                TimeSpan.Zero,
+                m_ColIndexInSpriteSheet);
             cellAnimator.FinishedCellAnimationCycle += onFinishedCellAnimationCycle;
             Animations.Add(cellAnimator);
 
@@ -67,11 +76,12 @@ namespace SpaceInvaders
                 k_NumOfCyclesPerSecondsInDeathAnimation,
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator
-                ("DeathAnimation",
+            CompositeAnimator deathAnimation = new CompositeAnimator(
+                "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
-                shrinkAnimator, rotateAnimator);
+                shrinkAnimator,
+                rotateAnimator);
             deathAnimation.Finished += onFinishedDeathAnimation;
             Animations.Add(deathAnimation);
             deathAnimation.Pause();

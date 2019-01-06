@@ -1,15 +1,7 @@
-﻿using Infrastructure.ObjectModel;
+﻿using System;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
-using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpaceInvaders
 {
@@ -27,7 +19,8 @@ namespace SpaceInvaders
         }
 
         public DancingBarriersRow(Game i_Game) : this(i_Game, k_DefaultBarrierNum)
-        { }
+        {
+        }
 
         protected override void LoadContent()
         {

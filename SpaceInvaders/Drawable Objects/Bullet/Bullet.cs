@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
-using System;
 
 namespace SpaceInvaders
 {

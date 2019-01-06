@@ -43,14 +43,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collision Management\CollisionHandler.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Drawable Objects\Backgrounds\SpaceBG.cs" />
-    <Compile Include="Drawable Objects\Barriers\Barrier.cs" />
+    <Compile Include="Drawable Objects\Barriers\Barrier.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Drawable Objects\Barriers\DancingBarriersRow.cs" />
     <Compile Include="Drawable Objects\Bullet\Bullet.cs" />
     <Compile Include="Drawable Objects\Bullet\BulletsFactory.cs" />
-    <Compile Include="Drawable Objects\Invaders\Invader.cs" />
+    <Compile Include="Drawable Objects\Invaders\Invader.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightBlue.cs" />
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderLightYellow.cs" />
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
@@ -59,7 +63,9 @@
     <Compile Include="Drawable Objects\Spaceship\Presets\Player1Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Presets\Player2Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
-    <Compile Include="Drawable Objects\Bullet\Gun.cs" />
+    <Compile Include="Drawable Objects\Bullet\Gun.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IPlayer.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />

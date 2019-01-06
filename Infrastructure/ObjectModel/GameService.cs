@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel
@@ -14,7 +14,7 @@ namespace Infrastructure.ObjectModel
         public GameService(Game i_Game)
             : base(i_Game)
         {
-            RegisterAsService();// self-regsiter as a service
+            RegisterAsService(); // self-regsiter as a service
         }
 
         /// <summary>

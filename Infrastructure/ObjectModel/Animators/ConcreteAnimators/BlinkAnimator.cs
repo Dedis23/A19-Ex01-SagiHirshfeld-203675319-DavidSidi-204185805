@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
 using Microsoft.Xna.Framework;
 
@@ -19,7 +19,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public BlinkAnimator(float i_NumOfBlinksInSecond, TimeSpan i_AnimationLength)
             : this("BlinkAnimator", i_NumOfBlinksInSecond, i_AnimationLength)
-        {}
+        {
+        }
 
         protected override void DoFrame(GameTime i_GameTime)
         {

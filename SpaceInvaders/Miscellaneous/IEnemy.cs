@@ -1,6 +1,4 @@
-﻿using Infrastructure.ObjectModel;
-
-namespace SpaceInvaders
+﻿namespace SpaceInvaders
 {
     public interface IEnemy
     {

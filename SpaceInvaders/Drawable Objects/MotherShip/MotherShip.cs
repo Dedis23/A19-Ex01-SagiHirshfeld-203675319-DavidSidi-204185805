@@ -30,18 +30,22 @@ namespace SpaceInvaders
             base.Initialize();
             initializeAnimations();
         }
+
         private void initializeAnimations()
         {
             ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
             FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
-            BlinkAnimator blinkAnimator = new BlinkAnimator(k_NumOfBlinksInASecondInDeathAnimation,
+            BlinkAnimator blinkAnimator = new BlinkAnimator(
+                k_NumOfBlinksInASecondInDeathAnimation,
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator
-                ("DeathAnimation",
+            CompositeAnimator deathAnimation = new CompositeAnimator(
+                "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
-                shrinkAnimator, faderAnimator, blinkAnimator);
+                shrinkAnimator,
+                faderAnimator,
+                blinkAnimator);
             deathAnimation.Finished += onFinishedDeathAnimation;
             Animations.Add(deathAnimation);
             deathAnimation.Pause();

@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
 using Microsoft.Xna.Framework;
 
@@ -6,11 +6,11 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 {
     public class CellAnimator : SpriteAnimator
     {
+        private readonly int r_NumOfCells = 1;
         private TimeSpan m_CellTime;
         private TimeSpan m_TimeLeftForCell;
         private bool m_Loop = true;
         private int m_CurrCellIdx;
-        private readonly int r_NumOfCells = 1;
         private int m_StartCell;
 
         public Action FinishedCellAnimationCycle;
@@ -28,7 +28,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public CellAnimator(TimeSpan i_CellTime, int i_NumOfCells, TimeSpan i_AnimationLength, int i_StartCell)
             : this("CellAnimator", i_CellTime, i_NumOfCells, i_AnimationLength, i_StartCell)
-        {}
+        {
+        }
 
         public TimeSpan CellTime
         {
@@ -50,6 +51,7 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
                     m_CurrCellIdx = 0;
                     this.IsFinished = true;
                 }
+
                 FinishedCellAnimationCycle?.Invoke();
             }
         }

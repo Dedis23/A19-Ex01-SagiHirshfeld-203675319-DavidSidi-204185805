@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
 using System.Collections.Generic;
 using Infrastructure.ObjectModel;
@@ -13,7 +13,8 @@ namespace Infrastructure.Managers
 
         public CollisionsManager(Game i_Game) : 
             base(i_Game, int.MaxValue)
-        {} 
+        {
+        } 
 
         protected override void RegisterAsService()
         {
@@ -82,7 +83,6 @@ namespace Infrastructure.Managers
                     {
                         break;
                     }
-
                     else if (target.Visible && target.Vulnerable)
                     {
                         target.Collided(i_Source);

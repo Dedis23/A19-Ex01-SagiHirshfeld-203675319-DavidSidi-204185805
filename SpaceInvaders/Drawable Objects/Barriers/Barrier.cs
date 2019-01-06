@@ -1,12 +1,8 @@
-﻿using Infrastructure.ObjectModel;
+﻿using System;
+using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpaceInvaders
 {
@@ -14,6 +10,7 @@ namespace SpaceInvaders
     {
         private const string k_AssetName = @"Sprites\Barrier_44x32";
         private const float k_BulletDamagePercent = 0.7f;
+
         public Barrier(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
@@ -64,8 +61,8 @@ namespace SpaceInvaders
             {
                 for (int x = intersection.Left; x < intersection.Right; x++)
                 {
-                    int barrierPixelInvdex = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
-                    int bulletPixelIndex = (y - i_Bullet.Bounds.Top) * (i_Bullet.Bounds.Width) + (x - i_Bullet.Bounds.Left);
+                    int barrierPixelInvdex = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
+                    int bulletPixelIndex = ((y - i_Bullet.Bounds.Top) * i_Bullet.Bounds.Width) + (x - i_Bullet.Bounds.Left);
 
                     if (barrierPixels[barrierPixelInvdex].A != 0 && bulletPixels[bulletPixelIndex].A != 0)
                     {
@@ -73,6 +70,7 @@ namespace SpaceInvaders
                         {
                             highestCollidedPixelY = y;
                         }
+
                         if (y > lowestCollidedPixelY || lowestCollidedPixelY == null)
                         {
                             lowestCollidedPixelY = y;
@@ -102,8 +100,8 @@ namespace SpaceInvaders
             {
                 for (int x = intersection.Left; x < intersection.Right; x++)
                 {
-                    int barrierPixelInvdex = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
-                    int collidedPixelIndex = (y - i_CollidedSprite.Bounds.Top) * (i_CollidedSprite.Bounds.Width) + (x - i_CollidedSprite.Bounds.Left);
+                    int barrierPixelInvdex = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
+                    int collidedPixelIndex = ((y - i_CollidedSprite.Bounds.Top) * i_CollidedSprite.Bounds.Width) + (x - i_CollidedSprite.Bounds.Left);
 
                     if (barrierPixels[barrierPixelInvdex].A != 0 && collidedPixels[collidedPixelIndex].A != 0)
                     {

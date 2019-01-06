@@ -1,14 +1,15 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Infrastructure.ServiceInterfaces;
-using System;
 
 namespace Infrastructure.ObjectModel
 {
     public abstract class LoadableDrawableComponent : DrawableGameComponent
     {
         public event EventHandler<EventArgs> Disposed;
+
         protected virtual void OnDisposed(object sender, EventArgs args)
         {
             if (Disposed != null)
@@ -24,6 +25,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public event EventHandler<EventArgs> PositionChanged;
+
         protected virtual void OnPositionChanged()
         {
             if (PositionChanged != null)
@@ -33,6 +35,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public event EventHandler<EventArgs> SizeChanged;
+
         protected virtual void OnSizeChanged()
         {
             if (SizeChanged != null)
@@ -42,6 +45,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public event EventHandler<EventArgs> VulnerableChanged;
+
         protected virtual void OnVulnerableChanged()
         {
             if (VulnerableChanged != null)
@@ -56,6 +60,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected string m_AssetName;
+
         public string AssetName
         {
             get { return m_AssetName; }
@@ -78,7 +83,8 @@ namespace Infrastructure.ObjectModel
             Game i_Game,
             int i_CallsOrder)
             : this(i_AssetName, i_Game, i_CallsOrder, i_CallsOrder)
-        { }
+        {
+        }
 
         public override void Initialize()
         {

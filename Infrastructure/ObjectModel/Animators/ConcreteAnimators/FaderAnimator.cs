@@ -10,11 +10,13 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public FaderAnimator(string i_Name, TimeSpan i_AnimationLength)
             : base(i_Name, i_AnimationLength)
-        {}
+        {
+        }
 
         public FaderAnimator(TimeSpan i_AnimationLength)
             : this("FaderAnimator", i_AnimationLength)
-        {}
+        {
+        }
 
         public override void Initialize()
         {

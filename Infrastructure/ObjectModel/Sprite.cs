@@ -1,10 +1,9 @@
+using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
-using System;
 using Infrastructure.ObjectModel.Animators;
-using SpaceInvaders;
-using System.Reflection;
 
 namespace Infrastructure.ObjectModel
 {
@@ -75,6 +74,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Vector2 m_Position;
+
         public Vector2 Position
         {
             get { return m_Position; }
@@ -89,14 +89,15 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Vector2 m_DefaultPosition;
+
         public Vector2 DefaultPosition
         {
             get { return m_DefaultPosition; }
             set { m_DefaultPosition = value; }
         }
 
-
         protected float m_WidthBeforeScale;
+
         public float WidthBeforeScale
         {
             get { return m_WidthBeforeScale; }
@@ -104,6 +105,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected float m_HeightBeforeScale;
+
         public float HeightBeforeScale
         {
             get { return m_HeightBeforeScale; }
@@ -129,6 +131,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Color m_TintColor = Color.White;
+
         public Color TintColor
         {
             get { return m_TintColor; }
@@ -142,6 +145,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Vector2 m_Velocity = Vector2.Zero;
+
         public Vector2 Velocity
         {
             get { return m_Velocity; }
@@ -149,6 +153,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected float m_LayerDepth;
+
         public float LayerDepth
         {
             get { return m_LayerDepth; }
@@ -156,6 +161,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
+
         public SpriteEffects SpriteEffects
         {
             get { return m_SpriteEffects; }
@@ -163,6 +169,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected bool m_Vulnerable = true;
+
         public bool Vulnerable
         {
             get { return m_Vulnerable; }
@@ -188,6 +195,7 @@ namespace Infrastructure.ObjectModel
                 return this.Bounds.Intersects(GameScreenBounds);
             }
         }
+
         public Vector2 TextureCenter
         {
             get
@@ -195,7 +203,6 @@ namespace Infrastructure.ObjectModel
                 return new Vector2((float)(m_Texture.Width / 2), (float)(m_Texture.Height / 2));
             }
         }
-
 
         public Sprite ShallowClone()
         {
@@ -216,7 +223,6 @@ namespace Infrastructure.ObjectModel
                     {
                         break;
                     }
-
                     else if (newProperty.Name == firstProperty.Name)
                     {
                         newProperty.SetValue(this, firstProperty.GetValue(i_Source));
@@ -227,6 +233,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Rectangle m_SourceRectangle;
+
         public Rectangle SourceRectangle
         {
             get { return m_SourceRectangle; }
@@ -234,6 +241,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected float m_Rotation = 0;
+
         public float Rotation
         {
             get { return m_Rotation; }
@@ -241,6 +249,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public Vector2 m_PositionOrigin;
+
         public Vector2 PositionOrigin
         {
             get { return m_PositionOrigin; }
@@ -281,6 +290,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Vector2 m_Scales = Vector2.One;
+
         public Vector2 Scales
         {
             get { return m_Scales; }
@@ -297,6 +307,7 @@ namespace Infrastructure.ObjectModel
         private bool m_UseSharedBatch = true;
 
         protected SpriteBatch m_SpriteBatch;
+
         public SpriteBatch SpriteBatch
         {
             set
@@ -332,6 +343,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public Vector2 m_RotationOrigin = Vector2.Zero;
+
         public Vector2 RotationOrigin
         {
             get { return m_RotationOrigin; }
@@ -379,10 +391,16 @@ namespace Infrastructure.ObjectModel
 
         protected virtual void SpecificSpriteBatchDraw()
         {
-            m_SpriteBatch.Draw(m_Texture, this.DrawingPosition,
-            this.SourceRectangle, this.TintColor,
-            this.Rotation, this.RotationOrigin, this.Scales,
-            SpriteEffects.None, this.LayerDepth);
+            m_SpriteBatch.Draw(
+                m_Texture,
+                this.DrawingPosition,
+            this.SourceRectangle,
+            this.TintColor,
+            this.Rotation,
+            this.RotationOrigin,
+            this.Scales,
+            SpriteEffects.None,
+            this.LayerDepth);
         }
 
         public virtual bool CheckCollision(ICollidable i_Source)
@@ -423,8 +441,8 @@ namespace Infrastructure.ObjectModel
             {
                 for (int x = intersection.Left; x < intersection.Right && !collisionDetected; x++)
                 {
-                    int pixelIndexA = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
-                    int pixelIndexB = (y - i_Source.Bounds.Top) * (i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
+                    int pixelIndexA = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
+                    int pixelIndexB = ((y - i_Source.Bounds.Top) * i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
 
                     Color pixelOfSpriteA = colorDataA[pixelIndexA];
                     Color pixelOfSpriteB = colorDataB[pixelIndexB];
@@ -439,6 +457,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public ICollisionHandler m_CollisionHandler;
+
         public override void Initialize()
         {
             base.Initialize();
@@ -458,6 +477,7 @@ namespace Infrastructure.ObjectModel
         }
 
         public event Action<object> SpriteKilled;
+
         public void Kill()
         {
             SpriteKilled?.Invoke(this);

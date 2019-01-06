@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
 using Microsoft.Xna.Framework;
 
@@ -12,7 +12,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
             Sprite i_BoundSprite,
             params SpriteAnimator[] i_Animations)
             : base(i_Name, i_AnimationLength, i_BoundSprite, i_Animations)
-        {}
+        {
+        }
 
         protected override void DoFrame(GameTime i_GameTime)
         {

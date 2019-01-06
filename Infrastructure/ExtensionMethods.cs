@@ -2,9 +2,10 @@
 
 namespace Infrastructure
 {
-    static class ExtensionMethods
+    public static class ExtensionMethods
     {
         private static readonly ArgumentOutOfRangeException sr_ArgumentOutOfRangeException = new ArgumentOutOfRangeException();
+
         public static bool IsInRange(this float s_TheNum, float i_Low, float i_High)
         {
             return s_TheNum <= i_High && s_TheNum >= i_Low;

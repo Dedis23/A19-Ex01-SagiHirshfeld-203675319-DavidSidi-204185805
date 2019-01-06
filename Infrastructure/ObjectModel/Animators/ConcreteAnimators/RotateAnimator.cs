@@ -15,7 +15,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public RotateAnimator(float i_NumOfCyclesPerSecond, TimeSpan i_AnimationLength)
             : this("RotateAnimator", i_NumOfCyclesPerSecond, i_AnimationLength)
-        {}
+        {
+        }
 
         protected override void DoFrame(GameTime i_GameTime)
         {
