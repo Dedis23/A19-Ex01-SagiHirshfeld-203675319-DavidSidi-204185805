@@ -22,6 +22,7 @@ namespace SpaceInvaders
         public DancingBarriersRow(Game i_Game, int i_BarrierNum) : base(i_Game)
         {
             r_SpritesRow = new SpriteRow<Barrier>(i_Game, i_BarrierNum, Game => new Barrier(i_Game));
+            r_SpritesRow.InsertionOrder = SpriteRow<Barrier>.Order.LeftToRight;
             this.Game.Components.Add(this);
         }
 

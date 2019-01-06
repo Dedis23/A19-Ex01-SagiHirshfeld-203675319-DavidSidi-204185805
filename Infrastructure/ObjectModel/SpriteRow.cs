@@ -29,7 +29,6 @@ namespace SpaceInvaders
         private readonly Game r_Game;
 
         public Order InsertionOrder { get; set; } = Order.LeftToRight;
-        public Order RemovalOrder { get; set; } = Order.RightToLeft;
 
         public SpriteRow(Game i_Game , int i_SpritesNum, Func<Game, T> i_TCreationFunc)
         {
@@ -79,17 +78,8 @@ namespace SpaceInvaders
             T spriteToRemove;
             if (r_SpritesList.Count != 0)
             {
-                if (RemovalOrder == Order.LeftToRight)
-                {
-                    spriteToRemove = r_SpritesList.Last.Value;
-                    r_SpritesList.RemoveFirst();
-                }
-                else
-                {
-                    spriteToRemove = r_SpritesList.Last.Value;
-                    r_SpritesList.RemoveLast();
-                }
-
+                spriteToRemove = r_SpritesList.Last.Value;
+                r_SpritesList.RemoveLast();
                 spriteToRemove.Kill();
             }
         }

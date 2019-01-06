@@ -25,7 +25,6 @@ namespace SpaceInvaders
         public event Action LifeLost;
         public event Action ScoreChanged;
 
-
         private int m_Score;
         public int Score
         {

@@ -87,7 +87,6 @@ namespace SpaceInvaders
             {
                 SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new Sprite(spaceship.AssetName, this));
                 spriteRow.InsertionOrder = SpriteRow.Order.RightToLeft;
-                spriteRow.RemovalOrder = SpriteRow.Order.LeftToRight;
                 spriteRow.Opacity /= 2;
                 spriteRow.Scales /= 2;
                 spaceship.LifeLost += () => spriteRow.RemoveSprite();
