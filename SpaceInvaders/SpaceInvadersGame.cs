@@ -44,7 +44,6 @@ namespace SpaceInvaders
             m_DancingBarriersRow = new DancingBarriersRow(this);
         }
 
-
         protected override void LoadContent()
         {
             base.LoadContent();

@@ -137,8 +137,8 @@ namespace SpaceInvaders
             }
             else
             {
-                const bool v_JumpSideways = false;
-                doAJump(v_JumpSideways, k_DefaultJumpDistance);
+                const bool v_JumpSideways = true;
+                doAJump(!v_JumpSideways, k_DefaultJumpDistance);
                 checkIfInvadersMatrixReachedBottomScreen();
                 decreaseDelayBetweenJumps(k_InvadersReachedEdgeAccelerator);
                 flipCurrentSideJumpDirection();
