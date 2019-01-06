@@ -63,7 +63,6 @@
     <Compile Include="Miscellaneous\IEnemy.cs" />
     <Compile Include="Miscellaneous\IPlayer.cs" />
     <Compile Include="Miscellaneous\IShooter.cs" />
-    <Compile Include="Miscellaneous\ScorePrinter.cs" />
     <Compile Include="Spawners\MotherShipSpawner.cs" />
     <Compile Include="Spawners\Spawner.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

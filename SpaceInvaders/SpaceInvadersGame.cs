@@ -13,12 +13,21 @@ namespace SpaceInvaders
 {
     public class SpaceInvadersGame : Game2D
     {
-        private List<Spaceship> m_SpaceshipList;
-        private MothershipSpawner m_MothershipSpawner;
-        private InvadersMatrix m_InvadersMatrix;
-        private Sprite m_Background;
+        private const string k_ScoreFontAsset = @"Fonts\ComicSansMS";
+        private const float k_SpaceshipPositionYModifier = 1.5f;
+        private const float k_LivesGapModifier = 0.7f;
+        private const float k_GapBetweenRowsModifier = 1.2f;
+        private const int k_LivesDistanceFromHorizontalScreenBound = 15;
+
         private CollisionHandler m_CollisionHandler;
+        private Sprite m_Background;
+        private MothershipSpawner m_MothershipSpawner;
+        private List<Spaceship> m_SpaceshipList;
+        private List<SpriteRow> m_RowsOfLives;
+        private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
+
+        private List<TextSprite> m_ScoreSprites;
 
         public SpaceInvadersGame()
         {
@@ -32,6 +41,8 @@ namespace SpaceInvaders
             m_Background = new SpaceBG(this);
             m_MothershipSpawner = new MothershipSpawner(this);
             loadSpaceships();
+            loadLives();
+            loadScoreSprites();
             loadInvadersMatrix();
             m_DancingBarriersRow = new DancingBarriersRow(this);
         }
@@ -41,6 +52,8 @@ namespace SpaceInvaders
             base.LoadContent();
             fitViewportToBackground();
             setSpaceshipsPositions();
+            setLivesPositions();
+            setScoreSpritesPositions();
             setBarriersPosition();
         }
 
@@ -62,8 +75,60 @@ namespace SpaceInvaders
         {
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - spaceship.Height * 1.5f);
+                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - spaceship.Height * k_SpaceshipPositionYModifier);
                 spaceship.Position = spaceship.DefaultPosition;
+            }
+        }
+
+        private void loadLives()
+        {
+            m_RowsOfLives = new List<SpriteRow>();
+            foreach (Spaceship spaceship in m_SpaceshipList)
+            {
+                SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new Sprite(spaceship.AssetName, this));
+                spriteRow.InsertionOrder = SpriteRow.Order.RightToLeft;
+                spriteRow.RemovalOrder = SpriteRow.Order.LeftToRight;
+                spriteRow.Opacity /= 2;
+                spriteRow.Scales /= 2;
+                spaceship.LifeLost += () => spriteRow.RemoveSprite();
+                m_RowsOfLives.Add(spriteRow);
+            }
+        }
+
+        private void setLivesPositions()
+        {
+            m_RowsOfLives[0].Gap = m_RowsOfLives[0].First.Width * k_GapBetweenRowsModifier;
+            m_RowsOfLives[0].Position = new Vector2(
+                GraphicsDevice.Viewport.Width - m_RowsOfLives[0].First.Width - k_LivesDistanceFromHorizontalScreenBound, 0);
+
+            for (int i = 1; i < m_RowsOfLives.Count; i++)
+            {
+                m_RowsOfLives[i].Gap = m_RowsOfLives[i - 1].Gap;
+                m_RowsOfLives[i].Position = m_RowsOfLives[i - 1].Position + new Vector2(0, m_RowsOfLives[0].First.Height * k_GapBetweenRowsModifier);
+            }
+        }
+
+        private void loadScoreSprites()
+        {
+            m_ScoreSprites = new List<TextSprite>();
+            foreach (Spaceship spaceship in m_SpaceshipList)
+            {
+                TextSprite newScoreSprite = new TextSprite(k_ScoreFontAsset, this);
+                newScoreSprite.TintColor = spaceship.ScoreColor;
+                newScoreSprite.Text = String.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
+                spaceship.ScoreChanged +=
+                    () => newScoreSprite.Text = String.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
+
+                m_ScoreSprites.Add(newScoreSprite);
+            }
+        }
+
+        private void setScoreSpritesPositions()
+        {
+            for (int i = 0; i < m_ScoreSprites.Count; i++)
+            {
+                float height = m_ScoreSprites[i].Height;
+                m_ScoreSprites[i].Position = new Vector2(0, i * m_ScoreSprites[i].Height);
             }
         }
 
@@ -107,7 +172,6 @@ namespace SpaceInvaders
             {
                 gameOver();
             }
-
         }
 
         private void onInvadersMatrixReachedBottomScreen()

@@ -1,10 +1,13 @@
 ﻿using Infrastructure.ObjectModel;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,68 +17,55 @@ namespace SpaceInvaders
     {
         private const int k_DancingSpeed = 45;
         private const int k_DefaultBarrierNum = 4;
-        private List<Barrier> m_BarriersList;
+        private readonly SpriteRow<Barrier> r_SpritesRow;
 
         public DancingBarriersRow(Game i_Game, int i_BarrierNum) : base(i_Game)
         {
-            m_BarriersList = new List<Barrier>();
-            if (i_BarrierNum <= 0)
-            {
-                i_BarrierNum = 1;
-            }
-
-            for (int i = 0; i < i_BarrierNum; i++)
-            {
-                m_BarriersList.Add(new Barrier(i_Game));
-            }
-
-            i_Game.Components.Add(this);
+            r_SpritesRow = new SpriteRow<Barrier>(i_Game, i_BarrierNum, Game => new Barrier(i_Game));
+            this.Game.Components.Add(this);
         }
 
         public DancingBarriersRow(Game i_Game) : this(i_Game, k_DefaultBarrierNum)
         { }
-            
 
         protected override void LoadContent()
         {
             base.LoadContent();
-            this.Position = Vector2.Zero;
+            r_SpritesRow.Gap = r_SpritesRow.First.Width;
+            dance();
         }
 
         public Vector2 Position
         {
             get
             {
-                return m_BarriersList[0].Position;
+                return r_SpritesRow.Position;
             }
 
             set
             {
-                m_BarriersList[0].Position = value;
-                for (int i = 1; i < m_BarriersList.Count; i++)
-                {
-                    m_BarriersList[i].Position = new Vector2(m_BarriersList[i - 1].Bounds.Right + m_BarriersList[i - 1].Width, m_BarriersList[i - 1].Position.Y);
-                }
+                r_SpritesRow.Position = value;
 
+                // Restart the dance when moved
                 dance();
             }
         }
 
         private void dance()
-        {            
+        {
             bool v_Loop = true;
-            foreach (Barrier barrier in m_BarriersList)
-            {                
+            foreach (Barrier sprite in r_SpritesRow.SpritesLinkedList)
+            {
                 SpriteAnimator danceAnimation = new WaypointsAnymator(
                         k_DancingSpeed,
                         TimeSpan.Zero,
                         v_Loop,
-                        barrier.Position + new Vector2(barrier.Width, 0),
-                        barrier.Position - new Vector2(barrier.Width, 0));
-                
-                barrier.Animations.Remove(danceAnimation.Name);
-                barrier.Animations.Add(danceAnimation);
-                barrier.Animations.Resume();
+                        sprite.Position + new Vector2(sprite.Width, 0),
+                        sprite.Position - new Vector2(sprite.Width, 0));
+
+                sprite.Animations.Remove(danceAnimation.Name);
+                sprite.Animations.Add(danceAnimation);
+                sprite.Animations.Resume();
             }
         }
 
@@ -83,7 +73,7 @@ namespace SpaceInvaders
         {
             get
             {
-                return m_BarriersList[m_BarriersList.Count - 1].Bounds.Right - m_BarriersList[0].Bounds.Left;
+                return r_SpritesRow.Width;
             }
         }
 
@@ -91,7 +81,7 @@ namespace SpaceInvaders
         {
             get
             {
-                return m_BarriersList[0].Height;
+                return r_SpritesRow.Height;
             }
         }
     }

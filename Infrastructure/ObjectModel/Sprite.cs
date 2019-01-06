@@ -3,12 +3,38 @@ using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.ServiceInterfaces;
 using System;
 using Infrastructure.ObjectModel.Animators;
+using SpaceInvaders;
+using System.Reflection;
 
 namespace Infrastructure.ObjectModel
 {
     public class Sprite : LoadableDrawableComponent
-    {
+    {    
+        // Markup attribute to assist the DeepCopyFrom method
+        [AttributeUsage(AttributeTargets.Property)]
+        private class DeepCopyNotAllowedFromThisProperty : System.Attribute
+        {
+        }
+
+        public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
+            : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
+        {
+            m_Animations = new CompositeAnimator(this);
+        }
+
+        public Sprite(string i_AssetName, Game i_Game, int i_CallsOrder)
+            : this(i_AssetName, i_Game, i_CallsOrder, i_CallsOrder)
+        {
+        }
+
+        public Sprite(string i_AssetName, Game i_Game)
+            : this(i_AssetName, i_Game, int.MaxValue)
+        {
+        }
+
         protected CompositeAnimator m_Animations;
+
+        [DeepCopyNotAllowedFromThisProperty]
         public CompositeAnimator Animations
         {
             get { return m_Animations; }
@@ -16,6 +42,8 @@ namespace Infrastructure.ObjectModel
         }
 
         private Texture2D m_Texture;
+
+        [DeepCopyNotAllowedFromThisProperty]
         public Texture2D Texture
         {
             get { return m_Texture; }
@@ -120,18 +148,6 @@ namespace Infrastructure.ObjectModel
             set { m_Velocity = value; }
         }
 
-        public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
-            : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
-        { }
-
-        public Sprite(string i_AssetName, Game i_Game, int i_CallsOrder)
-            : base(i_AssetName, i_Game, i_CallsOrder)
-        { }
-
-        public Sprite(string i_AssetName, Game i_Game)
-            : base(i_AssetName, i_Game, int.MaxValue)
-        { }
-
         protected float m_LayerDepth;
         public float LayerDepth
         {
@@ -184,6 +200,30 @@ namespace Infrastructure.ObjectModel
         public Sprite ShallowClone()
         {
             return this.MemberwiseClone() as Sprite;
+        }
+
+        public void DeepCopyFrom(Sprite i_Source)
+        {
+            PropertyInfo[] targetSpriteProperties = this.GetType().GetProperties();
+            PropertyInfo[] firstSpriteProperties = i_Source.GetType().GetProperties();
+            foreach (PropertyInfo newProperty in targetSpriteProperties)
+            {
+                foreach (PropertyInfo firstProperty in firstSpriteProperties)
+                {
+                    bool propertyMarkedNotToCopy = firstProperty.GetCustomAttribute(typeof(DeepCopyNotAllowedFromThisProperty)) != null;
+                    bool propertyInaccessible = newProperty.GetSetMethod() == null || newProperty.GetGetMethod() == null;
+                    if (propertyMarkedNotToCopy || propertyInaccessible)
+                    {
+                        break;
+                    }
+
+                    else if (newProperty.Name == firstProperty.Name)
+                    {
+                        newProperty.SetValue(this, firstProperty.GetValue(i_Source));
+                        break;
+                    }
+                }
+            }
         }
 
         protected Rectangle m_SourceRectangle;
@@ -327,10 +367,7 @@ namespace Infrastructure.ObjectModel
                 m_SpriteBatch.Begin();
             }
 
-            m_SpriteBatch.Draw(m_Texture, this.DrawingPosition,
-                this.SourceRectangle, this.TintColor,
-                this.Rotation, this.RotationOrigin, this.Scales,
-                SpriteEffects.None, this.LayerDepth);
+            SpecificSpriteBatchDraw();
 
             if (!m_UseSharedBatch)
             {
@@ -340,7 +377,14 @@ namespace Infrastructure.ObjectModel
             base.Draw(gameTime);
         }
 
-        // TODO 14: Implement a basic collision detection between two ICollidable2D objects:
+        protected virtual void SpecificSpriteBatchDraw()
+        {
+            m_SpriteBatch.Draw(m_Texture, this.DrawingPosition,
+            this.SourceRectangle, this.TintColor,
+            this.Rotation, this.RotationOrigin, this.Scales,
+            SpriteEffects.None, this.LayerDepth);
+        }
+
         public virtual bool CheckCollision(ICollidable i_Source)
         {
             bool collided = false;
@@ -398,7 +442,6 @@ namespace Infrastructure.ObjectModel
         public override void Initialize()
         {
             base.Initialize();
-            m_Animations = new CompositeAnimator(this);
             if (this is ICollidable2D)
             {
                 m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;

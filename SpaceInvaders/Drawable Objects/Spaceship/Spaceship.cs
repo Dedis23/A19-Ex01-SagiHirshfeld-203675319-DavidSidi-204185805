@@ -13,19 +13,18 @@ namespace SpaceInvaders
     {        
         private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_VelocityScalar = 145;
-        private const int k_MaxBulletsInScreen = 3;        
+        private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
-        private const float k_LivesDrawingGapModifier = 0.7f;
-        private const float k_LivesDrawingScale = 0.5f;
-        private const float k_LivesDrawingOpacity = 0.5f;
-        private static int s_SpaceshipsCounter;
-        private readonly int r_SpaceshipIndex;
-        private readonly Gun r_Gun;
-        private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
         private const float k_LoseLifeAnimationLength = 2.5f;
         private const float k_NumOfBlinksInSecondInLoseLifeAnimation = 6.0f;
         private const float k_DeathAnimationLength = 2.5f;
-        private float k_NumOfCyclesPerSecondsInDeathAnimation = 4.0f;
+        private const float k_NumOfCyclesPerSecondsInDeathAnimation = 4.0f;
+
+        private readonly Gun r_Gun;
+        private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
+        public event Action LifeLost;
+        public event Action ScoreChanged;
+
 
         private int m_Score;
         public int Score
@@ -38,6 +37,7 @@ namespace SpaceInvaders
             set
             {
                 m_Score = value > 0 ? value : 0;
+                ScoreChanged?.Invoke();
             }
         }
 
@@ -50,9 +50,7 @@ namespace SpaceInvaders
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
             Lives = k_StartingLivesCount;
-            r_SpaceshipIndex = s_SpaceshipsCounter;
-            s_SpaceshipsCounter++;
-            r_Gun = new Gun(this, k_MaxBulletsInScreen);            
+            r_Gun = new Gun(this, k_MaxBulletsInScreen);
         }
 
         public override void Initialize()
@@ -157,8 +155,11 @@ namespace SpaceInvaders
         {
             this.Vulnerable = false;
             Lives--;
+            LifeLost?.Invoke();
+
             Score -= k_ScorePenaltyForBulletHit;
-            if(Lives == 0)
+
+            if (Lives == 0)
             {
                 this.r_Gun.Enabled = false;
                 Animations["DeathAnimation"].Resume();
@@ -169,50 +170,5 @@ namespace SpaceInvaders
                 this.Position = DefaultPosition;
             }
         }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-            drawLives();
-        }
-
-        private void drawLives()
-        {
-            Vector2 currentPosition = LivesDrawingStartingPosition;
-            Color livesDrawingColor = LivesDrawingColor;
-
-            for (int i = 0; i < Lives; i++)
-            {
-                m_SpriteBatch.Draw(Texture, currentPosition, null, livesDrawingColor, Rotation, PositionOrigin, k_LivesDrawingScale, SpriteEffects.None, 0);
-                currentPosition.X += LivesDrawingOffset.X;
-            }
-        }
-
-        // Injection points for modifying the drawing of the lives
-        protected virtual Vector2 LivesDrawingStartingPosition
-        {
-            get
-            {
-                return new Vector2(Game.GraphicsDevice.Viewport.Width + LivesDrawingOffset.X, LivesDrawingOffset.Y * (0.5f) + r_SpaceshipIndex * LivesDrawingOffset.Y);
-            }
-        }
-
-        protected virtual Color LivesDrawingColor
-        {
-            get
-            {
-                return new Color(TintColor, k_LivesDrawingOpacity);
-            }
-        }
-
-        protected virtual Vector2 LivesDrawingOffset
-        {
-            get
-            {
-                return new Vector2(-k_LivesDrawingGapModifier * this.Width, k_LivesDrawingGapModifier * this.Height);
-            }
-        }
-
-
     }
 }

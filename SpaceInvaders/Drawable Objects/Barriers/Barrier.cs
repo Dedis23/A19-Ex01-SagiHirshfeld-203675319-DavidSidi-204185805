@@ -13,6 +13,7 @@ namespace SpaceInvaders
     public class Barrier : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Barrier_44x32";
+        private const float k_BulletDamagePercent = 0.7f;
         public Barrier(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
@@ -29,6 +30,21 @@ namespace SpaceInvaders
         public void ReceiveBulletDamage(Bullet i_Bullet)
         {
             i_Bullet.Visible = false;
+            moveBulletToMatchRequiredIntersectionPrecent(i_Bullet, k_BulletDamagePercent);
+            ErasePixelsThatIntersectWith(i_Bullet);
+        }
+
+        private void moveBulletToMatchRequiredIntersectionPrecent(Bullet i_Bullet, float i_RequiredIntersectionPrecent)
+        {
+            float intersectionHeight = getPreciseIntersectionHeight(i_Bullet);
+            float currentBulletIntersectionPercent = intersectionHeight / i_Bullet.Height;
+            float percentLeft = i_RequiredIntersectionPrecent - currentBulletIntersectionPercent;
+            Vector2 bulletDirection = Vector2.Normalize(i_Bullet.Velocity);
+            i_Bullet.Position += new Vector2(0, percentLeft * i_Bullet.Height * bulletDirection.Y);
+        }
+
+        private float getPreciseIntersectionHeight(Bullet i_Bullet)
+        {
             Texture2D bulletTexture = i_Bullet.Texture;
 
             // Store the pixel data
@@ -65,11 +81,7 @@ namespace SpaceInvaders
                 }
             }
 
-            float currentPercentCollided = Math.Abs(highestCollidedPixelY.Value - lowestCollidedPixelY.Value) / i_Bullet.Height;
-            float percentLeft = 0.7f - currentPercentCollided;
-            Vector2 bulletDirection = Vector2.Normalize(i_Bullet.Velocity);
-            i_Bullet.Position += new Vector2(0, percentLeft * i_Bullet.Height * bulletDirection.Y);
-            ErasePixelsThatIntersectWith(i_Bullet);
+            return Math.Abs(highestCollidedPixelY.Value - lowestCollidedPixelY.Value);
         }
 
         public void ErasePixelsThatIntersectWith(Sprite i_CollidedSprite)
