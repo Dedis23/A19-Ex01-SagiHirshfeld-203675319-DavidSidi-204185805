@@ -208,7 +208,7 @@ namespace SpaceInvaders
         private string getTheNameOfTheWinner()
         {
             int maxScore = 0;
-            string winnerName = "";
+            string winnerName = string.Empty;
 
             foreach (IPlayer player in m_SpaceshipList)
             {
