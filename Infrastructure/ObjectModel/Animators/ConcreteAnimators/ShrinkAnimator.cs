@@ -15,7 +15,8 @@ namespace Infrastructure.ObjectModel.Animators.ConcreteAnimators
 
         public ShrinkAnimator(TimeSpan i_AnimationLength)
             : this("ShrinkAnimator", i_AnimationLength)
-        {}
+        {
+        }
 
         protected override void DoFrame(GameTime i_GameTime)
         {

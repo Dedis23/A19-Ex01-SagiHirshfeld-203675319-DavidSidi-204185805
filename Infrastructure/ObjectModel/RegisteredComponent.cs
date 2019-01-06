@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel
@@ -14,6 +14,7 @@ namespace Infrastructure.ObjectModel
 
 		public RegisteredComponent(Game i_Game)
 			: this(i_Game, int.MaxValue)
-		{ }
+		{
+        }
 	}
 }

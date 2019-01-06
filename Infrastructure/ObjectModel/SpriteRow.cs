@@ -1,11 +1,7 @@
-﻿using Infrastructure.ObjectModel;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Infrastructure.ObjectModel;
+using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
@@ -30,7 +26,7 @@ namespace SpaceInvaders
 
         public Order InsertionOrder { get; set; } = Order.LeftToRight;
 
-        public SpriteRow(Game i_Game , int i_SpritesNum, Func<Game, T> i_TCreationFunc)
+        public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc)
         {
             r_SpritesList = new LinkedList<T>();
             r_Game = i_Game;
@@ -64,7 +60,6 @@ namespace SpaceInvaders
                     newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Right + Gap, this.Position.Y);
                     r_SpritesList.AddLast(newSprite);
                 }
-
                 else
                 {
                     newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Left - Gap, this.Position.Y);
@@ -141,6 +136,7 @@ namespace SpaceInvaders
         }
 
         private float m_Gap;
+
         public float Gap
         {
             get { return m_Gap; }

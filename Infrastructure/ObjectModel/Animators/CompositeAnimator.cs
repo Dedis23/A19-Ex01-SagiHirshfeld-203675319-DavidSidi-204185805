@@ -1,4 +1,4 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -15,8 +15,8 @@ namespace Infrastructure.ObjectModel.Animators
         // CTORs
 
         // CTOR: Me as an AnimationsMamager
-        public CompositeAnimator(Sprite i_BoundSprite)
-            : this("AnimationsMamager", TimeSpan.Zero, i_BoundSprite, new SpriteAnimator[]{})
+        public CompositeAnimator(Sprite i_BoundSprite) : 
+            this("AnimationsMamager", TimeSpan.Zero, i_BoundSprite, new SpriteAnimator[] { })
         {
             this.Enabled = false;
         }
@@ -27,10 +27,10 @@ namespace Infrastructure.ObjectModel.Animators
             TimeSpan i_AnimationLength,
             Sprite i_BoundSprite,
             params SpriteAnimator[] i_Animations)
-            : base (i_Name, i_AnimationLength)
+            : base 
+            (i_Name, i_AnimationLength)
         {
             this.BoundSprite = i_BoundSprite;
-
             foreach (SpriteAnimator animation in i_Animations)
             {
                 this.Add(animation);

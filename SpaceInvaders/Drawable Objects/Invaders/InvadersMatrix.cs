@@ -57,7 +57,9 @@ namespace SpaceInvaders
             Vector2 currentRowPosition = new Vector2(k_DefaultStartingPositionX, k_DefaultStartingPositionY);
             for (int i = 0; i < k_NumOfRowsWithPinkInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                r_InvadersMatrix.Add(
+                    createARowOfInvaders(
+                        currentRowPosition,
                     eInvaderPresets.InvaderPink,
                     i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
@@ -65,7 +67,9 @@ namespace SpaceInvaders
 
             for (int i = 0; i < k_NumOfRowsWithLightBlueInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                r_InvadersMatrix.Add
+                    (createARowOfInvaders(
+                        currentRowPosition,
                     eInvaderPresets.InvaderLightBlue,
                     i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
@@ -73,7 +77,8 @@ namespace SpaceInvaders
 
             for (int i = 0; i < k_NumOfRowsWithLightYellowInvaders; i++)
             {
-                r_InvadersMatrix.Add(createARowOfInvaders(currentRowPosition,
+                r_InvadersMatrix.Add(createARowOfInvaders(
+                    currentRowPosition,
                     eInvaderPresets.InvaderLightYellow,
                     i % Invader.k_NumOfCells));
                 currentRowPosition.Y += k_YGapBetweenInvaders;
@@ -118,6 +123,7 @@ namespace SpaceInvaders
                     newInvader = new InvaderLightYellow(this.Game, i_StartingCell) as Invader;
                     break;
             }
+
             return newInvader;
         }
 
@@ -125,12 +131,14 @@ namespace SpaceInvaders
         {
             if (invadersOnEdge() == false)
             {
+                const bool v_JumpSideways = true;
                 float amountToJump = calculateJumpDistance();
-                doAJump(true, amountToJump);
+                doAJump(v_JumpSideways, amountToJump);
             }
             else
             {
-                doAJump(false, k_DefaultJumpDistance);
+                const bool v_JumpDownwards = true;
+                doAJump(v_JumpDownwards, k_DefaultJumpDistance);
                 checkIfInvadersMatrixReachedBottomScreen();
                 decreaseDelayBetweenJumps(k_InvadersReachedEdgeAccelerator);
                 flipCurrentSideJumpDirection();
@@ -151,6 +159,7 @@ namespace SpaceInvaders
                 // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
+
             furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
             float amountToJump = 0.0f;
             switch (m_JumpDirection)
@@ -176,6 +185,7 @@ namespace SpaceInvaders
                 // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
+
             furthestInvaderXPosition = m_CurrentfurthestInvaderInXPosition.Position.X;
             switch (m_JumpDirection)
             {
@@ -289,6 +299,7 @@ namespace SpaceInvaders
                     invader.DelayBetweenJumpsInSeconds *= i_AcceleratorModifier;
                 }
             }
+
             m_TimerForJumps.Interval *= i_AcceleratorModifier;
         }
 
@@ -307,6 +318,7 @@ namespace SpaceInvaders
         }
 
         private List<Invader> m_KilledInvadersList = new List<Invader>();
+
         private void addToKilledInvadersList(object i_Invader)
         {
             m_KilledInvadersList.Add(i_Invader as Invader);
@@ -319,6 +331,7 @@ namespace SpaceInvaders
             {
                 m_CurrentfurthestInvaderInXPosition = null;
             }
+
             foreach (List<Invader> invaderList in r_InvadersMatrix)
             {
                 invaderList.Remove(invader);

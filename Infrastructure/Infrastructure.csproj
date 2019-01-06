@@ -61,7 +61,9 @@
     <Compile Include="ObjectModel\GameService.cs" />
     <Compile Include="ObjectModel\LoadableDrawbleComponent.cs" />
     <Compile Include="ObjectModel\RegisteredComponent.cs" />
-    <Compile Include="ObjectModel\Sprite.cs" />
+    <Compile Include="ObjectModel\Sprite.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="ObjectModel\SpriteRow.cs" />
     <Compile Include="ObjectModel\TextSprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

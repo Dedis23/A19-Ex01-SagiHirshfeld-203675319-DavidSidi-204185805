@@ -1,22 +1,20 @@
-//*** Guy Ronen © 2008-2011 ***//
+////*** Guy Ronen © 2008-2011 ***////
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel.Animators
 {
     public abstract class SpriteAnimator
     {
-        private             Sprite m_BoundSprite;
-        private TimeSpan    m_AnimationLength;
-        private TimeSpan    m_TimeLeft;
-        private bool        m_IsFinished = false;
-        private bool        m_Enabled = true;
-        private bool        m_Initialized = false;
-        private string      m_Name;
-        protected bool      m_ResetAfterFinish = true;
-        protected internal  Sprite m_OriginalSpriteInfo;
+        private Sprite m_BoundSprite;
+        private TimeSpan m_AnimationLength;
+        private TimeSpan m_TimeLeft;
+        private bool m_IsFinished = false;
+        private bool m_Enabled = true;
+        private bool m_Initialized = false;
+        private string m_Name;
+        protected bool m_ResetAfterFinish = true;
+        protected internal Sprite m_OriginalSpriteInfo;
 
         public event EventHandler Finished;
 

@@ -9,8 +9,10 @@ namespace SpaceInvaders
     public class CollisionHandler : GameService, ICollisionHandler
     {
         private const int k_ChanceToDestroyEnemyBullet = 50;
-        private readonly Queue<Sprite> r_KillQueue;        
+        private readonly Queue<Sprite> r_KillQueue;
+
         public event Action EnemyCollidedWithSpaceship;
+
         private readonly Random r_RandomGenerator;
 
         public CollisionHandler(Game i_Game) : base(i_Game)
@@ -42,12 +44,10 @@ namespace SpaceInvaders
             {
                 handleBulletHitsSprite(i_CollidableA as Bullet, i_CollidableB as Sprite);
             }
-
             else if (i_CollidableA is Invader && i_CollidableB is Spaceship)
             {
                 handleInvaderCollidedWithSpaceship(i_CollidableA as Invader, i_CollidableB as Spaceship);
             }
-
             else if(i_CollidableA is Invader && i_CollidableB is Barrier)
             {
                 handleInvaderCollidedWithBarrier(i_CollidableA as Invader, i_CollidableB as Barrier);
@@ -62,17 +62,14 @@ namespace SpaceInvaders
                 {
                     handleBulletHitsBullet(i_Bullet, i_Sprite as Bullet);
                 }
-
                 else if (i_Sprite is IEnemy)
                 {
                     handleBulletHitsEnemy(i_Bullet, i_Sprite as IEnemy);
                 }
-
                 else if (i_Sprite is Spaceship)
                 {
                     handleBulletHitsSpaceship(i_Bullet, i_Sprite as Spaceship);
                 }
-
                 else if(i_Sprite is Barrier)
                 {
                     handleBulletHitsBarrier(i_Bullet, i_Sprite as Barrier);
@@ -141,6 +138,7 @@ namespace SpaceInvaders
             {
                 sprite.Kill();
             }
+
             r_KillQueue.Clear();
         }
     }

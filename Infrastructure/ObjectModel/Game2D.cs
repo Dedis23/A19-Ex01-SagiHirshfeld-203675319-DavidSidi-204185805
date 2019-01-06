@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Infrastructure.Managers;
 using Infrastructure.ServiceInterfaces;
-using Infrastructure.ObjectModel;
-using System;
-using System.Text;
 
 namespace SpaceInvaders
 {
@@ -43,4 +37,3 @@ namespace SpaceInvaders
         }
     }
 }
-
