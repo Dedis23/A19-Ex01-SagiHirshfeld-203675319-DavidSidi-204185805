@@ -5,14 +5,15 @@ using System;
 using Infrastructure.ObjectModel.Animators;
 using SpaceInvaders;
 using System.Reflection;
+using System.Linq;
 
 namespace Infrastructure.ObjectModel
 {
     public class Sprite : LoadableDrawableComponent
-    {    
-        // Markup attribute to assist the DeepCopyFrom method
+    {
+        // Markup attribute to assist the CopyPropertiesFrom method
         [AttributeUsage(AttributeTargets.Property)]
-        private class DeepCopyNotAllowedFromThisProperty : System.Attribute
+        private class CopyingNotAllowed : System.Attribute
         {
         }
 
@@ -34,7 +35,7 @@ namespace Infrastructure.ObjectModel
 
         protected CompositeAnimator m_Animations;
 
-        [DeepCopyNotAllowedFromThisProperty]
+        [CopyingNotAllowed]
         public CompositeAnimator Animations
         {
             get { return m_Animations; }
@@ -43,11 +44,32 @@ namespace Infrastructure.ObjectModel
 
         private Texture2D m_Texture;
 
-        [DeepCopyNotAllowedFromThisProperty]
+        [CopyingNotAllowed]
         public Texture2D Texture
         {
             get { return m_Texture; }
             set { m_Texture = value; }
+        }
+
+        Color[] m_TextureData;
+
+        [CopyingNotAllowed]
+        public Color[] TextureData
+        {
+            get
+            {
+                if (m_TextureData == null)
+                {
+                    m_TextureData = new Color[Texture.Width * Texture.Height];
+                    Texture.GetData(m_TextureData);
+                }
+                return m_TextureData;
+            }
+            set
+            {
+                m_TextureData = value;
+                m_Texture.SetData(m_TextureData);
+            }
         }
 
         public Rectangle Bounds
@@ -148,6 +170,14 @@ namespace Infrastructure.ObjectModel
             set { m_Velocity = value; }
         }
 
+        public Vector2 DirectionVector
+        {
+            get
+            {
+                return Vector2.Normalize(Velocity);
+            }
+        }
+
         protected float m_LayerDepth;
         public float LayerDepth
         {
@@ -202,7 +232,7 @@ namespace Infrastructure.ObjectModel
             return this.MemberwiseClone() as Sprite;
         }
 
-        public void DeepCopyFrom(Sprite i_Source)
+        public void CopyPropertiesFrom(Sprite i_Source)
         {
             PropertyInfo[] targetSpriteProperties = this.GetType().GetProperties();
             PropertyInfo[] firstSpriteProperties = i_Source.GetType().GetProperties();
@@ -210,7 +240,7 @@ namespace Infrastructure.ObjectModel
             {
                 foreach (PropertyInfo firstProperty in firstSpriteProperties)
                 {
-                    bool propertyMarkedNotToCopy = firstProperty.GetCustomAttribute(typeof(DeepCopyNotAllowedFromThisProperty)) != null;
+                    bool propertyMarkedNotToCopy = firstProperty.GetCustomAttribute(typeof(CopyingNotAllowed)) != null;
                     bool propertyInaccessible = newProperty.GetSetMethod() == null || newProperty.GetGetMethod() == null;
                     if (propertyMarkedNotToCopy || propertyInaccessible)
                     {
@@ -400,39 +430,53 @@ namespace Infrastructure.ObjectModel
             return collided;
         }
 
-        // The following method was mostly taken from this tutorial: 
-        // https://www.youtube.com/watch?v=5vKF0zb0PsA - "C# Xna Made Easy Tutorial 27 - Pixel Perfect Collision"
         private bool checkPixelCollision(ICollidable2D i_Source)
         {
+            bool v_StopAfterFirstDetection = true;
+            return LookForCollidingPixels(i_Source, v_StopAfterFirstDetection);
+        }
+
+
+        protected bool LookForCollidingPixels(ICollidable2D i_Source, bool i_StopAfterFirstDetection)
+        {
+            Func<Color, Color> nulledModificationFunc = null;
+            return LookForCollidingPixels(i_Source, i_StopAfterFirstDetection, nulledModificationFunc);
+        }
+
+        protected bool LookForCollidingPixels(ICollidable2D i_Source, bool i_StopAfterFirstDetection, Func<Color, Color> i_ModifyCollidedPixelFunc)
+        {
             bool collisionDetected = false;
-
-            Texture2D spriteA = this.Texture;
-            Texture2D spriteB = i_Source.Texture;
-
-            // Store the pixel data
-            Color[] colorDataA = new Color[spriteA.Width * spriteA.Height];
-            Color[] colorDataB = new Color[spriteB.Width * spriteB.Height];
-            spriteA.GetData(colorDataA);
-            spriteB.GetData(colorDataB);
+            bool done = false;
 
             Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Source.Bounds);
 
             // Scan the pixels of both sprites within their intersection
             // and look for a pixel in which both textures are not transparent
-            for (int y = intersection.Top; y < intersection.Bottom && !collisionDetected; y++)
+            for (int y = intersection.Top; y < intersection.Bottom && !done; y++)
             {
-                for (int x = intersection.Left; x < intersection.Right && !collisionDetected; x++)
+                for (int x = intersection.Left; x < intersection.Right && !done; x++)
                 {
                     int pixelIndexA = (y - this.Bounds.Top) * (this.Bounds.Width) + (x - this.Bounds.Left);
                     int pixelIndexB = (y - i_Source.Bounds.Top) * (i_Source.Bounds.Width) + (x - i_Source.Bounds.Left);
 
-                    Color pixelOfSpriteA = colorDataA[pixelIndexA];
-                    Color pixelOfSpriteB = colorDataB[pixelIndexB];
-
                     // Color.A is the color's alpha component which determines opacity
                     // when a pixel's alpha == 0 that pixel is completely transparent 
-                    collisionDetected = pixelOfSpriteA.A != 0 && pixelOfSpriteB.A != 0;
+                    if (this.TextureData[pixelIndexA].A != 0 && i_Source.TextureData[pixelIndexB].A != 0)
+                    {
+                        collisionDetected = true;
+                        if (i_ModifyCollidedPixelFunc != null)
+                        {
+                            TextureData[pixelIndexA] = i_ModifyCollidedPixelFunc(TextureData[pixelIndexA]);
+                        }
+                        done = i_StopAfterFirstDetection;
+                    }
                 }
+            }
+
+            // If the data was modified: set it to the texture
+            if (i_ModifyCollidedPixelFunc != null)
+            {
+                this.Texture.SetData(this.m_TextureData);
             }
 
             return collisionDetected;

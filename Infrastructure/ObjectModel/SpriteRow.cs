@@ -57,7 +57,7 @@ namespace SpaceInvaders
             }
             else
             {
-                newSprite.DeepCopyFrom(First);
+                newSprite.CopyPropertiesFrom(First);
 
                 if (InsertionOrder == Order.LeftToRight)
                 {

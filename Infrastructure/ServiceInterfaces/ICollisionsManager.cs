@@ -22,7 +22,8 @@ namespace Infrastructure.ServiceInterfaces
     {
         Rectangle Bounds { get; }
         Vector2 Velocity { get; }
-        Texture2D Texture { get; }        
+        Texture2D Texture { get; }
+        Color[] TextureData { get; }
     }
 
     public interface ICollidable3D : ICollidable

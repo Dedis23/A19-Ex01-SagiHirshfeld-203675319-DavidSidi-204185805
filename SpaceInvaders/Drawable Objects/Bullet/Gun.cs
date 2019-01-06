@@ -62,7 +62,6 @@ namespace SpaceInvaders
             i_Bullet.Shooter = r_Shooter;
             i_Bullet.SpriteKilled += onBulletDestroyed;
             r_BulletsFired.Add(i_Bullet);
-
         }
 
         private Vector2 getBulletDeploymentPos(Bullet i_Bullet)

@@ -36,7 +36,7 @@ namespace SpaceInvaders
             this.IsMouseVisible = true;
 
             m_CollisionHandler = new CollisionHandler(this);
-            m_CollisionHandler.EnemyCollidedWithSpaceship += onEnemyCollidedWithSpaceship;
+            m_CollisionHandler.EnemyCollidedWithSpaceship += gameOver;
 
             m_Background = new SpaceBG(this);
             m_MothershipSpawner = new MothershipSpawner(this);
@@ -142,8 +142,8 @@ namespace SpaceInvaders
         private void loadInvadersMatrix()
         {
             m_InvadersMatrix = new InvadersMatrix(this);
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += onInvadersMatrixReachedBottomScreen;
-            m_InvadersMatrix.allInvadersWereDefeated += onAllInvadersWereDefeated;
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += gameOver;
+            m_InvadersMatrix.allInvadersWereDefeated += gameOver;
         }
 
         private void fitViewportToBackground()
@@ -171,21 +171,6 @@ namespace SpaceInvaders
             {
                 gameOver();
             }
-        }
-
-        private void onInvadersMatrixReachedBottomScreen()
-        {
-            gameOver();
-        }
-
-        private void onAllInvadersWereDefeated()
-        {
-            gameOver();
-        }
-
-        private void onEnemyCollidedWithSpaceship()
-        {
-            gameOver();
         }
 
         bool m_FirstGameOver = true;
