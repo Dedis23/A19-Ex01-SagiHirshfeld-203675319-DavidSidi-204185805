@@ -59,6 +59,7 @@
     <Compile Include="ObjectModel\Animators\SpriteAnimator.cs" />
     <Compile Include="ObjectModel\Game2D.cs" />
     <Compile Include="ObjectModel\GameService.cs" />
+    <Compile Include="ObjectModel\GenericSpriteRow.cs" />
     <Compile Include="ObjectModel\LoadableDrawbleComponent.cs" />
     <Compile Include="ObjectModel\NonPremultipliedSpriteBatch.cs" />
     <Compile Include="ObjectModel\RegisteredComponent.cs" />

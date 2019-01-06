@@ -27,8 +27,7 @@ namespace Infrastructure.ObjectModel.Animators
             TimeSpan i_AnimationLength,
             Sprite i_BoundSprite,
             params SpriteAnimator[] i_Animations)
-            : base 
-            (i_Name, i_AnimationLength)
+            : base(i_Name, i_AnimationLength)
         {
             this.BoundSprite = i_BoundSprite;
             foreach (SpriteAnimator animation in i_Animations)
