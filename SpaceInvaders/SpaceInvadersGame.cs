@@ -30,7 +30,7 @@ namespace SpaceInvaders
         {
             Content.RootDirectory = "Content";
             this.Window.Title = "Space Invaders";
-            //this.IsMouseVisible = true;
+            this.IsMouseVisible = true;
 
             m_CollisionHandler = new CollisionHandler(this);
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
@@ -48,7 +48,7 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             base.LoadContent();
-            //fitViewportToBackground();
+            fitViewportToBackground();
             setSpaceshipsPositions();
             setLivesPositions();
             setScoreSpritesPositions();
