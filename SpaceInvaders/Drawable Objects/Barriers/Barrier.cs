@@ -96,7 +96,7 @@ namespace SpaceInvaders
 
         public void ErasePixelsThatIntersectWith(Sprite i_CollidedSprite)
         {
-            bool v_StopAfterFirstDetection = true;
+            const bool v_StopAfterFirstDetection = true;
             Color collidedPixelsModificationFunc(Color p) => new Color(p, 0);
 
             LookForCollidingPixels(

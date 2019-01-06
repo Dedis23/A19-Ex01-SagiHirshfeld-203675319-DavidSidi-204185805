@@ -431,7 +431,7 @@ namespace Infrastructure.ObjectModel
 
         private bool checkPixelCollision(ICollidable2D i_Source)
         {
-            bool v_StopAfterFirstDetection = true;
+            const bool v_StopAfterFirstDetection = true;
             return LookForCollidingPixels(i_Source, v_StopAfterFirstDetection);
         }
 
