@@ -20,10 +20,11 @@ namespace Infrastructure.ObjectModel
         {
         }
 
+        private readonly bool r_UseNonPremultipliedSpriteBatch;
         private Texture2D m_Texture;
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
-        private bool m_UseSharedBatch = true;
+        private bool m_UseSharedBatch = false;
 
         protected SpriteBatch m_SpriteBatch;
         protected CompositeAnimator m_Animations;
@@ -47,6 +48,7 @@ namespace Infrastructure.ObjectModel
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
         {
             m_Animations = new CompositeAnimator(this);
+            r_UseNonPremultipliedSpriteBatch = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
         }
 
         public Sprite(string i_AssetName, Game i_Game, int i_CallsOrder)
@@ -337,27 +339,48 @@ namespace Infrastructure.ObjectModel
         {
             LoadTexture();
 
-            bool getNonpremultipliedSB = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
-
             if (m_SpriteBatch == null)
             {
-                if (getNonpremultipliedSB)
-                {
-                    m_SpriteBatch = Game.Services.GetService(typeof(NonPremultipliedSpriteBatch)) as SpriteBatch;
-                }
-                else
-                {
-                    m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
-                }
+                takeSpriteBatchFromGameServices();
 
                 if (m_SpriteBatch == null)
                 {
-                    m_SpriteBatch = getNonpremultipliedSB ? new NonPremultipliedSpriteBatch(Game.GraphicsDevice) : new SpriteBatch(Game.GraphicsDevice);
-                    m_UseSharedBatch = false;
+                    CreateAndUsePrivateSpriteBatch();
                 }
             }
 
             base.LoadContent();
+        }
+
+        private void takeSpriteBatchFromGameServices()
+        {
+            if (r_UseNonPremultipliedSpriteBatch)
+            {
+                m_SpriteBatch = Game.Services.GetService(typeof(NonPremultipliedSpriteBatch)) as SpriteBatch;
+            }
+            else
+            {
+                m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
+            }
+
+            if (m_SpriteBatch != null)
+            {
+                m_UseSharedBatch = true;
+            }
+        }
+
+        protected void CreateAndUsePrivateSpriteBatch()
+        {
+            if (r_UseNonPremultipliedSpriteBatch)
+            {
+                m_SpriteBatch = new NonPremultipliedSpriteBatch(Game.GraphicsDevice);
+            }
+            else
+            {
+                m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            }
+
+            m_UseSharedBatch = false;
         }
 
         // This turned into injection point in case derived class want to make a specific type of Load

@@ -57,6 +57,7 @@
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\ShrinkAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\WaypointsAnymator.cs" />
     <Compile Include="ObjectModel\Animators\SpriteAnimator.cs" />
+    <Compile Include="ObjectModel\BackgroundSprite.cs" />
     <Compile Include="ObjectModel\Game2D.cs" />
     <Compile Include="ObjectModel\GameService.cs" />
     <Compile Include="ObjectModel\GenericSpriteRow.cs" />
