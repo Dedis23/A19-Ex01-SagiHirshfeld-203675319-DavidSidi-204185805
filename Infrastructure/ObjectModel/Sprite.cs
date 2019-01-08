@@ -433,7 +433,7 @@ namespace Infrastructure.ObjectModel
             this.Rotation,
             this.RotationOrigin,
             this.Scales,
-            SpriteEffects.None,
+            this.SpriteEffects,
             this.LayerDepth);
         }
 
