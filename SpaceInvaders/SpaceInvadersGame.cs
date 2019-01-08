@@ -18,7 +18,7 @@ namespace SpaceInvaders
 
         private CollisionHandler m_CollisionHandler;
         private Sprite m_Background;
-        private MothershipSpawner m_MothershipSpawner;
+        private Mothership m_Mothership;
         private List<Spaceship> m_SpaceshipList;
         private List<SpriteRow> m_RowsOfLives;
         private InvadersMatrix m_InvadersMatrix;
@@ -36,7 +36,7 @@ namespace SpaceInvaders
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
 
             m_Background = new SpaceBG(this);
-            m_MothershipSpawner = new MothershipSpawner(this);
+            m_Mothership = new Mothership(this);
             loadSpaceships();
             loadLives();
             loadScoreSprites();
@@ -44,13 +44,27 @@ namespace SpaceInvaders
             m_DancingBarriersRow = new DancingBarriersRow(this);
         }
 
-        protected override void LoadContent()
+        protected override void Initialize()
         {
+            base.Initialize();
             fitViewportToBackground();
+            setMothershipPosition();
             setSpaceshipsPositions();
             setLivesPositions();
             setScoreSpritesPositions();
             setBarriersPosition();
+        }
+
+        private void fitViewportToBackground()
+        {
+            r_Graphics.PreferredBackBufferWidth = (int)m_Background.Width;
+            r_Graphics.PreferredBackBufferHeight = (int)m_Background.Height;
+            r_Graphics.ApplyChanges();
+        }
+
+        private void setMothershipPosition()
+        {
+            m_Mothership.Position = m_Mothership.DefaultPosition = new Vector2(-m_Mothership.Width, m_Mothership.Height);
         }
 
         private void loadSpaceships()
@@ -71,8 +85,8 @@ namespace SpaceInvaders
         {
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                spaceship.DefaultPosition = new Vector2(0, GraphicsDevice.Viewport.Height - (spaceship.Height * k_SpaceshipPositionYModifier));
-                spaceship.Position = spaceship.DefaultPosition;
+                spaceship.Position = spaceship.DefaultPosition = 
+                    new Vector2(0, GraphicsDevice.Viewport.Height - (spaceship.Height * k_SpaceshipPositionYModifier));
             }
         }
 
@@ -81,10 +95,9 @@ namespace SpaceInvaders
             m_RowsOfLives = new List<SpriteRow>();
             foreach (Spaceship spaceship in m_SpaceshipList)
             {
-                SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new LifeIconSprite(spaceship.AssetName, this));
+                SpriteRow spriteRow = new SpriteRow(this, spaceship.Lives, Game => new LifeIconSprite(spaceship.AssetName, Game));
                 spriteRow.InsertionOrder = SpriteRow.Order.RightToLeft;
-                spriteRow.Opacity /= 2;
-                spriteRow.Scales /= 2;
+                spriteRow.RemovalOrder = SpriteRow.Order.LeftToRight;
                 spaceship.LifeLost += () => spriteRow.RemoveSprite();
                 m_RowsOfLives.Add(spriteRow);
             }
@@ -139,14 +152,7 @@ namespace SpaceInvaders
         {
             m_InvadersMatrix = new InvadersMatrix(this);
             m_InvadersMatrix.invadersMatrixReachedBottomScreen += () => m_GameOver = true;
-            m_InvadersMatrix.allInvadersWereDefeated += () => m_GameOver = true;
-        }
-
-        private void fitViewportToBackground()
-        {
-            r_Graphics.PreferredBackBufferWidth = (int)m_Background.Width;
-            r_Graphics.PreferredBackBufferHeight = (int)m_Background.Height;
-            r_Graphics.ApplyChanges();
+            m_InvadersMatrix.AllInvadersWereDefeated += () => m_GameOver = true;
         }
 
         protected override void Update(GameTime gameTime)

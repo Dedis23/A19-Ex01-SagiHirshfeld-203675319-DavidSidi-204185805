@@ -73,6 +73,9 @@
     <Compile Include="ServiceInterfaces\ICollisionHandler.cs" />
     <Compile Include="ServiceInterfaces\ICollisionsManager.cs" />
     <Compile Include="ServiceInterfaces\IInputManager.cs" />
+    <Compile Include="Utilities\RandomGenerator.cs" />
+    <Compile Include="Utilities\RandomRoller.cs" />
+    <Compile Include="Utilities\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -20,7 +20,6 @@ namespace Infrastructure.ObjectModel
         {
         }
 
-        private readonly bool r_UseNonPremultipliedSpriteBatch;
         private Texture2D m_Texture;
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
@@ -44,16 +43,13 @@ namespace Infrastructure.ObjectModel
         protected Color m_TintColor = Color.White;
         protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
         protected bool m_Vulnerable = true;
+        private bool m_UseNonPremultipliedSpriteBatch;
+
 
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
         {
             m_Animations = new CompositeAnimator(this);
-            r_UseNonPremultipliedSpriteBatch = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
-            if (r_UseNonPremultipliedSpriteBatch)
-            {
-                m_PrivateBlendState = BlendState.NonPremultiplied;
-            }
         }
 
         public Sprite(string i_AssetName, Game i_Game, int i_CallsOrder)
@@ -344,6 +340,8 @@ namespace Infrastructure.ObjectModel
         {
             LoadTexture();
 
+            m_UseNonPremultipliedSpriteBatch = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
+
             if (m_SpriteBatch == null)
             {
                 takeSpriteBatchFromGameServices();
@@ -359,7 +357,7 @@ namespace Infrastructure.ObjectModel
 
         private void takeSpriteBatchFromGameServices()
         {
-            if (r_UseNonPremultipliedSpriteBatch)
+            if (m_UseNonPremultipliedSpriteBatch)
             {
                 m_SpriteBatch = Game.Services.GetService(typeof(NonPremultipliedSpriteBatch)) as SpriteBatch;
             }
@@ -378,6 +376,10 @@ namespace Infrastructure.ObjectModel
         {
             m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             m_UseSharedBatch = false;
+            if (m_UseNonPremultipliedSpriteBatch)
+            {
+                m_PrivateBlendState = BlendState.NonPremultiplied;
+            }
         }
 
         // This turned into injection point in case derived class want to make a specific type of Load
@@ -425,13 +427,13 @@ namespace Infrastructure.ObjectModel
             m_SpriteBatch.Draw(
                 m_Texture,
                 this.DrawingPosition,
-            this.SourceRectangle,
-            this.TintColor,
-            this.Rotation,
-            this.RotationOrigin,
-            this.Scales,
-            this.SpriteEffects,
-            this.LayerDepth);
+                this.SourceRectangle,
+                this.TintColor,
+                this.Rotation,
+                this.RotationOrigin,
+                this.Scales,
+                this.SpriteEffects,
+                this.LayerDepth);
         }
 
         public virtual bool CheckCollision(ICollidable i_Source)

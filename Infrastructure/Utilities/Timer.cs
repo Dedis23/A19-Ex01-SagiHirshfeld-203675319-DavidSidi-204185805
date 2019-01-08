@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 using Infrastructure.ObjectModel;
 
-namespace SpaceInvaders
+namespace Infrastructure.Utilities
 {
     public class Timer : RegisteredComponent
     {

@@ -17,6 +17,7 @@ namespace Infrastructure.ObjectModel
         private readonly Game r_Game;
 
         public Order InsertionOrder { get; set; } = Order.LeftToRight;
+        public Order RemovalOrder { get; set; } = Order.RightToLeft;
 
         public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc)
         {
@@ -50,23 +51,33 @@ namespace Infrastructure.ObjectModel
                 if (InsertionOrder == Order.LeftToRight)
                 {
                     newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Right + Gap, this.Position.Y);
-                    r_SpritesList.AddLast(newSprite);
                 }
                 else
                 {
                     newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Left - Gap, this.Position.Y);
-                    r_SpritesList.AddFirst(newSprite);
                 }
+
+                r_SpritesList.AddLast(newSprite);
             }
         }
 
         public void RemoveSprite()
         {
             T spriteToRemove;
+
             if (r_SpritesList.Count != 0)
             {
-                spriteToRemove = r_SpritesList.Last.Value;
-                r_SpritesList.RemoveLast();
+                if (InsertionOrder != RemovalOrder)
+                {
+                    spriteToRemove = r_SpritesList.Last.Value;
+                    r_SpritesList.RemoveLast();
+                }
+                else
+                {
+                    spriteToRemove = r_SpritesList.First.Value;
+                    r_SpritesList.RemoveFirst();
+                }
+
                 spriteToRemove.Kill();
             }
         }

@@ -4,6 +4,7 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
@@ -11,10 +12,13 @@ namespace SpaceInvaders
     public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
+        private const int k_ChanceToSpawn = 10;
+        private const float k_TimeBetweenRolls = 1;
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
         private const float k_DeathAnimationLength = 2.2f;
         private const float k_NumOfBlinksInASecondInDeathAnimation = 4.0f;
+        private readonly RandomRoller r_RandomSpawnRoller;
 
         public int PointsValue { get; set; }
 
@@ -24,6 +28,10 @@ namespace SpaceInvaders
             this.Velocity = Vector2.Zero;
             this.Visible = false;
             PointsValue = k_MotherShipPointsValue;
+
+            r_RandomSpawnRoller = new RandomRoller(i_Game, k_ChanceToSpawn, k_TimeBetweenRolls);
+            r_RandomSpawnRoller.RollSucceeded += SpawnAndFly;
+            r_RandomSpawnRoller.Activate();
         }
 
         public override void Initialize()
@@ -54,6 +62,32 @@ namespace SpaceInvaders
             Animations.Resume();
         }
 
+        public void SpawnAndFly()
+        {
+            r_RandomSpawnRoller.Deactivate();
+            this.Position = DefaultPosition;
+            this.Vulnerable = true;
+            this.Visible = true;
+            this.Velocity = new Vector2(k_MotherShipVelocity, 0);
+        }
+
+        public override void Update(GameTime i_GameTime)
+        {
+            base.Update(i_GameTime);
+
+            if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
+            {
+                hideAndWaitForNextSpawn();
+            }
+        }
+
+        private void hideAndWaitForNextSpawn()
+        {
+            this.Visible = false;
+            this.Velocity = Vector2.Zero;
+            r_RandomSpawnRoller.Activate();
+        }
+
         protected override void KilledInjectionPoint()
         {
             Vulnerable = false;
@@ -64,46 +98,9 @@ namespace SpaceInvaders
         private void onFinishedDeathAnimation(object sender, EventArgs e)
         {
             CompositeAnimator deathAnimation = sender as CompositeAnimator;
-            deathAnimation.Reset(); // reset animation to original state
-            deathAnimation.Pause(); // (enable = false)
+            deathAnimation.Reset();
+            deathAnimation.Pause();
             hideAndWaitForNextSpawn();
-        }
-
-        private void hideAndWaitForNextSpawn()
-        {
-            this.Visible = false;
-            this.Velocity = Vector2.Zero;
-        }
-
-        public void SpawnAndFly()
-        {
-            setDefaultPosition();
-            this.Vulnerable = true;
-            this.Visible = true;
-            this.Velocity = new Vector2(k_MotherShipVelocity, 0);
-        }
-
-        public override void Update(GameTime i_GameTime)
-        {
-            base.Update(i_GameTime);
-
-            if (this.Vulnerable && this.Position.X >= this.GraphicsDevice.Viewport.Width)
-            {
-                this.Kill();
-            }
-        }
-
-        protected override void InitBounds()
-        {
-            base.InitBounds();
-
-            setDefaultPosition();
-        }
-
-        private void setDefaultPosition()
-        {
-            // Default MotherShip position (coming from the left of the screen) 
-            this.Position = new Vector2(-this.Width, this.Height);
         }
     }
 }

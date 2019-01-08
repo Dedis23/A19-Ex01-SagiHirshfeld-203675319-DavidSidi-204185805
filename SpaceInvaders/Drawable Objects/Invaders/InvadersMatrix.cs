@@ -2,40 +2,38 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
+using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
     public class InvadersMatrix : RegisteredComponent
     {
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
+        private const int k_StartingInvadersCount = (k_NumOfRowsWithPinkInvaders + k_NumOfRowsWithLightBlueInvaders + k_NumOfRowsWithLightYellowInvaders) * k_NumOfInvadersInARow;
         private const float k_DistanceBetweenEachInvader = 0.6f;
         private const float k_DefaultStartingPositionX = 0, k_DefaultStartingPositionY = 96;
         private const float k_JumpDistanceModifier = 0.5f;
         private const float k_InvadersReachedEdgeAccelerator = 0.92f;
         private const float k_FourInvadersDefeatedAccelerator = 0.96f;
-        private const float k_ChanceForASingleInvaderToShoot = 5;
-        private const float k_TimeBetweenRollingForShootsInSeconds = 2;
+        private const float k_ChanceToShootIncrementOnInvaderDeath = 0.3f;
         private const float k_XGapBetweenInvaders = Invader.k_DefaultInvaderWidth + (Invader.k_DefaultInvaderWidth * k_DistanceBetweenEachInvader);
         private const float k_YGapBetweenInvaders = Invader.k_DefaultInvaderHeight + (Invader.k_DefaultInvaderHeight * k_DistanceBetweenEachInvader);
         private const float k_DefaultJumpDistance = k_JumpDistanceModifier * Invader.k_DefaultInvaderWidth;
-        private readonly Random r_RandomGenerator;
         private readonly List<List<Invader>> r_InvadersMatrix;
         private Invader m_CurrentfurthestInvaderInXPosition;
         private Timer m_TimerForJumps;
-        private Timer m_TimerForInvaderShooting;
         private float m_JumpDirection;
         private int m_NumOfDefeatedInvaders;
 
         public event Action invadersMatrixReachedBottomScreen;
 
-        public event Action allInvadersWereDefeated;
+        public event Action AllInvadersWereDefeated;
 
         public InvadersMatrix(Game i_Game) : base(i_Game)
         {
             r_InvadersMatrix = new List<List<Invader>>();
             m_JumpDirection = 1.0f;
             m_NumOfDefeatedInvaders = 0;
-            r_RandomGenerator = new Random((int)DateTime.Now.Ticks);
             initializeTimers();
             initializeMatrix();
         }
@@ -46,10 +44,6 @@ namespace SpaceInvaders
             m_TimerForJumps.Interval = Invader.k_DefaultDelayBetweenJumpsInSeconds;
             m_TimerForJumps.Notify += handleInvadersMatrixJumps;
             m_TimerForJumps.Activate();
-            m_TimerForInvaderShooting = new Timer(this.Game);
-            m_TimerForInvaderShooting.Interval = k_TimeBetweenRollingForShootsInSeconds;
-            m_TimerForInvaderShooting.Notify += rollsForShoot;
-            m_TimerForInvaderShooting.Activate();
         }
 
         private void initializeMatrix()
@@ -309,20 +303,6 @@ namespace SpaceInvaders
             m_TimerForJumps.Interval *= i_AcceleratorModifier;
         }
 
-        private void rollsForShoot()
-        {
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
-            {
-                foreach (Invader invader in rowOfInvaders)
-                {
-                    if (r_RandomGenerator.Next(1, 100) <= k_ChanceForASingleInvaderToShoot)
-                    {
-                        invader.Shoot();
-                    }
-                }
-            }
-        }
-
         private List<Invader> m_KilledInvadersList = new List<Invader>();
 
         private void addToKilledInvadersList(object i_Invader)
@@ -332,15 +312,21 @@ namespace SpaceInvaders
 
         private void removeInvader(object i_Invader)
         {
-            Invader invader = i_Invader as Invader;
-            if (invader == m_CurrentfurthestInvaderInXPosition)
+            Invader invaderToRemove = i_Invader as Invader;
+            if (invaderToRemove == m_CurrentfurthestInvaderInXPosition)
             {
                 m_CurrentfurthestInvaderInXPosition = null;
             }
 
             foreach (List<Invader> invaderList in r_InvadersMatrix)
             {
-                invaderList.Remove(invader);
+                invaderList.Remove(invaderToRemove);
+
+                // While we're here - increase the shooting chance of the enemies to make things more interesting
+                foreach(Invader invader in invaderList)
+                {
+                    invader.ChanceToShoot += k_ChanceToShootIncrementOnInvaderDeath;
+                }
             }
 
             m_NumOfDefeatedInvaders++;
@@ -351,11 +337,9 @@ namespace SpaceInvaders
                 decreaseDelayBetweenJumps(k_FourInvadersDefeatedAccelerator);
             }
 
-            if (m_NumOfDefeatedInvaders == (k_NumOfRowsWithPinkInvaders +
-                                            k_NumOfRowsWithLightBlueInvaders +
-                                            k_NumOfRowsWithLightYellowInvaders) * k_NumOfInvadersInARow)
+            if (m_NumOfDefeatedInvaders == k_StartingInvadersCount)
             {
-                allInvadersWereDefeated?.Invoke();
+                AllInvadersWereDefeated?.Invoke();
             }
         }
     }
