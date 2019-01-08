@@ -25,6 +25,7 @@ namespace Infrastructure.ObjectModel
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
         private bool m_UseSharedBatch = false;
+        private BlendState m_PrivateBlendState = BlendState.AlphaBlend;
 
         protected SpriteBatch m_SpriteBatch;
         protected CompositeAnimator m_Animations;
@@ -49,6 +50,10 @@ namespace Infrastructure.ObjectModel
         {
             m_Animations = new CompositeAnimator(this);
             r_UseNonPremultipliedSpriteBatch = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
+            if (r_UseNonPremultipliedSpriteBatch)
+            {
+                m_PrivateBlendState = BlendState.NonPremultiplied;
+            }
         }
 
         public Sprite(string i_AssetName, Game i_Game, int i_CallsOrder)
@@ -371,15 +376,7 @@ namespace Infrastructure.ObjectModel
 
         protected void CreateAndUsePrivateSpriteBatch()
         {
-            if (r_UseNonPremultipliedSpriteBatch)
-            {
-                m_SpriteBatch = new NonPremultipliedSpriteBatch(Game.GraphicsDevice);
-            }
-            else
-            {
-                m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            }
-
+            m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             m_UseSharedBatch = false;
         }
 
@@ -410,7 +407,7 @@ namespace Infrastructure.ObjectModel
         {
             if (!m_UseSharedBatch)
             {
-                m_SpriteBatch.Begin();
+                m_SpriteBatch.Begin(SpriteSortMode.Deferred, m_PrivateBlendState);
             }
 
             SpecificSpriteBatchDraw();

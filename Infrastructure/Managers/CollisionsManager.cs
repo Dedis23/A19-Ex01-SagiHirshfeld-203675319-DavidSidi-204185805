@@ -29,6 +29,7 @@ namespace Infrastructure.Managers
                 i_Collidable.PositionChanged += collidable_Changed;
                 i_Collidable.SizeChanged += collidable_Changed;
                 i_Collidable.VisibleChanged += collidable_Changed;
+                i_Collidable.VulnerableChanged += collidable_Changed;
                 i_Collidable.Disposed += collidable_Disposed;
             }
         }
@@ -44,6 +45,7 @@ namespace Infrastructure.Managers
                 collidable.PositionChanged -= collidable_Changed;
                 collidable.SizeChanged -= collidable_Changed;
                 collidable.VisibleChanged -= collidable_Changed;
+                collidable.VulnerableChanged -= collidable_Changed;
                 collidable.Disposed -= collidable_Disposed;
 
                 m_Collidables.Remove(collidable);
@@ -67,7 +69,7 @@ namespace Infrastructure.Managers
                 // Finding who collided with i_Source:
                 foreach (ICollidable target in m_Collidables)
                 {
-                    if (target.Visible && target.Vulnerable)
+                    if (i_Source != target && target.Visible && target.Vulnerable)
                     {
                         if (target.CheckCollision(i_Source))
                         {

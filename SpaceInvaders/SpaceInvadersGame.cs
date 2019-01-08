@@ -46,7 +46,6 @@ namespace SpaceInvaders
 
         protected override void LoadContent()
         {
-            base.LoadContent();
             fitViewportToBackground();
             setSpaceshipsPositions();
             setLivesPositions();
