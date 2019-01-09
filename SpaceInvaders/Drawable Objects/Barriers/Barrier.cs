@@ -56,8 +56,11 @@ namespace SpaceInvaders
             // Look for the highest and lowest pixels that collide within the intersection rectangle
             float? highestCollidedPixelY = null;
             float? lowestCollidedPixelY = null;
+            bool collisionWasDetectedInRow;
             foreach (int y in yTraversalOrder)
             {
+                collisionWasDetectedInRow = false;
+
                 for (int x = intersection.Left; x < intersection.Right; x++)
                 {
                     int barrierPixelIndex = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
@@ -65,6 +68,8 @@ namespace SpaceInvaders
 
                     if (this.TextureData[barrierPixelIndex].A != 0 && i_Bullet.TextureData[bulletPixelIndex].A != 0)
                     {
+                        collisionWasDetectedInRow = true;
+
                         if (y < highestCollidedPixelY || highestCollidedPixelY == null)
                         {
                             highestCollidedPixelY = y;
@@ -84,8 +89,7 @@ namespace SpaceInvaders
                 }
 
                 // Stop the scan when Y has passed the intersection (this works due to the shape of the bullet)                 
-                if (highestCollidedPixelY.HasValue && lowestCollidedPixelY.HasValue &&
-                    y < highestCollidedPixelY.Value && y > lowestCollidedPixelY.Value)
+                if (highestCollidedPixelY.HasValue && lowestCollidedPixelY.HasValue && !collisionWasDetectedInRow)
                 {
                     break;
                 }
