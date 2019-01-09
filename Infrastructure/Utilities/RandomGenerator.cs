@@ -36,7 +36,7 @@ namespace Infrastructure.Utilities
 
         public float NextFloat(int i_MinValue, int i_MaxValue)
         {
-            return Next(i_MinValue, i_MaxValue - 1) + Next(1, 100) / 100f;
+            return Next(i_MinValue, i_MaxValue - 1) + (Next(1, 100) / 100f);
         }
     }
 }

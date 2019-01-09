@@ -102,5 +102,12 @@ namespace SpaceInvaders
             deathAnimation.Pause();
             hideAndWaitForNextSpawn();
         }
+
+        protected override void OnDisposed(object sender, EventArgs args)
+        {
+            base.OnDisposed(sender, args);
+            r_RandomSpawnRoller.RollSucceeded -= SpawnAndFly;
+            Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
+        }
     }
 }

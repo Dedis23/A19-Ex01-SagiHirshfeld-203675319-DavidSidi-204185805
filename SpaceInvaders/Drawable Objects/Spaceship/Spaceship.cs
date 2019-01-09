@@ -177,5 +177,12 @@ namespace SpaceInvaders
                 this.Position = DefaultPosition;
             }
         }
+
+        protected override void OnDisposed(object sender, EventArgs args)
+        {
+            base.OnDisposed(sender, args);
+            Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
+            Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
+        }
     }
 }
