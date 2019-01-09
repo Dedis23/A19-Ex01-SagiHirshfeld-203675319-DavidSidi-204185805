@@ -17,6 +17,7 @@ namespace Infrastructure.ObjectModel
         private readonly Game r_Game;
 
         public Order InsertionOrder { get; set; } = Order.LeftToRight;
+
         public Order RemovalOrder { get; set; } = Order.RightToLeft;
 
         public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc)

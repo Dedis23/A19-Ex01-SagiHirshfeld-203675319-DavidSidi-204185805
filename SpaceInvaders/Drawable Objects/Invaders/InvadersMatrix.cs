@@ -342,5 +342,11 @@ namespace SpaceInvaders
                 AllInvadersWereDefeated?.Invoke();
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            m_TimerForJumps.Notify -= handleInvadersMatrixJumps;
+        }
     }
 }

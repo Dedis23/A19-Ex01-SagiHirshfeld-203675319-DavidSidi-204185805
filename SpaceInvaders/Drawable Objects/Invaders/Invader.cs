@@ -145,5 +145,13 @@ namespace SpaceInvaders
         {
             RotationOrigin = new Vector2(k_DefaultInvaderWidth / 2, k_DefaultInvaderHeight / 2);
         }
+
+        protected override void OnDisposed(object sender, EventArgs args)
+        {
+            base.OnDisposed(sender, args);
+            r_RandomShootRoller.RollSucceeded -= Shoot;
+            (Animations["CellAnimator"] as CellAnimator).FinishedCellAnimationCycle -= onFinishedCellAnimationCycle;
+            Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
+        }
     }
 }

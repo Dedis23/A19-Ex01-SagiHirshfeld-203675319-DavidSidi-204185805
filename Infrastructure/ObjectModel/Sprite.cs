@@ -45,7 +45,6 @@ namespace Infrastructure.ObjectModel
         protected bool m_Vulnerable = true;
         private bool m_UseNonPremultipliedSpriteBatch;
 
-
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
         {
