@@ -70,7 +70,7 @@ namespace SpaceInvaders
             deploymentPos.X = r_Shooter.Position.X + (r_Shooter.Bounds.Width / 2) - (i_Bullet.Width / 2);
             if (r_Shooter is IEnemy)
             {
-                deploymentPos.Y = r_Shooter.Bounds.Bottom + 1;
+                deploymentPos.Y = r_Shooter.Bounds.Bottom;
             }
             else
             {

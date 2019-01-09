@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
+using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
@@ -18,7 +19,7 @@ namespace SpaceInvaders
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
             r_KillQueue = new Queue<Sprite>();
-            r_RandomGenerator = new Random((int)DateTime.Now.Ticks);
+            r_RandomGenerator = RandomGenerator.Instance;
         }
 
         protected override void RegisterAsService()
