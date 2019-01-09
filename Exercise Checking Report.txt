@@ -2,7 +2,7 @@
 Exercise No...........: 2
 First Student Details.: 203675319 - Sagi Hirshfeld
 Second Student Details: 204185805 - David Sidi
-Delivery Date.........: 09.01.18
+Delivery Date.........: 10.01.18
 Delivered In Delay....: No
 Delay Reason..........: 
 Visual Studio Version.: 2017
