@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Managers\CollisionsManager.cs" />
+    <Compile Include="Managers\DummyInputManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
+    <Compile Include="Managers\ScreensManager.cs" />
     <Compile Include="ObjectModel\Animators\CompositeAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\BlinkAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\CellAnimator.cs" />
@@ -58,12 +60,14 @@
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\WaypointsAnymator.cs" />
     <Compile Include="ObjectModel\Animators\SpriteAnimator.cs" />
     <Compile Include="ObjectModel\BackgroundSprite.cs" />
+    <Compile Include="ObjectModel\CompositeDrawableComponent.cs" />
     <Compile Include="ObjectModel\Game2D.cs" />
     <Compile Include="ObjectModel\GameService.cs" />
     <Compile Include="ObjectModel\GenericSpriteRow.cs" />
     <Compile Include="ObjectModel\LoadableDrawbleComponent.cs" />
     <Compile Include="ObjectModel\NonPremultipliedSpriteBatch.cs" />
     <Compile Include="ObjectModel\RegisteredComponent.cs" />
+    <Compile Include="ObjectModel\Screebs\GameScreen.cs" />
     <Compile Include="ObjectModel\Sprite.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
@@ -73,6 +77,7 @@
     <Compile Include="ServiceInterfaces\ICollisionHandler.cs" />
     <Compile Include="ServiceInterfaces\ICollisionsManager.cs" />
     <Compile Include="ServiceInterfaces\IInputManager.cs" />
+    <Compile Include="ServiceInterfaces\IScreensMananger.cs" />
     <Compile Include="Utilities\RandomGenerator.cs" />
     <Compile Include="Utilities\RandomRoller.cs" />
     <Compile Include="Utilities\Timer.cs" />

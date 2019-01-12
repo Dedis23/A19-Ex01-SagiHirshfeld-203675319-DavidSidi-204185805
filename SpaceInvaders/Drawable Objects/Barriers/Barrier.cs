@@ -48,7 +48,7 @@ namespace SpaceInvaders
 
             // Traverse the pixels top-to-bottom or bottom-to-top depending on the direction of the bullet
             IEnumerable<int> yTraversalOrder = Enumerable.Range(intersection.Top, intersection.Height);
-            if (i_Bullet.DirectionVector.Y == -1)
+            if (i_Bullet.DirectionVector.Y == 1)
             {
                 yTraversalOrder = yTraversalOrder.OrderByDescending(i => i);
             }

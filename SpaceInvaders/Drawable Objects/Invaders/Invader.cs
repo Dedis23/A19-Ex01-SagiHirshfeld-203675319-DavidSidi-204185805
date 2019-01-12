@@ -16,7 +16,6 @@ namespace SpaceInvaders
         private const int k_MaxTimeBetweenShootRolls = 3;
         private const float k_DeathAnimationLength = 1.2f;
         private const float k_NumOfCyclesPerSecondsInDeathAnimation = 6.0f;
-        public const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
         public const int k_NumOfCells = 2;
         public const int k_DefaultInvaderWidth = 32;
         public const int k_DefaultInvaderHeight = 32;
@@ -25,7 +24,7 @@ namespace SpaceInvaders
         private readonly float r_TimeBetweenRollingForShootInSeconds;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
 
-        public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
+        //public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
         private int m_ColIndexInSpriteSheet;
         private int m_RowIndexInSpriteSheet;
         private float m_ChanceToShoot = 5;
@@ -80,22 +79,30 @@ namespace SpaceInvaders
             m_HeightBeforeScale = k_DefaultInvaderHeight;
 
             this.SourceRectangle = new Rectangle(
-                (int)(0 + (m_ColIndexInSpriteSheet * k_DefaultInvaderWidth)),
-                (int)(0 + (m_RowIndexInSpriteSheet * k_DefaultInvaderHeight)),
+                m_ColIndexInSpriteSheet * k_DefaultInvaderWidth,
+                m_RowIndexInSpriteSheet * k_DefaultInvaderHeight,
                 k_DefaultInvaderWidth,
                 k_DefaultInvaderHeight);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.SourceRectangle = new Rectangle(
+                m_ColIndexInSpriteSheet * this.SourceRectangle.Width,
+                this.SourceRectangle.Top,
+                this.SourceRectangle.Width,
+                this.SourceRectangle.Height);
+        }
+
+        public void GoNextFrame()
+        {
+            m_ColIndexInSpriteSheet = (m_ColIndexInSpriteSheet + 1) % k_NumOfCells;
+        }
+
         private void initializeAnimations()
         {
-            CellAnimator cellAnimator = new CellAnimator(
-                TimeSpan.FromSeconds(k_DefaultDelayBetweenJumpsInSeconds),
-                k_NumOfCells,
-                TimeSpan.Zero,
-                m_ColIndexInSpriteSheet);
-            cellAnimator.FinishedCellAnimationCycle += onFinishedCellAnimationCycle;
-            Animations.Add(cellAnimator);
-
             ShrinkAnimator shrinkAnimator = new ShrinkAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
             RotateAnimator rotateAnimator = new RotateAnimator(
                 k_NumOfCyclesPerSecondsInDeathAnimation,
@@ -112,15 +119,6 @@ namespace SpaceInvaders
             deathAnimation.Pause();
 
             Animations.Resume();
-        }
-
-        private void onFinishedCellAnimationCycle()
-        {
-            // increase cell animation speed based on jumping speed
-            if (DelayBetweenJumpsInSeconds < (Animations["CellAnimator"] as CellAnimator).CellTime.TotalSeconds)
-            {
-                (Animations["CellAnimator"] as CellAnimator).CellTime = TimeSpan.FromSeconds(DelayBetweenJumpsInSeconds);
-            }
         }
 
         protected override void KilledInjectionPoint()
@@ -150,7 +148,6 @@ namespace SpaceInvaders
         {
             base.OnDisposed(sender, args);
             r_RandomShootRoller.RollSucceeded -= Shoot;
-            (Animations["CellAnimator"] as CellAnimator).FinishedCellAnimationCycle -= onFinishedCellAnimationCycle;
             Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
         }
     }
