@@ -44,7 +44,7 @@ namespace SpaceInvaders
 
         public Color BulletsColor { get; } = Color.Red;
 
-        protected IInputManager InputManager { get; private set; }
+        public IInputManager InputManager { get;  set; }
 
         public int Lives { get; set; }
 
@@ -61,7 +61,7 @@ namespace SpaceInvaders
         public override void Initialize()
         {
             base.Initialize();
-            InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            //InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             initializeAnimations();
         }
 
@@ -86,10 +86,8 @@ namespace SpaceInvaders
                 this,
                 rotateAnimator,
                 faderAnimator);
-            deathAnimation.Finished += onFinishedDeathAnimation;
-            Animations.Add(deathAnimation);
-            deathAnimation.Pause();
 
+            DeathAnimation = deathAnimation;
             Animations.Resume();
         }
 
@@ -98,11 +96,6 @@ namespace SpaceInvaders
             Animations["LoseLifeAnimation"].Reset();
             Animations["LoseLifeAnimation"].Pause();
             this.Vulnerable = true;
-        }
-
-        private void onFinishedDeathAnimation(object sender, EventArgs e)
-        {
-            this.Kill();
         }
 
         public override void Update(GameTime i_GameTime)
@@ -168,9 +161,9 @@ namespace SpaceInvaders
 
             if (Lives == 0)
             {
-                this.r_Gun.Enabled = false;
-                Animations["DeathAnimation"].Resume();
+                this.Kill();
             }
+
             else
             {
                 Animations["LoseLifeAnimation"].Resume();
@@ -178,11 +171,16 @@ namespace SpaceInvaders
             }
         }
 
+        protected override void OnDying()
+        {
+            this.r_Gun.Enabled = false;
+            base.OnDying();
+        }
+
         protected override void OnDisposed(object sender, EventArgs args)
         {
             base.OnDisposed(sender, args);
             Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
-            Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
         }
     }
 }

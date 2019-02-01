@@ -38,9 +38,7 @@ namespace Infrastructure.Managers
         {
             ICollidable collidable = sender as ICollidable;
 
-            if (collidable != null
-                &&
-                this.m_Collidables.Contains(collidable))
+            if (collidable != null && this.m_Collidables.Contains(collidable))
             {
                 collidable.PositionChanged -= collidable_Changed;
                 collidable.SizeChanged -= collidable_Changed;
@@ -85,6 +83,7 @@ namespace Infrastructure.Managers
                     {
                         break;
                     }
+
                     else if (target.Visible && target.Vulnerable)
                     {
                         target.Collided(i_Source);

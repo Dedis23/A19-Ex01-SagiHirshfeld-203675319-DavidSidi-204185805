@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
+using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
     public sealed class BulletsFactory : GameService
     {
+        private readonly GameScreen r_GameScreen;
         private readonly Stack<Bullet> r_BulletsStack;
 
-        public BulletsFactory(Game i_Game) : base(i_Game)
+        public BulletsFactory(GameScreen i_GameScreen) : base(i_GameScreen.Game)
         {
+            r_GameScreen = i_GameScreen;
             r_BulletsStack = new Stack<Bullet>();
         }
 
@@ -21,10 +24,12 @@ namespace SpaceInvaders
             {
                 newBullet = r_BulletsStack.Pop();
             }
+
             else
             {
                 newBullet = new Bullet(this.Game);
-                newBullet.SpriteKilled += onBulletDestroyed;
+                r_GameScreen.Add(newBullet);
+                newBullet.Died += onBulletDestroyed;
             }
 
             return newBullet;

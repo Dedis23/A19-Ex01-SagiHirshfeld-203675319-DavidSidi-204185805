@@ -60,7 +60,7 @@
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
-    <Compile Include="Drawable Objects\Spaceship\LifeIconSprite.cs" />
+    <Compile Include="Drawable Objects\Spaceship\LifeIcon.cs" />
     <Compile Include="Drawable Objects\Spaceship\Presets\Player1Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Presets\Player2Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="Interfaces\IEnemy.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />
+    <Compile Include="Screens\PlayScreen.cs" />
     <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

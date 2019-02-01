@@ -2,21 +2,21 @@
 using Infrastructure.ObjectModel;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+
 
 namespace SpaceInvaders
 {
-    public class DancingBarriersRow : DrawableGameComponent
+    public class DancingBarriersRow : SpriteRow<Barrier>
     {
         private const int k_DancingSpeed = 45;
         private const int k_DefaultBarrierNum = 4;
-        private readonly SpriteRow<Barrier> r_SpritesRow;
 
-        public DancingBarriersRow(Game i_Game, int i_BarrierNum) : base(i_Game)
+        public DancingBarriersRow(Game i_Game, int i_BarrierNum) : base(i_Game, i_BarrierNum, Game => new Barrier(i_Game))
         {
-            r_SpritesRow = new SpriteRow<Barrier>(i_Game, i_BarrierNum, Game => new Barrier(i_Game));
-            r_SpritesRow.InsertionOrder = SpriteRow<Barrier>.Order.LeftToRight;
-            this.Game.Components.Add(this);
+            this.InsertionOrder = Order.LeftToRight;
+            this.BlendState = BlendState.NonPremultiplied;
         }
 
         public DancingBarriersRow(Game i_Game) : this(i_Game, k_DefaultBarrierNum)
@@ -26,20 +26,20 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             base.LoadContent();
-            r_SpritesRow.Gap = r_SpritesRow.First.Width;
+            this.Gap = this.First.Width;
             dance();
         }
 
-        public Vector2 Position
+        public override Vector2 Position
         {
             get
             {
-                return r_SpritesRow.Position;
+                return base.Position;
             }
 
             set
             {
-                r_SpritesRow.Position = value;
+                base.Position = value;
 
                 // Restart the dance when moved
                 dance();
@@ -49,7 +49,7 @@ namespace SpaceInvaders
         private void dance()
         {
             bool v_Loop = true;
-            foreach (Barrier sprite in r_SpritesRow.SpritesLinkedList)
+            foreach (Barrier sprite in this.SpritesLinkedList)
             {
                 SpriteAnimator danceAnimation = new WaypointsAnymator(
                         k_DancingSpeed,
@@ -61,22 +61,6 @@ namespace SpaceInvaders
                 sprite.Animations.Remove(danceAnimation.Name);
                 sprite.Animations.Add(danceAnimation);
                 sprite.Animations.Resume();
-            }
-        }
-
-        public float Width
-        {
-            get
-            {
-                return r_SpritesRow.Width;
-            }
-        }
-
-        public float Height
-        {
-            get
-            {
-                return r_SpritesRow.Height;
             }
         }
     }

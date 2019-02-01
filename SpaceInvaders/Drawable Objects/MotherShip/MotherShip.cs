@@ -12,7 +12,7 @@ namespace SpaceInvaders
     public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
-        private const int k_ChanceToSpawn = 10;
+        private const int k_ChanceToSpawn = 100;
         private const float k_TimeBetweenRolls = 1;
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
@@ -55,9 +55,10 @@ namespace SpaceInvaders
                 shrinkAnimator,
                 faderAnimator,
                 blinkAnimator);
-            deathAnimation.Finished += onFinishedDeathAnimation;
-            Animations.Add(deathAnimation);
-            deathAnimation.Pause();
+            /// Animations.Add(deathAnimation);
+            /// deathAnimation.Pause();
+
+            DeathAnimation = deathAnimation;
 
             Animations.Resume();
         }
@@ -88,18 +89,17 @@ namespace SpaceInvaders
             r_RandomSpawnRoller.Activate();
         }
 
-        protected override void KilledInjectionPoint()
+        protected override void OnDying()
         {
             Vulnerable = false;
             Animations["DeathAnimation"].Resume();
             Velocity = Vector2.Zero;
         }
 
-        private void onFinishedDeathAnimation(object sender, EventArgs e)
+        protected override void OnDeath()
         {
-            CompositeAnimator deathAnimation = sender as CompositeAnimator;
-            deathAnimation.Reset();
-            deathAnimation.Pause();
+            DeathAnimation.Reset();
+            DeathAnimation.Pause();
             hideAndWaitForNextSpawn();
         }
 
@@ -107,7 +107,6 @@ namespace SpaceInvaders
         {
             base.OnDisposed(sender, args);
             r_RandomSpawnRoller.RollSucceeded -= SpawnAndFly;
-            Animations["DeathAnimation"].Finished -= onFinishedDeathAnimation;
         }
     }
 }

@@ -6,7 +6,7 @@ using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
-    public class InvadersMatrix : RegisteredComponent
+    public class InvadersMatrix : CompositeDrawableComponent<GameComponent>
     {
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
         private const int k_NumOfRows = k_NumOfRowsWithPinkInvaders + k_NumOfRowsWithLightBlueInvaders + k_NumOfRowsWithLightYellowInvaders;
@@ -97,7 +97,8 @@ namespace SpaceInvaders
                 Invader currentInvader = createInvaderBasedOnPreset(i_InvaderPreset, i_StartingCell);
                 currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
                 nextInvaderPosition.X += k_XGapBetweenInvaders;
-                currentInvader.SpriteKilled += removeInvader;
+                currentInvader.Dying += OnInvaderDying;
+                currentInvader.Died += OnInvaderKilled;
                 rowOfInvaders.Add(currentInvader);
             }
 
@@ -120,6 +121,7 @@ namespace SpaceInvaders
                     break;
             }
 
+            this.Add(newInvader);
             return newInvader;
         }
 
@@ -283,7 +285,7 @@ namespace SpaceInvaders
             }
         }
 
-        private void removeInvader(object i_Invader)
+        private void OnInvaderDying(object i_Invader)
         {
             Invader invaderToRemove = i_Invader as Invader;
             if (invaderToRemove == m_CurrentfurthestInvaderInXPosition)
@@ -296,7 +298,7 @@ namespace SpaceInvaders
                 invaderList.Remove(invaderToRemove);
 
                 // While we're here - increase the shooting chance of the enemies to make things more interesting
-                foreach(Invader invader in invaderList)
+                foreach (Invader invader in invaderList)
                 {
                     invader.ChanceToShoot *= k_ChanceToShootIncrementModifierOnInvaderDeath;
                 }
@@ -314,6 +316,14 @@ namespace SpaceInvaders
             {
                 AllInvadersWereDefeated?.Invoke();
             }
+        }
+
+        private void OnInvaderKilled(object i_Invader)
+        {
+            Invader invader = i_Invader as Invader;
+            invader.Dying -= OnInvaderDying;
+            invader.Died -= OnInvaderKilled;
+            this.Remove(invader);
         }
 
         protected override void Dispose(bool disposing)

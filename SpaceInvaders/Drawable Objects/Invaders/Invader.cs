@@ -115,24 +115,39 @@ namespace SpaceInvaders
                 shrinkAnimator,
                 rotateAnimator);
             deathAnimation.Finished += onFinishedDeathAnimation;
-            Animations.Add(deathAnimation);
-            deathAnimation.Pause();
-
+            /// Animations.Add(deathAnimation);
+            /// deathAnimation.Pause();
             Animations.Resume();
+
+            this.DeathAnimation = deathAnimation;
         }
 
-        protected override void KilledInjectionPoint()
+        protected override void OnDying()
         {
             Vulnerable = false;
             m_ChanceToShoot++;
             r_RandomShootRoller.RollSucceeded -= Shoot;
-            Animations["DeathAnimation"].Resume();
+            /// Animations["DeathAnimation"].Resume();
         }
 
         private void onFinishedDeathAnimation(object sender, EventArgs e)
         {
-            this.RemoveAndDestory();
         }
+
+        //public override void Kill()
+        //{
+        //    Vulnerable = false;
+        //    m_ChanceToShoot++;
+        //    r_RandomShootRoller.RollSucceeded -= Shoot;
+        //    SpriteAnimator deathAnimation = Animations["DeathAnimation"];
+        //    deathAnimation.Finished += onFinishedDeathAnimation;
+        //    Animations["DeathAnimation"].Resume();
+        //}
+
+        //private void onFinishedDeathAnimation(object sender, EventArgs e)
+        //{
+        //    base.Kill();
+        //}
 
         public void Shoot()
         {

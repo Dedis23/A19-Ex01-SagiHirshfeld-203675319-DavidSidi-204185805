@@ -33,7 +33,7 @@ namespace SpaceInvaders
             Velocity = i_DirectionVector * k_VelocityScalar;
         }
 
-        protected override void KilledInjectionPoint()
+        protected override void OnDeath()
         {
             this.Visible = false;
             this.Enabled = false;

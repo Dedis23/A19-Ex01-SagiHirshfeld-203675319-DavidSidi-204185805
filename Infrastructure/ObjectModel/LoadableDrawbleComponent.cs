@@ -75,7 +75,7 @@ namespace Infrastructure.ObjectModel
             this.UpdateOrder = i_UpdateOrder;
             this.DrawOrder = i_DrawOrder;
 
-            this.Game.Components.Add(this);
+            /// this.Game.Components.Add(this);
         }
 
         public LoadableDrawableComponent(

@@ -33,10 +33,6 @@ namespace SpaceInvaders
             m_Enabled = true;
 
             r_BulletsFactory = r_Shooter.Game.Services.GetService(typeof(BulletsFactory)) as BulletsFactory;
-            if (r_BulletsFactory == null)
-            {
-                r_BulletsFactory = new BulletsFactory(r_Shooter.Game);
-            }
         }
 
         public void Shoot(Vector2 i_DirectionVector)
@@ -59,7 +55,7 @@ namespace SpaceInvaders
             i_Bullet.Position = getBulletDeploymentPos(i_Bullet);
             i_Bullet.TintColor = r_Shooter.BulletsColor;
             i_Bullet.Shooter = r_Shooter;
-            i_Bullet.SpriteKilled += onBulletDestroyed;
+            i_Bullet.Died += onBulletDestroyed;
             r_BulletsFired.Add(i_Bullet);
         }
 
@@ -83,7 +79,7 @@ namespace SpaceInvaders
         private void onBulletDestroyed(object i_Bullet)
         {
             Bullet bullet = i_Bullet as Bullet;
-            bullet.SpriteKilled -= onBulletDestroyed;
+            bullet.Died -= onBulletDestroyed;
             r_BulletsFired.Remove(bullet);
         }
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -161,15 +162,17 @@ namespace Infrastructure.ObjectModel
         private void insertSorted(IDrawable i_Drawable)
         {
             Sprite sprite = i_Drawable as Sprite;
-            if (sprite != null)
+            if (sprite != null && !(sprite is IBackground))
             {
                 int idx = m_Sprites.BinarySearch(sprite, DrawableComparer<Sprite>.Default);
                 if (idx < 0)
                 {
                     idx = ~idx;
                 }
+
                 m_Sprites.Insert(idx, sprite);
             }
+
             else
             {
                 int idx = m_DrawableComponents.BinarySearch(i_Drawable, DrawableComparer<IDrawable>.Default);
@@ -261,6 +264,7 @@ namespace Infrastructure.ObjectModel
                     sprite.Draw(gameTime);
                 }
             }
+
             m_SpriteBatch.End();
         }
 

@@ -519,31 +519,74 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        public event Action<object> SpriteKilled;
+        public event Action<object> Dying;
+        public event Action<object> Died;
 
-        public void Kill()
+        public SpriteAnimator DeathAnimation
         {
-            SpriteKilled?.Invoke(this);
-            KilledInjectionPoint();
-        }
-
-        protected virtual void KilledInjectionPoint()
-        {
-            RemoveAndDestory();
-        }
-
-        protected virtual void RemoveAndDestory()
-        {
-            this.Game.Components.Remove(this);
-            if (SpriteKilled != null)
+            set
             {
-                foreach (Delegate d in SpriteKilled.GetInvocationList())
+                SpriteAnimator animation = value;
+                if (animation.Name == "DeathAnimation")
                 {
-                    SpriteKilled -= (Action<object>)d;
+                    Animations.Remove("DeathAnimation");
+                    Animations.Add(animation);
+                    animation.Pause();
                 }
             }
 
-            this.Dispose();
+            get
+            {
+                return Animations["DeathAnimation"];
+            }
         }
+
+        public void Kill()
+        {
+            Dying?.Invoke(this);
+            OnDying();
+
+            if (DeathAnimation != null)
+            {
+                DeathAnimation.Finished += onDeathAnimationFinished;
+                DeathAnimation.Resume();
+            }
+            else
+            {
+                die();
+            }
+        }
+
+        private void onDeathAnimationFinished(object sender, EventArgs e)
+        {
+            DeathAnimation.Finished -= onDeathAnimationFinished;
+            die();
+        }
+
+        protected virtual void OnDying()
+        {
+        }
+
+        private void die()
+        {
+            Died?.Invoke(this);
+            OnDeath();
+        }
+
+        protected virtual void OnDeath()
+        {
+            Dispose();
+        }
+
+        //public virtual void Kill()
+        //{
+        //    SpriteKilled?.Invoke(this);
+        //    KilledInjectionPoint();
+        //}
+
+        //protected virtual void KilledInjectionPoint()
+        //{
+        //    Dispose();
+        //}
     }
 }

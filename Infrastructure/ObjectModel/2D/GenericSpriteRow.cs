@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel
 {
-    public class SpriteRow<T> where T : Sprite
+    public class SpriteRow<T> : CompositeDrawableComponent<T>
+        where T : Sprite
     {
         public enum Order
         {
@@ -20,7 +21,7 @@ namespace Infrastructure.ObjectModel
 
         public Order RemovalOrder { get; set; } = Order.RightToLeft;
 
-        public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc)
+        public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc) : base(i_Game)
         {
             r_SpritesList = new LinkedList<T>();
             r_Game = i_Game;
@@ -60,6 +61,8 @@ namespace Infrastructure.ObjectModel
 
                 r_SpritesList.AddLast(newSprite);
             }
+
+            this.Add(newSprite);
         }
 
         public void RemoveSprite()
@@ -80,7 +83,8 @@ namespace Infrastructure.ObjectModel
                 }
 
                 spriteToRemove.Kill();
-            }
+                this.Remove(spriteToRemove);
+            }            
         }
 
         public T First
