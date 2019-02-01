@@ -35,11 +35,6 @@ namespace Infrastructure.ObjectModel.Screens
             set { m_CurrentState = value; }
         }
 
-        public StateChangedEventArgs()
-        {
-
-        }
-
         public StateChangedEventArgs(eScreenState i_PrevState, eScreenState i_CurrState)
         {
             m_PrevState = i_PrevState;

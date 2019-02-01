@@ -33,6 +33,8 @@ namespace SpaceInvaders
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
 
+        private PauseScreen m_PauseScreen;
+
         private bool m_GameOver = false;
 
         public PlayScreen(Game i_Game) : base(i_Game)
@@ -54,6 +56,8 @@ namespace SpaceInvaders
             loadInvadersMatrix();
             m_DancingBarriersRow = new DancingBarriersRow(i_Game);
             this.Add(m_DancingBarriersRow);
+
+            m_PauseScreen = new PauseScreen(i_Game);
         }
 
         public override void Initialize()
@@ -169,6 +173,12 @@ namespace SpaceInvaders
             {
                 Game.Exit();
             }
+
+            else if (InputManager.KeyPressed(Keys.P))
+            {
+                this.ScreensManager.SetCurrentScreen(m_PauseScreen);
+            }
+
             else
             {
                 takePlayer1Input();
