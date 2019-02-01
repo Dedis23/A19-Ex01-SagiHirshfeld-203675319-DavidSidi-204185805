@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Infrastructure.Utilities
 {
-    public class RandomRoller
+    public class RandomRoller : GameComponent
     {
         private RandomGenerator m_RandomGenerator;
         private float m_ChanceToRoll;
@@ -12,7 +12,7 @@ namespace Infrastructure.Utilities
 
         public event Action RollSucceeded;
 
-        public RandomRoller(Game i_Game, float i_Chance, float i_TimeBetweenRollsInSeconds)
+        public RandomRoller(Game i_Game, float i_Chance, float i_TimeBetweenRollsInSeconds) : base(i_Game)
         {
             // To make the rolling based on time and not make it tied to the framerate,
             // we use Timer which has m_RemainingDelay and m_DelayBetweenTicksInSeconds
@@ -44,6 +44,12 @@ namespace Infrastructure.Utilities
                 m_TimeBetweenRollsInSeconds = value;
                 r_Timer.Interval = m_TimeBetweenRollsInSeconds;
             }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            r_Timer.Update(gameTime);
         }
 
         public void Activate()

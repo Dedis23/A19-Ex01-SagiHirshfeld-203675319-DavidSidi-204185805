@@ -59,23 +59,11 @@ namespace SpaceInvaders
         public override void Initialize()
         {
             base.Initialize();
-            fitViewportToBackground();
             setMothershipPosition();
             setSpaceshipsPositions();            
             setLivesPositions();
             setScoreSpritesPositions();
             setBarriersPosition();
-        }
-
-        private void fitViewportToBackground()
-        {
-            GraphicsDeviceManager graphicsManager = Game.Services.GetService(typeof(GraphicsDeviceManager)) as GraphicsDeviceManager;
-            if (graphicsManager != null)
-            {
-                graphicsManager.PreferredBackBufferWidth = (int)m_Background.Width;
-                graphicsManager.PreferredBackBufferHeight = (int)m_Background.Height;
-                graphicsManager.ApplyChanges();
-            }
         }
 
         private void loadSpaceships()
@@ -171,7 +159,7 @@ namespace SpaceInvaders
             if (m_GameOver)
             {
                 showGameOverWindow();
-                ExitScreen();
+                Game.Exit();
             }
         }
 
@@ -179,7 +167,7 @@ namespace SpaceInvaders
         {
             if (InputManager.KeyPressed(Keys.Escape))
             {
-                ExitScreen();
+                Game.Exit();
             }
             else
             {

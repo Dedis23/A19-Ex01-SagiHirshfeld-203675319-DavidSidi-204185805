@@ -242,6 +242,11 @@ namespace Infrastructure.ObjectModel
             }
         }
 
+        public Vector2 SourceRectangleCenter
+        {
+            get { return new Vector2((float)(m_SourceRectangle.Width / 2), (float)(m_SourceRectangle.Height / 2)); }
+        }
+
         public Sprite ShallowClone()
         {
             return this.MemberwiseClone() as Sprite;

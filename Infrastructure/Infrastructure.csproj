@@ -54,6 +54,7 @@
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\BlinkAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\CellAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\FaderAnimator.cs" />
+    <Compile Include="ObjectModel\Animators\ConcreteAnimators\PulseAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\RotateAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\SequencialAnimator.cs" />
     <Compile Include="ObjectModel\Animators\ConcreteAnimators\ShrinkAnimator.cs" />

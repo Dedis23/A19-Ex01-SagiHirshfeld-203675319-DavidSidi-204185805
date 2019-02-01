@@ -80,6 +80,30 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Enemies.png
 
+#begin Sprites/Messages/WelcomeMsg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Messages/WelcomeMsg.png
+
+#begin Sprites/Messages/WelcomeOptionsMsg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Messages/WelcomeOptionsMsg.png
+
 #begin Sprites/MotherShip_32x120.png
 /importer:TextureImporter
 /processor:TextureProcessor

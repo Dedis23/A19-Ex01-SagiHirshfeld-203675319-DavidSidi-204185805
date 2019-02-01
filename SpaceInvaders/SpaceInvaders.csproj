@@ -72,6 +72,7 @@
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />
     <Compile Include="Screens\PlayScreen.cs" />
+    <Compile Include="Screens\WelcomeScreen.cs" />
     <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

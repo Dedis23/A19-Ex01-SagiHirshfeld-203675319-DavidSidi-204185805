@@ -5,7 +5,7 @@ using Infrastructure.ObjectModel;
 
 namespace Infrastructure.Utilities
 {
-    public class Timer : RegisteredComponent
+    public class Timer : GameComponent
     {
         private float m_RemainingDelay;
 

@@ -24,7 +24,6 @@ namespace SpaceInvaders
         private readonly float r_TimeBetweenRollingForShootInSeconds;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
 
-        //public float DelayBetweenJumpsInSeconds = k_DefaultDelayBetweenJumpsInSeconds;
         private int m_ColIndexInSpriteSheet;
         private int m_RowIndexInSpriteSheet;
         private float m_ChanceToShoot = 5;
@@ -67,6 +66,8 @@ namespace SpaceInvaders
             r_RandomShootRoller.Activate();
         }
 
+
+
         public override void Initialize()
         {
             base.Initialize();
@@ -88,17 +89,18 @@ namespace SpaceInvaders
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            r_RandomShootRoller.Update(gameTime);
+        }
+
+        public void GoNextFrame()
+        {
+            m_ColIndexInSpriteSheet = (m_ColIndexInSpriteSheet + 1) % k_NumOfCells;
 
             this.SourceRectangle = new Rectangle(
                 m_ColIndexInSpriteSheet * this.SourceRectangle.Width,
                 this.SourceRectangle.Top,
                 this.SourceRectangle.Width,
                 this.SourceRectangle.Height);
-        }
-
-        public void GoNextFrame()
-        {
-            m_ColIndexInSpriteSheet = (m_ColIndexInSpriteSheet + 1) % k_NumOfCells;
         }
 
         private void initializeAnimations()

@@ -36,16 +36,17 @@ namespace SpaceInvaders
             r_InvadersMatrix = new List<List<Invader>>();
             m_JumpDirection = 1.0f;
             m_NumOfDefeatedInvaders = 0;
-            initializeTimers();
+            initializeJumpsTimer();
             initializeMatrix();
         }
 
-        private void initializeTimers()
+        private void initializeJumpsTimer()
         {
             m_TimerForJumps = new Timer(this.Game);
             m_TimerForJumps.Interval = k_DefaultDelayBetweenJumpsInSeconds;
             m_TimerForJumps.Notify += handleInvadersMatrixJumps;
             m_TimerForJumps.Activate();
+            this.Add(m_TimerForJumps);
         }
 
         private void initializeMatrix()
@@ -141,14 +142,6 @@ namespace SpaceInvaders
                 m_TimerForJumps.Interval *= k_InvadersReachedEdgeAccelerator;
                 flipCurrentSideJumpDirection();
             }
-
-            foreach (List<Invader> invadersList in r_InvadersMatrix)
-            {
-                foreach (Invader invader in invadersList)
-                {
-                    invader.GoNextFrame();
-                }
-            }
         }
 
         private void flipCurrentSideJumpDirection()
@@ -231,6 +224,7 @@ namespace SpaceInvaders
                 foreach (Invader invader in rowOfInvaders)
                 {
                     invader.Position += delta;
+                    invader.GoNextFrame();
                 }
             }
         }
