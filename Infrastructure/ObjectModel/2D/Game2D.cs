@@ -8,9 +8,6 @@ namespace SpaceInvaders
 {
     public class Game2D : Game
     {
-        protected IInputManager m_InputManager;
-        protected ICollisionsManager m_CollisionManager;
-
         public Game2D()
         {
             this.Content.RootDirectory = "Content";            

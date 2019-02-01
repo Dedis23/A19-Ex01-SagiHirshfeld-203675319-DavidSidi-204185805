@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Infrastructure.ObjectModel;
-using Infrastructure.ServiceInterfaces;
 using System.Text;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
@@ -22,22 +22,25 @@ namespace SpaceInvaders
 
         private BackgroundSprite m_Background;
         private Mothership m_Mothership;
-        private List<Spaceship> m_SpaceshipList;
-        private List<SpriteRow> m_RowsOfLives;
-        private BulletsFactory m_BulletsFactory;
+
+        private Spaceship m_Player1Spaceship;
+        private Spaceship m_Player2Spaceship;
+        private PlayerLivesRow m_Player1Lives;
+        private PlayerLivesRow m_Player2Lives;
+        private PlayerScoreText m_Player1ScoreText;
+        private PlayerScoreText m_Player2ScoreText;
+
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
-        private List<TextSprite> m_ScoreSprites;
 
         private bool m_GameOver = false;
 
         public PlayScreen(Game i_Game) : base(i_Game)
         {            
             this.BlendState = BlendState.NonPremultiplied;
+
             m_CollisionHandler = new CollisionHandler(i_Game);
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
-
-            m_BulletsFactory = new BulletsFactory(this);
 
             m_Background = new SpaceBG(i_Game);
             this.Add(m_Background);
@@ -58,7 +61,7 @@ namespace SpaceInvaders
             base.Initialize();
             fitViewportToBackground();
             setMothershipPosition();
-            setSpaceshipsPositionsAndInputManager();            
+            setSpaceshipsPositions();            
             setLivesPositions();
             setScoreSpritesPositions();
             setBarriersPosition();
@@ -77,81 +80,55 @@ namespace SpaceInvaders
 
         private void loadSpaceships()
         {
-            Spaceship newSpaceship;
-            m_SpaceshipList = new List<Spaceship>();
+            m_Player1Spaceship = new Player1Spaceship(Game);
+            m_Player1Spaceship.Died += onSpaceshipKilled;
+            this.Add(m_Player1Spaceship);
 
-            newSpaceship = new Player1Spaceship(Game);
-            newSpaceship.Died += onSpaceshipKilled;
-            m_SpaceshipList.Add(newSpaceship);
-            this.Add(newSpaceship);
-
-            newSpaceship = new Player2Spaceship(Game);
-            newSpaceship.Died += onSpaceshipKilled;
-            m_SpaceshipList.Add(newSpaceship);
-            this.Add(newSpaceship);
+            m_Player2Spaceship = new Player2Spaceship(Game);
+            m_Player2Spaceship.Died += onSpaceshipKilled;
+            this.Add(m_Player2Spaceship);
         }
 
-        private void setSpaceshipsPositionsAndInputManager()
+        private void setSpaceshipsPositions()
         {
-            foreach (Spaceship spaceship in m_SpaceshipList)
-            {
-                spaceship.Position = spaceship.DefaultPosition =
-                    new Vector2(0, GraphicsDevice.Viewport.Height - (spaceship.Height * k_SpaceshipPositionYModifier));
-                spaceship.InputManager = this.InputManager;
-            }
+            Vector2 pos = new Vector2(0, GraphicsDevice.Viewport.Height - (m_Player1Spaceship.Height * k_SpaceshipPositionYModifier));
+
+            m_Player1Spaceship.Position = m_Player1Spaceship.DefaultPosition = pos;
+            m_Player2Spaceship.Position = m_Player2Spaceship.DefaultPosition = pos;
+
         }
 
         private void loadLives()
         {
-            m_RowsOfLives = new List<SpriteRow>();
-            foreach (Spaceship spaceship in m_SpaceshipList)
-            {
-                SpriteRow spriteRow = new SpriteRow(Game, spaceship.Lives, Game => new LifeIcon(spaceship.AssetName, Game));
-                spriteRow.InsertionOrder = SpriteRow.Order.RightToLeft;
-                spriteRow.RemovalOrder = SpriteRow.Order.LeftToRight;
-                spriteRow.BlendState = BlendState.NonPremultiplied;
-                spaceship.LifeLost += () => spriteRow.RemoveSprite();
-                m_RowsOfLives.Add(spriteRow);
-                this.Add(spriteRow);
-            }
+            m_Player1Lives = new PlayerLivesRow(m_Player1Spaceship);
+            m_Player2Lives = new PlayerLivesRow(m_Player2Spaceship);
+
+            this.Add(m_Player1Lives);
+            this.Add(m_Player2Lives);
         }
 
         private void setLivesPositions()
         {
-            m_RowsOfLives[0].Gap = m_RowsOfLives[0].First.Width * k_GapBetweenRowsModifier;
-            m_RowsOfLives[0].Position = new Vector2(
-                GraphicsDevice.Viewport.Width - m_RowsOfLives[0].First.Width - k_LivesDistanceFromHorizontalScreenBound, 0);
-
-            for (int i = 1; i < m_RowsOfLives.Count; i++)
-            {
-                m_RowsOfLives[i].Gap = m_RowsOfLives[i - 1].Gap;
-                m_RowsOfLives[i].Position = m_RowsOfLives[i - 1].Position + new Vector2(0, m_RowsOfLives[0].First.Height * k_GapBetweenRowsModifier);
-            }
+            Sprite lifeIcon = m_Player1Lives.First;
+            m_Player1Lives.GapBetweenSprites =  lifeIcon.Width * k_GapBetweenRowsModifier;
+            m_Player2Lives.GapBetweenSprites = m_Player1Lives.GapBetweenSprites;
+            m_Player1Lives.Position = new Vector2(GraphicsDevice.Viewport.Width - lifeIcon.Width - k_LivesDistanceFromHorizontalScreenBound, 0);
+            m_Player2Lives.Position = m_Player1Lives.Position + new Vector2(0, lifeIcon.Height * k_GapBetweenRowsModifier);
         }
 
         private void loadScoreSprites()
         {
-            m_ScoreSprites = new List<TextSprite>();
-            foreach (Spaceship spaceship in m_SpaceshipList)
-            {
-                TextSprite newScoreSprite = new TextSprite(k_ScoreFontAsset, Game);
-                newScoreSprite.TintColor = spaceship.ScoreColor;
-                newScoreSprite.Text = string.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
-                spaceship.ScoreChanged +=
-                    () => newScoreSprite.Text = string.Format("{0} Score: {1}", spaceship.Name, spaceship.Score);
+            m_Player1ScoreText = new PlayerScoreText(m_Player1Spaceship, k_ScoreFontAsset);
+            m_Player2ScoreText = new PlayerScoreText(m_Player2Spaceship, k_ScoreFontAsset);
 
-                m_ScoreSprites.Add(newScoreSprite);
-                this.Add(newScoreSprite);
-            }
+            this.Add(m_Player1ScoreText);
+            this.Add(m_Player2ScoreText);
         }
 
         private void setScoreSpritesPositions()
         {
-            for (int i = 0; i < m_ScoreSprites.Count; i++)
-            {
-                float height = m_ScoreSprites[i].Height;
-                m_ScoreSprites[i].Position = new Vector2(0, i * m_ScoreSprites[i].Height);
-            }
+            m_Player1ScoreText.Position = Vector2.Zero;
+            m_Player2ScoreText.Position = new Vector2(0, m_Player1ScoreText.Height);
         }
 
         private void setMothershipPosition()
@@ -164,7 +141,7 @@ namespace SpaceInvaders
             float distanceFromScreenHorizondalBounds = (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2;
             m_DancingBarriersRow.Position = new Vector2(
                 distanceFromScreenHorizondalBounds,
-                m_SpaceshipList[0].DefaultPosition.Y - (m_DancingBarriersRow.Height * 2));
+                m_Player1Spaceship.DefaultPosition.Y - (m_DancingBarriersRow.Height * 2));
         }
 
         private void loadInvadersMatrix()
@@ -178,10 +155,8 @@ namespace SpaceInvaders
 
         private void onSpaceshipKilled(object i_Spaceship)
         {
-            Spaceship spaceship = i_Spaceship as Spaceship;
-            this.Remove(spaceship);
-            m_SpaceshipList.Remove(spaceship);
-            if (m_SpaceshipList.Count == 0)
+            this.Remove(i_Spaceship as Spaceship);
+            if (!this.Contains(m_Player1Spaceship) && !this.Contains(m_Player2Spaceship))
             {
                 m_GameOver = true;
             }
@@ -191,15 +166,63 @@ namespace SpaceInvaders
         {
             base.Update(gameTime);
 
-            if (InputManager.KeyPressed(Keys.Escape))
-            {
-                ExitScreen();
-            }
+            takeInput();
 
             if (m_GameOver)
             {
                 showGameOverWindow();
                 ExitScreen();
+            }
+        }
+
+        private void takeInput()
+        {
+            if (InputManager.KeyPressed(Keys.Escape))
+            {
+                ExitScreen();
+            }
+            else
+            {
+                takePlayer1Input();
+                takePlayer2Input();
+            }
+        }
+
+        private void takePlayer1Input()
+        {
+            if (InputManager.KeyboardState.IsKeyDown(Keys.H))
+            {
+                m_Player1Spaceship.MoveLeft();
+            }
+
+            if (InputManager.KeyboardState.IsKeyDown(Keys.K))
+            {
+                m_Player1Spaceship.MoveRight();
+            }
+
+            if (InputManager.KeyPressed(Keys.U) || InputManager.ButtonPressed(eInputButtons.Left))
+            {
+                m_Player1Spaceship.Shoot();
+            }
+
+            m_Player1Spaceship.MoveAccordingToMousePositionDelta(InputManager.MousePositionDelta);
+        }
+
+        private void takePlayer2Input()
+        {
+            if (InputManager.KeyboardState.IsKeyDown(Keys.A))
+            {
+                m_Player2Spaceship.MoveLeft();
+            }
+
+            if (InputManager.KeyboardState.IsKeyDown(Keys.D))
+            {
+                m_Player2Spaceship.MoveRight();
+            }
+
+            if (InputManager.KeyPressed(Keys.W))
+            {
+                m_Player2Spaceship.Shoot();
             }
         }
 
@@ -216,30 +239,18 @@ namespace SpaceInvaders
             messageBuilder.Append(string.Format("GG! The winner is {0}!", getTheNameOfTheWinner()));
             messageBuilder.Append(Environment.NewLine);
 
-            foreach (IPlayer player in m_SpaceshipList)
-            {
-                messageBuilder.Append(string.Format("{0} Score: {1}", player.Name, player.Score));
-                messageBuilder.Append(Environment.NewLine);
-            }
+            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player1Spaceship.Name, m_Player1Spaceship.Score));
+            messageBuilder.Append(Environment.NewLine);
+
+            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player2Spaceship.Name, m_Player2Spaceship.Score));
+            messageBuilder.Append(Environment.NewLine);
 
             return messageBuilder.ToString();
         }
 
         private string getTheNameOfTheWinner()
         {
-            int maxScore = 0;
-            string winnerName = string.Empty;
-
-            foreach (IPlayer player in m_SpaceshipList)
-            {
-                if (player.Score >= maxScore)
-                {
-                    maxScore = player.Score;
-                    winnerName = player.Name;
-                }
-            }
-
-            return winnerName;
+            return m_Player1Spaceship.Score >= m_Player2Spaceship.Score ? m_Player1Spaceship.Name : m_Player2Spaceship.Name;
         }
     }
 }

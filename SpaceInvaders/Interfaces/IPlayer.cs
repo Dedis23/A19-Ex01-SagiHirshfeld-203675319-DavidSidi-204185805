@@ -1,13 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace SpaceInvaders
 {
-    public interface IPlayer
+    public interface IPlayer : IDisposable, IGameComponent, IDrawable, IUpdateable
     {
+        Game Game { get; }
+
+        string Name { get; }
+
+        string AssetName { get; }
+
         int Score { get; }
 
         Color ScoreColor { get; }
 
-        string Name { get; }
+        int Lives { get; }
+
+        event EventHandler<EventArgs> ScoreChanged;
+
+        event EventHandler<EventArgs> LifeLost;
+
+        event EventHandler<EventArgs> Disposed;
     }
 }

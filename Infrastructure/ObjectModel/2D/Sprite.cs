@@ -15,16 +15,11 @@ namespace Infrastructure.ObjectModel
         {
         }
 
-        [AttributeUsage(AttributeTargets.Class)]
-        protected class DontPremultiplyAlpha : System.Attribute
-        {
-        }
-
         private Texture2D m_Texture;
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
         private bool m_UseSharedBatch = false;
-        private BlendState m_PrivateBlendState = BlendState.AlphaBlend;
+        private BlendState m_BlendState = BlendState.AlphaBlend;
 
         protected SpriteBatch m_SpriteBatch;
         protected CompositeAnimator m_Animations;
@@ -94,6 +89,12 @@ namespace Infrastructure.ObjectModel
                 m_TextureData = value;
                 m_Texture.SetData(m_TextureData);
             }
+        }
+
+        public BlendState BlendState
+        {
+            get { return m_BlendState; }
+            set { m_BlendState = value; }
         }
 
         public Rectangle Bounds
@@ -339,8 +340,6 @@ namespace Infrastructure.ObjectModel
         {
             LoadTexture();
 
-            m_UseNonPremultipliedSpriteBatch = GetType().GetCustomAttribute(typeof(DontPremultiplyAlpha)) != null;
-
             if (m_SpriteBatch == null)
             {
                 takeSpriteBatchFromGameServices();
@@ -356,14 +355,8 @@ namespace Infrastructure.ObjectModel
 
         private void takeSpriteBatchFromGameServices()
         {
-            if (m_UseNonPremultipliedSpriteBatch)
-            {
-                m_SpriteBatch = Game.Services.GetService(typeof(NonPremultipliedSpriteBatch)) as SpriteBatch;
-            }
-            else
-            {
-                m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
-            }
+
+            m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
 
             if (m_SpriteBatch != null)
             {
@@ -375,10 +368,6 @@ namespace Infrastructure.ObjectModel
         {
             m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             m_UseSharedBatch = false;
-            if (m_UseNonPremultipliedSpriteBatch)
-            {
-                m_PrivateBlendState = BlendState.NonPremultiplied;
-            }
         }
 
         // This turned into injection point in case derived class want to make a specific type of Load
@@ -408,7 +397,7 @@ namespace Infrastructure.ObjectModel
         {
             if (!m_UseSharedBatch)
             {
-                m_SpriteBatch.Begin(SpriteSortMode.Deferred, m_PrivateBlendState);
+                m_SpriteBatch.Begin(SpriteSortMode.Deferred, this.BlendState);
             }
 
             SpecificSpriteBatchDraw();
@@ -577,16 +566,5 @@ namespace Infrastructure.ObjectModel
         {
             Dispose();
         }
-
-        //public virtual void Kill()
-        //{
-        //    SpriteKilled?.Invoke(this);
-        //    KilledInjectionPoint();
-        //}
-
-        //protected virtual void KilledInjectionPoint()
-        //{
-        //    Dispose();
-        //}
     }
 }

@@ -14,20 +14,5 @@ namespace SpaceInvaders
         public Player2Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
-
-        protected override bool MoveLeftDetected()
-        {
-            return InputManager.KeyboardState.IsKeyDown(Keys.A);
-        }
-
-        protected override bool MoveRightDetected()
-        {
-            return InputManager.KeyboardState.IsKeyDown(Keys.D);
-        }
-
-        protected override bool ShootDetected()
-        {
-            return InputManager.KeyPressed(Keys.W);
-        }
     }
 }

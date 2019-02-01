@@ -4,10 +4,10 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.Managers;
 
 namespace SpaceInvaders
 {
-    [DontPremultiplyAlpha]
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
     {        
         private const int k_ScorePenaltyForBulletHit = 1100;
@@ -22,9 +22,9 @@ namespace SpaceInvaders
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
 
-        public event Action LifeLost;
+        public event EventHandler<EventArgs> LifeLost;
 
-        public event Action ScoreChanged;
+        public event EventHandler<EventArgs> ScoreChanged;
 
         private int m_Score;
 
@@ -38,13 +38,11 @@ namespace SpaceInvaders
             set
             {
                 m_Score = value > 0 ? value : 0;
-                ScoreChanged?.Invoke();
+                ScoreChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public Color BulletsColor { get; } = Color.Red;
-
-        public IInputManager InputManager { get;  set; }
 
         public int Lives { get; set; }
 
@@ -61,7 +59,6 @@ namespace SpaceInvaders
         public override void Initialize()
         {
             base.Initialize();
-            //InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
             initializeAnimations();
         }
 
@@ -102,51 +99,29 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
-            TakeInput();
+            m_Velocity.X = 0;
 
             // Clamp the position between screen boundries:
             float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
             Position = new Vector2(x, Position.Y);
         }
 
-        protected virtual void TakeInput()
+        public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
         {
-            if (MoveLeftDetected())
-            {
-                m_Velocity.X = k_VelocityScalar * -1;
-            }
-            else if (MoveRightDetected())
-            {
-                m_Velocity.X = k_VelocityScalar;
-            }
-            else
-            {
-                m_Velocity.X = 0;
-            }
-
-            if (ShootDetected())
-            {
-                Shoot();
-            }
+            Position += new Vector2(i_MousePositionDelta.X, 0);
         }
 
-        // Injection points that are meant to be overriden by inheritors
-        protected virtual bool MoveLeftDetected()
+        public void MoveLeft()
         {
-            return false;
+            m_Velocity.X = k_VelocityScalar * -1;
         }
 
-        protected virtual bool MoveRightDetected()
+        public void MoveRight()
         {
-            return false;
+            m_Velocity.X = k_VelocityScalar;
         }
 
-        protected virtual bool ShootDetected()
-        {
-            return false;
-        }
-
-        private void Shoot()
+        public void Shoot()
         {
             r_Gun.Shoot(r_ShootingDirectionVector);
         }
@@ -155,7 +130,7 @@ namespace SpaceInvaders
         {
             this.Vulnerable = false;
             Lives--;
-            LifeLost?.Invoke();
+            LifeLost?.Invoke(this, EventArgs.Empty);
 
             Score -= k_ScorePenaltyForBulletHit;
 

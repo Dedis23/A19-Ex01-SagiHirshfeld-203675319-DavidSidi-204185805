@@ -26,7 +26,7 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             base.LoadContent();
-            this.Gap = this.First.Width;
+            this.GapBetweenSprites = this.First.Width;
             dance();
         }
 

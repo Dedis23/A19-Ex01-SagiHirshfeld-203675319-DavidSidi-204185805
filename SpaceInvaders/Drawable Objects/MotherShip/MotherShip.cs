@@ -8,11 +8,10 @@ using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
-    [DontPremultiplyAlpha]
     public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
-        private const int k_ChanceToSpawn = 100;
+        private const int k_ChanceToSpawn = 10;
         private const float k_TimeBetweenRolls = 1;
         private const int k_MotherShipVelocity = 110;
         private const int k_MotherShipPointsValue = 850;
@@ -55,8 +54,6 @@ namespace SpaceInvaders
                 shrinkAnimator,
                 faderAnimator,
                 blinkAnimator);
-            /// Animations.Add(deathAnimation);
-            /// deathAnimation.Pause();
 
             DeathAnimation = deathAnimation;
 

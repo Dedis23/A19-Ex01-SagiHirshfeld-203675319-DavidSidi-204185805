@@ -6,7 +6,8 @@ namespace SpaceInvaders
 {
     public class SpriteRow : SpriteRow<Sprite>
     {
-        public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, Sprite> i_tCreationFunc) : base(i_Game, i_SpritesNum, i_tCreationFunc)
+        public SpriteRow(Game i_Game, int i_SpritesNum, string i_AssetName)
+            : base(i_Game, i_SpritesNum, Game => new Sprite(i_AssetName, i_Game))
         {
         }
     }    

@@ -14,6 +14,7 @@ namespace Infrastructure.Managers
             : base(i_Game)
         {
             i_Game.Components.Add(this);
+            Game.Services.AddService(typeof(IScreensMananger), this);
         }
 
         private Stack<GameScreen> m_ScreensStack = new Stack<GameScreen>();
@@ -127,13 +128,6 @@ namespace Infrastructure.Managers
             {
                 Game.Exit();
             }
-        }
-
-        public override void Initialize()
-        {
-            Game.Services.AddService(typeof(IScreensMananger), this);
-
-            base.Initialize();
         }
     }
 }

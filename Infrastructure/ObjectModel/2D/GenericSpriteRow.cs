@@ -52,11 +52,11 @@ namespace Infrastructure.ObjectModel
 
                 if (InsertionOrder == Order.LeftToRight)
                 {
-                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Right + Gap, this.Position.Y);
+                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Right + GapBetweenSprites, this.Position.Y);
                 }
                 else
                 {
-                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Left - Gap, this.Position.Y);
+                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Left - GapBetweenSprites, this.Position.Y);
                 }
 
                 r_SpritesList.AddLast(newSprite);
@@ -115,7 +115,7 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                float gapsSum = Gap * (r_SpritesList.Count - 1);
+                float gapsSum = GapBetweenSprites * (r_SpritesList.Count - 1);
                 float barrierWidthSum = r_SpritesList.First.Value.Width * r_SpritesList.Count;
                 return gapsSum + barrierWidthSum;
             }
@@ -145,7 +145,7 @@ namespace Infrastructure.ObjectModel
 
         private float m_Gap;
 
-        public float Gap
+        public float GapBetweenSprites
         {
             get { return m_Gap; }
             set
@@ -224,11 +224,11 @@ namespace Infrastructure.ObjectModel
             {
                 if (InsertionOrder == Order.LeftToRight)
                 {
-                    currentSprite.Value.Position = new Vector2(currentSprite.Previous.Value.Bounds.Right + Gap, First.Position.Y);
+                    currentSprite.Value.Position = new Vector2(currentSprite.Previous.Value.Bounds.Right + GapBetweenSprites, First.Position.Y);
                 }
                 else
                 {
-                    currentSprite.Value.Position = new Vector2(currentSprite.Previous.Value.Bounds.Left - Gap, First.Position.Y);
+                    currentSprite.Value.Position = new Vector2(currentSprite.Previous.Value.Bounds.Left - GapBetweenSprites, First.Position.Y);
                 }
 
                 currentSprite = currentSprite.Next;

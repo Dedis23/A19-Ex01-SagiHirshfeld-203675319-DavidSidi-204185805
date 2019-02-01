@@ -60,13 +60,14 @@
     <Compile Include="Drawable Objects\Invaders\Presets\InvaderPink.cs" />
     <Compile Include="Drawable Objects\Invaders\InvadersMatrix.cs" />
     <Compile Include="Drawable Objects\Mothership\Mothership.cs" />
-    <Compile Include="Drawable Objects\Spaceship\LifeIcon.cs" />
     <Compile Include="Drawable Objects\Spaceship\Presets\Player1Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Presets\Player2Spaceship.cs" />
     <Compile Include="Drawable Objects\Spaceship\Spaceship.cs" />
     <Compile Include="Drawable Objects\Bullet\Gun.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="Drawable Objects\UI\PlayerLivesRow.cs" />
+    <Compile Include="Drawable Objects\UI\PlayerScoreText.cs" />
     <Compile Include="Interfaces\IEnemy.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />

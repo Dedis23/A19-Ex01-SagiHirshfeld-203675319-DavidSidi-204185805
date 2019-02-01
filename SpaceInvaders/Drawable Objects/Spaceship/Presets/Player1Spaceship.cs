@@ -15,31 +15,5 @@ namespace SpaceInvaders
         public Player1Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
-
-        protected override void TakeInput()
-        {
-            base.TakeInput();
-            moveAccordingToMousePositionDelta(InputManager.MousePositionDelta);
-        }
-
-        private void moveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
-        {
-            Position += new Vector2(i_MousePositionDelta.X, 0);
-        }
-
-        protected override bool MoveLeftDetected()
-        {
-            return InputManager.KeyboardState.IsKeyDown(Keys.H);
-        }
-
-        protected override bool MoveRightDetected()
-        {
-            return InputManager.KeyboardState.IsKeyDown(Keys.K);
-        }
-
-        protected override bool ShootDetected()
-        {
-            return InputManager.KeyPressed(Keys.U) || InputManager.ButtonPressed(eInputButtons.Left);
-        }
     }
 }

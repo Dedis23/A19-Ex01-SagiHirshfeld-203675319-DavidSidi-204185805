@@ -2,18 +2,19 @@
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ObjectModel.Screens;
+using Infrastructure.ServiceInterfaces;
 
 namespace SpaceInvaders
 {
     public sealed class BulletsFactory : GameService
     {
-        private readonly GameScreen r_GameScreen;
+        private readonly IScreensMananger r_GameScreensManager;
         private readonly Stack<Bullet> r_BulletsStack;
 
-        public BulletsFactory(GameScreen i_GameScreen) : base(i_GameScreen.Game)
+        public BulletsFactory(Game i_Game) : base(i_Game)
         {
-            r_GameScreen = i_GameScreen;
             r_BulletsStack = new Stack<Bullet>();
+            r_GameScreensManager = Game.Services.GetService(typeof(IScreensMananger)) as IScreensMananger;
         }
 
         public Bullet GetBullet()
@@ -28,16 +29,22 @@ namespace SpaceInvaders
             else
             {
                 newBullet = new Bullet(this.Game);
-                r_GameScreen.Add(newBullet);
                 newBullet.Died += onBulletDestroyed;
             }
 
+            r_GameScreensManager.ActiveScreen.Add(newBullet);
             return newBullet;
         }
 
         private void onBulletDestroyed(object i_Bullet)
         {
-            r_BulletsStack.Push(i_Bullet as Bullet);
+            Bullet bullet = i_Bullet as Bullet;
+            r_BulletsStack.Push(bullet);
+
+            // It is safe to assume bullet is in the current updating screen
+            // because a bullet gets destroyed only during an update
+            r_GameScreensManager.ActiveScreen.Remove(bullet);
+
         }
     }
 }

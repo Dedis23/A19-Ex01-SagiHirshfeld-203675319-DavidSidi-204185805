@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    [DontPremultiplyAlpha]
     public class Barrier : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Barrier_44x32";
