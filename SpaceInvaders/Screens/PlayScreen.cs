@@ -13,6 +13,7 @@ namespace SpaceInvaders
     class PlayScreen : GameScreen
     {
         private const string k_ScoreFontAsset = @"Fonts\ComicSansMS";
+
         private const float k_SpaceshipPositionYModifier = 1.5f;
         private const float k_LivesGapModifier = 0.7f;
         private const float k_GapBetweenRowsModifier = 1.2f;
