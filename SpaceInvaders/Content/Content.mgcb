@@ -32,6 +32,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ComicSansMS.spritefont
 
+#begin Fonts/OptionsFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/OptionsFont.spritefont
+
 #begin Sprites/Barrier_44x32.png
 /importer:TextureImporter
 /processor:TextureProcessor
