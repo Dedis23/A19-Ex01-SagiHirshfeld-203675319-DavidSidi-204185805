@@ -21,7 +21,6 @@ namespace SpaceInvaders
 
         private CollisionHandler m_CollisionHandler;
 
-        private BackgroundSprite m_Background;
         private Mothership m_Mothership;
 
         private Spaceship m_Player1Spaceship;
@@ -44,9 +43,6 @@ namespace SpaceInvaders
 
             m_CollisionHandler = new CollisionHandler(i_Game);
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
-
-            m_Background = new SpaceBG(i_Game);
-            this.Add(m_Background);
 
             m_Mothership = new Mothership(i_Game);
             this.Add(m_Mothership);

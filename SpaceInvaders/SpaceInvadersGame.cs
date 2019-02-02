@@ -9,6 +9,7 @@ namespace SpaceInvaders
         {
             this.Window.Title = "Space Invaders";
             this.IsMouseVisible = true;
+            this.Background = new SpaceBG(this);
             ScreensMananger screensMananger = new ScreensMananger(this);
             screensMananger.SetCurrentScreen(new WelcomeScreen(this));
         }

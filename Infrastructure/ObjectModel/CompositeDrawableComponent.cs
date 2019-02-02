@@ -162,7 +162,7 @@ namespace Infrastructure.ObjectModel
         private void insertSorted(IDrawable i_Drawable)
         {
             Sprite sprite = i_Drawable as Sprite;
-            if (sprite != null && !(sprite is IBackground))
+            if (sprite != null)
             {
                 int idx = m_Sprites.BinarySearch(sprite, DrawableComparer<Sprite>.Default);
                 if (idx < 0)

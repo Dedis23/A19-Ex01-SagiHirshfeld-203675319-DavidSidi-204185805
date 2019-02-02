@@ -10,16 +10,12 @@ namespace SpaceInvaders
 {
     public class WelcomeScreen : GameScreen
     {
-        Sprite m_WelcomeMessage;
-        Sprite m_PressEnterMsg;
+        private Sprite m_WelcomeMessage;
+        private Sprite m_PressEnterMsg;
 
-        BackgroundSprite m_Background;
         public WelcomeScreen(Game i_Game)
             : base(i_Game)
         {
-            m_Background = new SpaceBG(i_Game);
-            this.Add(m_Background);
-
             m_WelcomeMessage = new Sprite(@"Sprites\Messages\WelcomeMsg", this.Game);
             this.Add(m_WelcomeMessage);
 
@@ -31,8 +27,6 @@ namespace SpaceInvaders
         {
             base.Initialize();
 
-            fitViewportToBackground();
-
             m_WelcomeMessage.Animations.Add(new PulseAnimator("Pulse", TimeSpan.Zero, 1.15f, 0.7f));
             m_WelcomeMessage.Animations.Enabled = true;
             m_WelcomeMessage.PositionOrigin = m_WelcomeMessage.SourceRectangleCenter;
@@ -42,17 +36,6 @@ namespace SpaceInvaders
             m_PressEnterMsg.PositionOrigin = m_PressEnterMsg.SourceRectangleCenter;
             m_PressEnterMsg.Position =
                 new Vector2(CenterOfViewPort.X, CenterOfViewPort.Y + m_WelcomeMessage.Height);
-        }
-
-        private void fitViewportToBackground()
-        {
-            GraphicsDeviceManager graphicsManager = Game.Services.GetService(typeof(GraphicsDeviceManager)) as GraphicsDeviceManager;
-            if (graphicsManager != null)
-            {
-                graphicsManager.PreferredBackBufferWidth = (int)m_Background.Width;
-                graphicsManager.PreferredBackBufferHeight = (int)m_Background.Height;
-                graphicsManager.ApplyChanges();
-            }
         }
 
         public override void Update(GameTime gameTime)
