@@ -25,13 +25,6 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/BG_Space01_1024x768.jpg
 
-#begin Fonts/AtariClassicChunky.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/AtariClassicChunky.spritefont
-
 #begin Fonts/ComicSansMS.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
