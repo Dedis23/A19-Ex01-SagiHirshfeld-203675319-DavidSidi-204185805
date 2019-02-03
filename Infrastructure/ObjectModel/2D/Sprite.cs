@@ -9,12 +9,6 @@ namespace Infrastructure.ObjectModel
 {
     public class Sprite : LoadableDrawableComponent
     {
-        // Markup attribute to assist the CopyPropertiesFrom method
-        [AttributeUsage(AttributeTargets.Property)]
-        private class CopyingNotAllowed : System.Attribute
-        {
-        }
-
         private Texture2D m_Texture;
         private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
@@ -38,7 +32,6 @@ namespace Infrastructure.ObjectModel
         protected Color m_TintColor = Color.White;
         protected SpriteEffects m_SpriteEffects = SpriteEffects.None;
         protected bool m_Vulnerable = true;
-        private bool m_UseNonPremultipliedSpriteBatch;
 
         public Sprite(string i_AssetName, Game i_Game, int i_UpdateOrder, int i_DrawOrder)
             : base(i_AssetName, i_Game, i_UpdateOrder, i_DrawOrder)
@@ -56,21 +49,18 @@ namespace Infrastructure.ObjectModel
         {
         }
 
-        [CopyingNotAllowed]
         public CompositeAnimator Animations
         {
             get { return m_Animations; }
             set { m_Animations = value; }
         }
 
-        [CopyingNotAllowed]
         public Texture2D Texture
         {
             get { return m_Texture; }
             set { m_Texture = value; }
         }
 
-        [CopyingNotAllowed]
         public Color[] TextureData
         {
             get
@@ -250,29 +240,6 @@ namespace Infrastructure.ObjectModel
         public Sprite ShallowClone()
         {
             return this.MemberwiseClone() as Sprite;
-        }
-
-        public void CopyPropertiesFrom(Sprite i_Source)
-        {
-            PropertyInfo[] targetSpriteProperties = this.GetType().GetProperties();
-            PropertyInfo[] firstSpriteProperties = i_Source.GetType().GetProperties();
-            foreach (PropertyInfo newProperty in targetSpriteProperties)
-            {
-                foreach (PropertyInfo firstProperty in firstSpriteProperties)
-                {
-                    bool propertyMarkedNotToCopy = firstProperty.GetCustomAttribute(typeof(CopyingNotAllowed)) != null;
-                    bool propertyInaccessible = newProperty.GetSetMethod() == null || newProperty.GetGetMethod() == null;
-                    if (propertyMarkedNotToCopy || propertyInaccessible)
-                    {
-                        break;
-                    }
-                    else if (newProperty.Name == firstProperty.Name)
-                    {
-                        newProperty.SetValue(this, firstProperty.GetValue(i_Source));
-                        break;
-                    }
-                }
-            }
         }
 
         public Rectangle SourceRectangle
@@ -516,23 +483,36 @@ namespace Infrastructure.ObjectModel
         public event Action<object> Dying;
         public event Action<object> Died;
 
+        private SpriteAnimator m_DeathAnimation;
+
         public SpriteAnimator DeathAnimation
         {
             set
             {
-                SpriteAnimator animation = value;
-                if (animation.Name == "DeathAnimation")
+                if (m_DeathAnimation != null)
                 {
-                    Animations.Remove("DeathAnimation");
-                    Animations.Add(animation);
-                    animation.Pause();
+                    Animations.Remove(m_DeathAnimation.Name);
+                }
+
+                m_DeathAnimation = value;
+                {
+                    Animations.Add(m_DeathAnimation);
+                    m_DeathAnimation.Finished += onDeathAnimationFinished;
+                    m_DeathAnimation.Pause();
                 }
             }
 
             get
             {
-                return Animations["DeathAnimation"];
+                return m_DeathAnimation;
             }
+        }
+
+        private void onDeathAnimationFinished(object sender, EventArgs e)
+        {
+            DeathAnimation.Reset();
+            DeathAnimation.Pause();
+            die();
         }
 
         public void Kill()
@@ -540,21 +520,14 @@ namespace Infrastructure.ObjectModel
             Dying?.Invoke(this);
             OnDying();
 
-            if (DeathAnimation != null)
+            if (m_DeathAnimation != null)
             {
-                DeathAnimation.Finished += onDeathAnimationFinished;
-                DeathAnimation.Resume();
+                m_DeathAnimation.Resume();
             }
             else
             {
                 die();
             }
-        }
-
-        private void onDeathAnimationFinished(object sender, EventArgs e)
-        {
-            DeathAnimation.Finished -= onDeathAnimationFinished;
-            die();
         }
 
         protected virtual void OnDying()
@@ -569,6 +542,11 @@ namespace Infrastructure.ObjectModel
 
         protected virtual void OnDeath()
         {
+            if (DeathAnimation != null)
+            {
+                m_DeathAnimation.Finished -= onDeathAnimationFinished;
+            }
+
             Dispose();
         }
     }

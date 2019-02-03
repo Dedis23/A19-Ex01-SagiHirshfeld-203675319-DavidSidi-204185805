@@ -32,6 +32,7 @@ namespace SpaceInvaders
                 newBullet.Died += onBulletDestroyed;
             }
 
+            r_GameScreensManager.ActiveScreen.Remove(newBullet);
             r_GameScreensManager.ActiveScreen.Add(newBullet);
             return newBullet;
         }
@@ -40,11 +41,6 @@ namespace SpaceInvaders
         {
             Bullet bullet = i_Bullet as Bullet;
             r_BulletsStack.Push(bullet);
-
-            // It is safe to assume bullet is in the current updating screen
-            // because a bullet gets destroyed only during an update
-            r_GameScreensManager.ActiveScreen.Remove(bullet);
-
         }
     }
 }

@@ -72,5 +72,15 @@ namespace SpaceInvaders
             bullet.Died -= onBulletDestroyed;
             r_BulletsFired.Remove(bullet);
         }
+
+        public void Reset()
+        {
+            foreach (Bullet bullet in r_BulletsFired)
+            {
+                bullet.Died -= onBulletDestroyed;
+            }
+
+            r_BulletsFired.Clear();
+        }
     }
 }

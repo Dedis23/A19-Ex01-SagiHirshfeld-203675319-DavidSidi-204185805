@@ -30,7 +30,6 @@ namespace SpaceInvaders
             m_WelcomeMessage.Animations.Add(new PulseAnimator("Pulse", TimeSpan.Zero, 1.15f, 0.7f));
             m_WelcomeMessage.Animations.Enabled = true;
             m_WelcomeMessage.PositionOrigin = m_WelcomeMessage.SourceRectangleCenter;
-            m_WelcomeMessage.RotationOrigin = m_WelcomeMessage.SourceRectangleCenter;
             m_WelcomeMessage.Position = CenterOfViewPort - new Vector2(0, m_WelcomeMessage.Height / 4);
 
             m_PressEnterMsg.PositionOrigin = m_PressEnterMsg.SourceRectangleCenter;

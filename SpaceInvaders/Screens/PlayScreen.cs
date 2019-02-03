@@ -18,10 +18,13 @@ namespace SpaceInvaders
         private const float k_LivesGapModifier = 0.7f;
         private const float k_GapBetweenRowsModifier = 1.2f;
         private const int k_LivesDistanceFromHorizontalScreenBound = 15;
+        private readonly Vector2 r_LeftDirectionVector = new Vector2(-1, 0);
+        private readonly Vector2 r_RightDirectionVector = new Vector2(1, 0);
+
 
         private CollisionHandler m_CollisionHandler;
-
-        private Mothership m_Mothership;
+        private PauseScreen m_PauseScreen;
+        private GameOverScreen m_GameOverScreen;
 
         private Spaceship m_Player1Spaceship;
         private Spaceship m_Player2Spaceship;
@@ -29,13 +32,12 @@ namespace SpaceInvaders
         private PlayerLivesRow m_Player2Lives;
         private PlayerScoreText m_Player1ScoreText;
         private PlayerScoreText m_Player2ScoreText;
-
+        private Mothership m_Mothership;
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
 
-        private PauseScreen m_PauseScreen;
-
         private bool m_GameOver = false;
+        private int m_SpaceshipsKilledCount;
 
         public PlayScreen(Game i_Game) : base(i_Game)
         {            
@@ -44,30 +46,13 @@ namespace SpaceInvaders
             m_CollisionHandler = new CollisionHandler(i_Game);
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
 
-            m_Mothership = new Mothership(i_Game);
-            this.Add(m_Mothership);
-
-            loadSpaceships();
-            loadLives();
-            loadScoreSprites();
-            loadInvadersMatrix();
-            m_DancingBarriersRow = new DancingBarriersRow(i_Game);
-            this.Add(m_DancingBarriersRow);
-
             m_PauseScreen = new PauseScreen(i_Game);
+            m_GameOverScreen = new GameOverScreen(i_Game);
+
+            loadSprites();
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            setMothershipPosition();
-            setSpaceshipsPositions();            
-            setLivesPositions();
-            setScoreSpritesPositions();
-            setBarriersPosition();
-        }
-
-        private void loadSpaceships()
+        private void loadSprites()
         {
             m_Player1Spaceship = new Player1Spaceship(Game);
             m_Player1Spaceship.Died += onSpaceshipKilled;
@@ -76,78 +61,71 @@ namespace SpaceInvaders
             m_Player2Spaceship = new Player2Spaceship(Game);
             m_Player2Spaceship.Died += onSpaceshipKilled;
             this.Add(m_Player2Spaceship);
-        }
 
-        private void setSpaceshipsPositions()
-        {
-            Vector2 pos = new Vector2(0, GraphicsDevice.Viewport.Height - (m_Player1Spaceship.Height * k_SpaceshipPositionYModifier));
-
-            m_Player1Spaceship.Position = m_Player1Spaceship.DefaultPosition = pos;
-            m_Player2Spaceship.Position = m_Player2Spaceship.DefaultPosition = pos;
-
-        }
-
-        private void loadLives()
-        {
             m_Player1Lives = new PlayerLivesRow(m_Player1Spaceship);
-            m_Player2Lives = new PlayerLivesRow(m_Player2Spaceship);
-
             this.Add(m_Player1Lives);
+
+            m_Player2Lives = new PlayerLivesRow(m_Player2Spaceship);
             this.Add(m_Player2Lives);
+
+            m_Player1ScoreText = new PlayerScoreText(m_Player1Spaceship, k_ScoreFontAsset);
+            this.Add(m_Player1ScoreText);
+
+            m_Player2ScoreText = new PlayerScoreText(m_Player2Spaceship, k_ScoreFontAsset);
+            this.Add(m_Player2ScoreText);
+
+            m_Mothership = new Mothership(Game);
+            this.Add(m_Mothership);
+
+            m_InvadersMatrix = new InvadersMatrix(Game);
+            m_InvadersMatrix.invadersMatrixReachedBottomScreen += () => m_GameOver = true;
+            m_InvadersMatrix.AllInvadersWereDefeated += () => m_GameOver = true;
+            this.Add(m_InvadersMatrix);
+
+            m_DancingBarriersRow = new DancingBarriersRow(Game);
+            this.Add(m_DancingBarriersRow);
         }
 
-        private void setLivesPositions()
+        public override void Initialize()
         {
+            base.Initialize();
+            initializeSpritePositions();
+        }
+
+        private void initializeSpritePositions()
+        {
+            // Spaceships
+            Vector2 spaceshipsPos = new Vector2(0, GraphicsDevice.Viewport.Height - (m_Player1Spaceship.Height * k_SpaceshipPositionYModifier));
+            m_Player1Spaceship.Position = m_Player1Spaceship.DefaultPosition = spaceshipsPos;
+            m_Player2Spaceship.Position = m_Player2Spaceship.DefaultPosition = spaceshipsPos;
+
+            // Lives
             Sprite lifeIcon = m_Player1Lives.First;
-            m_Player1Lives.GapBetweenSprites =  lifeIcon.Width * k_GapBetweenRowsModifier;
+            m_Player1Lives.GapBetweenSprites = lifeIcon.Width * k_GapBetweenRowsModifier;
             m_Player2Lives.GapBetweenSprites = m_Player1Lives.GapBetweenSprites;
             m_Player1Lives.Position = new Vector2(GraphicsDevice.Viewport.Width - lifeIcon.Width - k_LivesDistanceFromHorizontalScreenBound, 0);
             m_Player2Lives.Position = m_Player1Lives.Position + new Vector2(0, lifeIcon.Height * k_GapBetweenRowsModifier);
-        }
 
-        private void loadScoreSprites()
-        {
-            m_Player1ScoreText = new PlayerScoreText(m_Player1Spaceship, k_ScoreFontAsset);
-            m_Player2ScoreText = new PlayerScoreText(m_Player2Spaceship, k_ScoreFontAsset);
-
-            this.Add(m_Player1ScoreText);
-            this.Add(m_Player2ScoreText);
-        }
-
-        private void setScoreSpritesPositions()
-        {
+            // ScoreTexts
             m_Player1ScoreText.Position = Vector2.Zero;
             m_Player2ScoreText.Position = new Vector2(0, m_Player1ScoreText.Height);
-        }
 
-        private void setMothershipPosition()
-        {
+            // Mothership
             m_Mothership.Position = m_Mothership.DefaultPosition = new Vector2(-m_Mothership.Width, m_Mothership.Height);
-        }
 
-        private void setBarriersPosition()
-        {
-            float distanceFromScreenHorizondalBounds = (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2;
-            m_DancingBarriersRow.Position = new Vector2(
-                distanceFromScreenHorizondalBounds,
+            // Barriers
+            Vector2 barriersPos = new Vector2(
+                (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2,
                 m_Player1Spaceship.DefaultPosition.Y - (m_DancingBarriersRow.Height * 2));
-        }
-
-        private void loadInvadersMatrix()
-        {
-            m_InvadersMatrix = new InvadersMatrix(Game);
-            this.Add(m_InvadersMatrix);
-
-            m_InvadersMatrix.invadersMatrixReachedBottomScreen += () => m_GameOver = true;
-            m_InvadersMatrix.AllInvadersWereDefeated += () => m_GameOver = true;
+            m_DancingBarriersRow.DefaultPosition = m_DancingBarriersRow.Position = barriersPos;
         }
 
         private void onSpaceshipKilled(object i_Spaceship)
         {
-            this.Remove(i_Spaceship as Spaceship);
-            if (!this.Contains(m_Player1Spaceship) && !this.Contains(m_Player2Spaceship))
+            if (++m_SpaceshipsKilledCount == 2)
             {
                 m_GameOver = true;
+                m_SpaceshipsKilledCount = 0;
             }
         }
 
@@ -159,9 +137,15 @@ namespace SpaceInvaders
 
             if (m_GameOver)
             {
-                showGameOverWindow();
-                Game.Exit();
+                transitionToGameOverScreen();
             }
+        }
+
+        private void transitionToGameOverScreen()
+        {
+            m_GameOverScreen.Text = buildGameOverMessage();
+            this.ScreensManager.SetCurrentScreen(m_GameOverScreen);
+            Reset();
         }
 
         private void takeInput()
@@ -169,6 +153,12 @@ namespace SpaceInvaders
             if (InputManager.KeyPressed(Keys.Escape))
             {
                 Game.Exit();
+            }
+
+            /// This is here just to enable skipping to the game over screen - remove before submition
+            else if (InputManager.KeyPressed(Keys.Delete))
+            {
+                transitionToGameOverScreen();
             }
 
             else if (InputManager.KeyPressed(Keys.P))
@@ -187,12 +177,12 @@ namespace SpaceInvaders
         {
             if (InputManager.KeyboardState.IsKeyDown(Keys.H))
             {
-                m_Player1Spaceship.MoveLeft();
+                m_Player1Spaceship.Move(r_LeftDirectionVector);
             }
 
             if (InputManager.KeyboardState.IsKeyDown(Keys.K))
             {
-                m_Player1Spaceship.MoveRight();
+                m_Player1Spaceship.Move(r_RightDirectionVector);
             }
 
             if (InputManager.KeyPressed(Keys.U) || InputManager.ButtonPressed(eInputButtons.Left))
@@ -207,12 +197,12 @@ namespace SpaceInvaders
         {
             if (InputManager.KeyboardState.IsKeyDown(Keys.A))
             {
-                m_Player2Spaceship.MoveLeft();
+                m_Player2Spaceship.Move(r_LeftDirectionVector);
             }
 
             if (InputManager.KeyboardState.IsKeyDown(Keys.D))
             {
-                m_Player2Spaceship.MoveRight();
+                m_Player2Spaceship.Move(r_RightDirectionVector);
             }
 
             if (InputManager.KeyPressed(Keys.W))
@@ -221,17 +211,42 @@ namespace SpaceInvaders
             }
         }
 
-        private void showGameOverWindow()
+        private void Reset()
         {
-            string gameOverMessage = buildGameOverMessage();
-            System.Windows.Forms.MessageBox.Show(gameOverMessage, "Game Over!", System.Windows.Forms.MessageBoxButtons.OK);
+            m_SpaceshipsKilledCount = 0;
+            m_Player1Spaceship.Reset();
+            m_Player2Spaceship.Reset();
+
+            m_GameOver = false;
+            m_InvadersMatrix.Reset();
+            m_DancingBarriersRow.Reset();
+            m_Mothership.HideAndWaitForNextSpawn();
+            clearAllBullets();
+        }
+        
+        private void clearAllBullets()
+        {
+            List<Bullet> bullets = new List<Bullet>();
+            foreach (Sprite sprite in m_Sprites)
+            {
+                if (sprite is Bullet)
+                {
+                    bullets.Add(sprite as Bullet);
+                }
+            }
+
+            foreach (Bullet bullet in bullets)
+            {
+                bullet.Kill();
+            }
         }
 
         private string buildGameOverMessage()
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            messageBuilder.Append(string.Format("GG! The winner is {0}!", getTheNameOfTheWinner()));
+            string nameOfTheWinner = m_Player1Spaceship.Score >= m_Player2Spaceship.Score ? m_Player1Spaceship.Name : m_Player2Spaceship.Name;        
+            messageBuilder.Append(string.Format("The winner is {0}!", nameOfTheWinner));
             messageBuilder.Append(Environment.NewLine);
 
             messageBuilder.Append(string.Format("{0} Score: {1}", m_Player1Spaceship.Name, m_Player1Spaceship.Score));
@@ -241,11 +256,6 @@ namespace SpaceInvaders
             messageBuilder.Append(Environment.NewLine);
 
             return messageBuilder.ToString();
-        }
-
-        private string getTheNameOfTheWinner()
-        {
-            return m_Player1Spaceship.Score >= m_Player2Spaceship.Score ? m_Player1Spaceship.Name : m_Player2Spaceship.Name;
         }
     }
 }

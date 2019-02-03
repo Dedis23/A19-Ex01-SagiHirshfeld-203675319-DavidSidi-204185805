@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Managers;
-using Microsoft.Xna.Framework;
+using Infrastructure.ObjectModel;
 
 namespace SpaceInvaders
 {

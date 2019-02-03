@@ -1,4 +1,5 @@
 ////*** Guy Ronen © 2008-2011 ***////
+using System;
 using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel
@@ -24,7 +25,19 @@ namespace Infrastructure.ObjectModel
         /// </summary>
         protected virtual void RegisterAsService()
         {
-            this.Game.Services.AddService(this.GetType(), this);
+            AddServiceToGame(this.GetType());
+        }
+
+        protected void AddServiceToGame(Type i_Type)
+        {
+            GameServiceContainer gameServices = this.Game.Services;
+
+            if (gameServices.GetService(i_Type) != null)
+            {
+                gameServices.RemoveService(i_Type);
+            }
+
+            gameServices.AddService(i_Type, this);
         }
     }
 }

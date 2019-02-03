@@ -8,7 +8,7 @@ namespace SpaceInvaders
 {
     public class PauseScreen : GameScreen
     {
-        private Sprite m_Message;
+        private Sprite m_PausedMessage;
 
         public PauseScreen(Game i_Game) : base(i_Game)
         {
@@ -19,15 +19,15 @@ namespace SpaceInvaders
             this.UseFadeTransition = true;
             this.ActivationLength = TimeSpan.FromSeconds(0.5f);
 
-            m_Message = new Sprite(@"Sprites\Messages\PausedMsg", this.Game);
-            this.Add(m_Message);
+            m_PausedMessage = new Sprite(@"Sprites\Messages\PausedMsg", this.Game);
+            this.Add(m_PausedMessage);
         }
 
         public override void Initialize()
         {
             base.Initialize();
-            m_Message.PositionOrigin = m_Message.SourceRectangleCenter;
-            m_Message.Position = CenterOfViewPort;
+            m_PausedMessage.PositionOrigin = m_PausedMessage.SourceRectangleCenter;
+            m_PausedMessage.Position = CenterOfViewPort;
         }
 
         public override void Update(GameTime gameTime)

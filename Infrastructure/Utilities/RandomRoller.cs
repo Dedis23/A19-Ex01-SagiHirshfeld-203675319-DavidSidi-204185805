@@ -49,6 +49,8 @@ namespace Infrastructure.Utilities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            ///// Look for a better way
             r_Timer.Update(gameTime);
         }
 

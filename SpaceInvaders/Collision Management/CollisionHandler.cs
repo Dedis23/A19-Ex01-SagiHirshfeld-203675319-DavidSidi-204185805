@@ -24,7 +24,7 @@ namespace SpaceInvaders
 
         protected override void RegisterAsService()
         {
-            this.Game.Services.AddService(typeof(ICollisionHandler), this);
+            AddServiceToGame(typeof(ICollisionHandler));
         }
 
         public void HandleCollision(ICollidable i_CollidableA, ICollidable i_CollidableB)

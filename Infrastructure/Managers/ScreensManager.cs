@@ -14,7 +14,13 @@ namespace Infrastructure.Managers
             : base(i_Game)
         {
             i_Game.Components.Add(this);
-            Game.Services.AddService(typeof(IScreensMananger), this);
+
+            if (this.Game.Services.GetService(typeof(IScreensMananger)) != null)
+            {
+                this.Game.Services.RemoveService(typeof(IScreensMananger));
+            }
+
+            this.Game.Services.AddService(typeof(IScreensMananger), this);
         }
 
         private Stack<GameScreen> m_ScreensStack = new Stack<GameScreen>();

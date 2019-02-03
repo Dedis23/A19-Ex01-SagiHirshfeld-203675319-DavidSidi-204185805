@@ -47,7 +47,7 @@ namespace SpaceInvaders
                 k_NumOfBlinksInASecondInDeathAnimation,
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator(
+            this.DeathAnimation = new CompositeAnimator(
                 "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
@@ -55,15 +55,12 @@ namespace SpaceInvaders
                 faderAnimator,
                 blinkAnimator);
 
-            DeathAnimation = deathAnimation;
-
             Animations.Resume();
         }
 
         public void SpawnAndFly()
         {
             r_RandomSpawnRoller.Deactivate();
-            this.Position = DefaultPosition;
             this.Vulnerable = true;
             this.Visible = true;
             this.Velocity = new Vector2(k_MotherShipVelocity, 0);
@@ -73,16 +70,20 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
+            /// Look for a better way
+            r_RandomSpawnRoller.Update(i_GameTime);
+
             if (this.Position.X >= this.GraphicsDevice.Viewport.Width)
             {
-                hideAndWaitForNextSpawn();
+                HideAndWaitForNextSpawn();
             }
         }
 
-        private void hideAndWaitForNextSpawn()
+        public void HideAndWaitForNextSpawn()
         {
             this.Visible = false;
             this.Velocity = Vector2.Zero;
+            this.Position = DefaultPosition;
             r_RandomSpawnRoller.Activate();
         }
 
@@ -97,7 +98,7 @@ namespace SpaceInvaders
         {
             DeathAnimation.Reset();
             DeathAnimation.Pause();
-            hideAndWaitForNextSpawn();
+            HideAndWaitForNextSpawn();
         }
 
         protected override void OnDisposed(object sender, EventArgs args)

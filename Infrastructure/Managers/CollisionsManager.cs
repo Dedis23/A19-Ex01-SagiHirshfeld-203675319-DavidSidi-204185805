@@ -21,7 +21,7 @@ namespace Infrastructure.Managers
 
         protected override void RegisterAsService()
         {
-            this.Game.Services.AddService(typeof(ICollisionsManager), this);
+            AddServiceToGame((typeof(ICollisionsManager)));
         }
 
         public void AddObjectToMonitor(ICollidable i_Collidable)

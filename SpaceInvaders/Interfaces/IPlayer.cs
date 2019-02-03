@@ -19,7 +19,7 @@ namespace SpaceInvaders
 
         event EventHandler<EventArgs> ScoreChanged;
 
-        event EventHandler<EventArgs> LifeLost;
+        event EventHandler<EventArgs> LivesCountChanged;
 
         event EventHandler<EventArgs> Disposed;
     }

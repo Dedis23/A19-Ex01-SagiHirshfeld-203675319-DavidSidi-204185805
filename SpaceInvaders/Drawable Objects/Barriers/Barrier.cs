@@ -12,6 +12,7 @@ namespace SpaceInvaders
     {
         private const string k_AssetName = @"Sprites\Barrier_44x32";
         private const float k_BulletDamagePercent = 0.7f;
+        private Color[] m_OriginalTextureData;
 
         public Barrier(Game i_Game) : base(k_AssetName, i_Game)
         {
@@ -20,10 +21,10 @@ namespace SpaceInvaders
         protected override void LoadTexture()
         {
             Texture2D texturePrototype = ContentManager.Load<Texture2D>(m_AssetName);
-            Color[] copiedPixels = new Color[texturePrototype.Width * texturePrototype.Height];
-            texturePrototype.GetData(copiedPixels);
+            m_OriginalTextureData = new Color[texturePrototype.Width * texturePrototype.Height];
+            texturePrototype.GetData(m_OriginalTextureData);
             this.Texture = new Texture2D(GraphicsDevice, texturePrototype.Width, texturePrototype.Height);
-            this.Texture.SetData(copiedPixels);
+            this.Texture.SetData(m_OriginalTextureData);
         }
 
         public void ReceiveBulletDamage(Bullet i_Bullet)
@@ -106,6 +107,13 @@ namespace SpaceInvaders
                 i_CollidedSprite as ICollidable2D,
                 !v_StopAfterFirstDetection,
                 collidedPixelsModificationFunc);
+        }
+
+        public void Reset()
+        {
+            Color[] newDataArray = new Color[m_OriginalTextureData.Length];
+            Array.Copy(m_OriginalTextureData, newDataArray, m_OriginalTextureData.Length);
+            TextureData = newDataArray;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Infrastructure.ObjectModel
             RightToLeft
         }
 
-        private readonly LinkedList<T> r_SpritesList;
+        protected readonly LinkedList<T> r_SpritesLinkedList;
         private readonly Func<Game, T> r_TCreationFunc;
         private readonly Game r_Game;
 
@@ -23,7 +23,7 @@ namespace Infrastructure.ObjectModel
 
         public SpriteRow(Game i_Game, int i_SpritesNum, Func<Game, T> i_TCreationFunc) : base(i_Game)
         {
-            r_SpritesList = new LinkedList<T>();
+            r_SpritesLinkedList = new LinkedList<T>();
             r_Game = i_Game;
             r_TCreationFunc = i_TCreationFunc;
 
@@ -34,32 +34,38 @@ namespace Infrastructure.ObjectModel
 
             for (int i = 0; i < i_SpritesNum; i++)
             {
-                AddNewSprite();
+                AddSprite();
             }
         }
 
-        public void AddNewSprite()
+        public void AddSprite()
         {
             T newSprite = r_TCreationFunc(r_Game);
 
-            if (r_SpritesList.Count == 0)
+            if (r_SpritesLinkedList.Count == 0)
             {
-                r_SpritesList.AddFirst(newSprite);
+                r_SpritesLinkedList.AddFirst(newSprite);
             }
+
             else
             {
-                newSprite.CopyPropertiesFrom(First);
+                newSprite.Opacity = this.Opacity;
+                newSprite.Scales = this.Scales;
+                newSprite.TintColor = this.TintColor;
+                newSprite.Rotation = this.Rotation;
+                newSprite.Velocity = this.Velocity;
+
 
                 if (InsertionOrder == Order.LeftToRight)
                 {
-                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Right + GapBetweenSprites, this.Position.Y);
+                    newSprite.Position = new Vector2(r_SpritesLinkedList.Last.Value.Bounds.Right + GapBetweenSprites, this.Position.Y);
                 }
                 else
                 {
-                    newSprite.Position = new Vector2(r_SpritesList.Last.Value.Bounds.Left - GapBetweenSprites, this.Position.Y);
+                    newSprite.Position = new Vector2(r_SpritesLinkedList.Last.Value.Bounds.Left - GapBetweenSprites, this.Position.Y);
                 }
 
-                r_SpritesList.AddLast(newSprite);
+                r_SpritesLinkedList.AddLast(newSprite);
             }
 
             this.Add(newSprite);
@@ -69,17 +75,17 @@ namespace Infrastructure.ObjectModel
         {
             T spriteToRemove;
 
-            if (r_SpritesList.Count != 0)
+            if (r_SpritesLinkedList.Count != 0)
             {
                 if (InsertionOrder != RemovalOrder)
                 {
-                    spriteToRemove = r_SpritesList.Last.Value;
-                    r_SpritesList.RemoveLast();
+                    spriteToRemove = r_SpritesLinkedList.Last.Value;
+                    r_SpritesLinkedList.RemoveLast();
                 }
                 else
                 {
-                    spriteToRemove = r_SpritesList.First.Value;
-                    r_SpritesList.RemoveFirst();
+                    spriteToRemove = r_SpritesLinkedList.First.Value;
+                    r_SpritesLinkedList.RemoveFirst();
                 }
 
                 spriteToRemove.Kill();
@@ -91,7 +97,7 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                return r_SpritesList.First.Value;
+                return r_SpritesLinkedList.First.Value;
             }
         }
 
@@ -99,7 +105,7 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                return r_SpritesList.Last.Value;
+                return r_SpritesLinkedList.Last.Value;
             }
         }
 
@@ -107,7 +113,7 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                return r_SpritesList;
+                return r_SpritesLinkedList;
             }
         }
 
@@ -115,8 +121,8 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                float gapsSum = GapBetweenSprites * (r_SpritesList.Count - 1);
-                float barrierWidthSum = r_SpritesList.First.Value.Width * r_SpritesList.Count;
+                float gapsSum = GapBetweenSprites * (r_SpritesLinkedList.Count - 1);
+                float barrierWidthSum = r_SpritesLinkedList.First.Value.Width * r_SpritesLinkedList.Count;
                 return gapsSum + barrierWidthSum;
             }
         }
@@ -125,7 +131,7 @@ namespace Infrastructure.ObjectModel
         {
             get
             {
-                return r_SpritesList.First.Value.Height;
+                return r_SpritesLinkedList.First.Value.Height;
             }
         }
 
@@ -219,8 +225,8 @@ namespace Infrastructure.ObjectModel
 
         private void placeSpritesInARowAccordingToTheFirstSpritePosition()
         {
-            LinkedListNode<T> currentSprite = r_SpritesList.First.Next;
-            for (int i = 1; i < r_SpritesList.Count; i++)
+            LinkedListNode<T> currentSprite = r_SpritesLinkedList.First.Next;
+            for (int i = 1; i < r_SpritesLinkedList.Count; i++)
             {
                 if (InsertionOrder == Order.LeftToRight)
                 {

@@ -21,7 +21,7 @@ namespace SpaceInvaders
 
         public DancingBarriersRow(Game i_Game) : this(i_Game, k_DefaultBarrierNum)
         {
-        }
+        }       
 
         protected override void LoadContent()
         {
@@ -46,6 +46,8 @@ namespace SpaceInvaders
             }
         }
 
+        public Vector2 DefaultPosition { get; set; }
+
         private void dance()
         {
             bool v_Loop = true;
@@ -62,6 +64,16 @@ namespace SpaceInvaders
                 sprite.Animations.Add(danceAnimation);
                 sprite.Animations.Resume();
             }
+        }
+
+        public void Reset()
+        {
+            foreach (Barrier barrier in r_SpritesLinkedList)
+            {
+                barrier.Reset();
+            }
+
+            this.Position = this.DefaultPosition;
         }
     }
 }

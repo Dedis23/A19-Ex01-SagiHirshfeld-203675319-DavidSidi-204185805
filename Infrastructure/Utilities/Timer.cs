@@ -36,14 +36,18 @@ namespace Infrastructure.Utilities
 
         public override void Update(GameTime i_GameTime)
         {
-            m_RemainingDelay += (float)i_GameTime.ElapsedGameTime.TotalSeconds;
-            if (m_RemainingDelay >= Interval)
+            ///// Look for a better way
+            if (Enabled)
             {
-                Notify?.Invoke();
-                m_RemainingDelay -= Interval;
-            }
+                m_RemainingDelay += (float)i_GameTime.ElapsedGameTime.TotalSeconds;
+                if (m_RemainingDelay >= Interval)
+                {
+                    Notify?.Invoke();
+                    m_RemainingDelay -= Interval;
+                }
 
-            base.Update(i_GameTime);
+                base.Update(i_GameTime);
+            }
         }
     }
 }

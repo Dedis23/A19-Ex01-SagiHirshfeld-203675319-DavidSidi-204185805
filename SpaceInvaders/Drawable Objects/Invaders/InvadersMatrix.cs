@@ -6,13 +6,11 @@ using Infrastructure.Utilities;
 
 namespace SpaceInvaders
 {
-    public class InvadersMatrix : CompositeDrawableComponent<GameComponent>
+    public class InvadersMatrix : CompositeDrawableComponent<Invader>
     {
         private const int k_NumOfRowsWithPinkInvaders = 1, k_NumOfRowsWithLightBlueInvaders = 2, k_NumOfRowsWithLightYellowInvaders = 2, k_NumOfInvadersInARow = 9;
         private const int k_NumOfRows = k_NumOfRowsWithPinkInvaders + k_NumOfRowsWithLightBlueInvaders + k_NumOfRowsWithLightYellowInvaders;
-        private const int k_StartingInvadersCount = k_NumOfRows * k_NumOfInvadersInARow;
         private const float k_DistanceBetweenEachInvader = 0.6f;
-        private const float k_DefaultStartingPositionX = 0, k_DefaultStartingPositionY = 96;
         private const float k_JumpDistanceModifier = 0.5f;
         private const float k_InvadersReachedEdgeAccelerator = 0.92f;
         private const float k_FourInvadersDefeatedAccelerator = 0.96f;
@@ -21,7 +19,8 @@ namespace SpaceInvaders
         private const float k_YGapBetweenInvaders = Invader.k_DefaultInvaderHeight + (Invader.k_DefaultInvaderHeight * k_DistanceBetweenEachInvader);
         private const float k_DefaultJumpDistance = k_JumpDistanceModifier * Invader.k_DefaultInvaderWidth;
         private const float k_DefaultDelayBetweenJumpsInSeconds = 0.5f;
-        private readonly List<List<Invader>> r_InvadersMatrix;
+        private readonly Vector2 r_DefaultStartingPosition = new Vector2(0, 96);
+
         private Invader m_CurrentfurthestInvaderInXPosition;
         private Timer m_TimerForJumps;
         private float m_JumpDirection;
@@ -33,11 +32,9 @@ namespace SpaceInvaders
 
         public InvadersMatrix(Game i_Game) : base(i_Game)
         {
-            r_InvadersMatrix = new List<List<Invader>>();
             m_JumpDirection = 1.0f;
-            m_NumOfDefeatedInvaders = 0;
             initializeJumpsTimer();
-            initializeMatrix();
+            populateMatrix();
         }
 
         private void initializeJumpsTimer()
@@ -46,82 +43,56 @@ namespace SpaceInvaders
             m_TimerForJumps.Interval = k_DefaultDelayBetweenJumpsInSeconds;
             m_TimerForJumps.Notify += handleInvadersMatrixJumps;
             m_TimerForJumps.Activate();
-            this.Add(m_TimerForJumps);
         }
 
-        private void initializeMatrix()
+        public override void Update(GameTime gameTime)
         {
-            Vector2 currentRowPosition = new Vector2(k_DefaultStartingPositionX, k_DefaultStartingPositionY);
-            for (int i = 0; i < k_NumOfRowsWithPinkInvaders; i++)
-            {
-                r_InvadersMatrix.Add(
-                    createARowOfInvaders(
-                        currentRowPosition,
-                    eInvaderPresets.InvaderPink,
-                    i % Invader.k_NumOfCells));
-                currentRowPosition.Y += k_YGapBetweenInvaders;
-            }
+            base.Update(gameTime);
 
-            for (int i = 0; i < k_NumOfRowsWithLightBlueInvaders; i++)
-            {
-                r_InvadersMatrix.Add
-                    (createARowOfInvaders(
-                        currentRowPosition,
-                    eInvaderPresets.InvaderLightBlue,
-                    i % Invader.k_NumOfCells));
-                currentRowPosition.Y += k_YGapBetweenInvaders;
-            }
-
-            for (int i = 0; i < k_NumOfRowsWithLightYellowInvaders; i++)
-            {
-                r_InvadersMatrix.Add(createARowOfInvaders(
-                    currentRowPosition,
-                    eInvaderPresets.InvaderLightYellow,
-                    i % Invader.k_NumOfCells));
-                currentRowPosition.Y += k_YGapBetweenInvaders;
-            }
+            /// Look for a better way
+            m_TimerForJumps.Update(gameTime);
         }
 
-        private enum eInvaderPresets
+        private void populateMatrix()
         {
-            InvaderPink,
-            InvaderLightBlue,
-            InvaderLightYellow
-        }
+            Vector2 nextInvaderPosition = r_DefaultStartingPosition;
+            Invader currentInvader;
 
-        private List<Invader> createARowOfInvaders(Vector2 i_PositionOfFirstInvaderInTheRow, eInvaderPresets i_InvaderPreset, int i_StartingCell)
-        {
-            List<Invader> rowOfInvaders = new List<Invader>();
-            Vector2 nextInvaderPosition = i_PositionOfFirstInvaderInTheRow;
-            for (int i = 0; i < k_NumOfInvadersInARow; i++)
+            for(int row = 0; row < k_NumOfRows; row++)
             {
-                Invader currentInvader = createInvaderBasedOnPreset(i_InvaderPreset, i_StartingCell);
-                currentInvader.Position = new Vector2(nextInvaderPosition.X, nextInvaderPosition.Y);
-                nextInvaderPosition.X += k_XGapBetweenInvaders;
-                currentInvader.Dying += OnInvaderDying;
-                currentInvader.Died += OnInvaderKilled;
-                rowOfInvaders.Add(currentInvader);
-            }
+                for (int col = 0; col < k_NumOfInvadersInARow; col++)
+                {
+                    currentInvader = createAndAddNewInvader(row);
+                    currentInvader.Position = nextInvaderPosition;
+                    nextInvaderPosition.X += k_XGapBetweenInvaders;
+                }
 
-            return rowOfInvaders;
+                nextInvaderPosition.X = r_DefaultStartingPosition.X;
+                nextInvaderPosition.Y += k_YGapBetweenInvaders;
+            }
         }
 
-        private Invader createInvaderBasedOnPreset(eInvaderPresets i_InvaderPreset, int i_StartingCell)
+        private Invader createAndAddNewInvader(int i_RowInMatrix)
         {
             Invader newInvader = null;
-            switch (i_InvaderPreset)
+            int startingCell = i_RowInMatrix % Invader.k_NumOfCells;
+            if (i_RowInMatrix < k_NumOfRowsWithPinkInvaders)
             {
-                case eInvaderPresets.InvaderPink:
-                    newInvader = new InvaderPink(this.Game, i_StartingCell) as Invader;
-                    break;
-                case eInvaderPresets.InvaderLightBlue:
-                    newInvader = new InvaderLightBlue(this.Game, i_StartingCell) as Invader;
-                    break;
-                case eInvaderPresets.InvaderLightYellow:
-                    newInvader = new InvaderLightYellow(this.Game, i_StartingCell) as Invader;
-                    break;
+                newInvader = new InvaderPink(this.Game, startingCell);
             }
 
+            else if (i_RowInMatrix < k_NumOfRowsWithPinkInvaders + k_NumOfRowsWithLightBlueInvaders)
+            {
+                newInvader = new InvaderLightBlue(this.Game, startingCell);
+            }
+
+            else
+            {
+                newInvader = new InvaderLightYellow(this.Game, startingCell);
+            }
+
+            newInvader.Dying += OnInvaderDying;
+            newInvader.Died += OnInvaderDied;
             this.Add(newInvader);
             return newInvader;
         }
@@ -219,9 +190,9 @@ namespace SpaceInvaders
                 delta.Y = i_JumpAmount;
             }
 
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+            foreach(Invader invader in this)
             {
-                foreach (Invader invader in rowOfInvaders)
+                if (invader.Vulnerable)
                 {
                     invader.Position += delta;
                     invader.GoNextFrame();
@@ -240,18 +211,12 @@ namespace SpaceInvaders
                 invaderIsFurthest = (invader) => furthestInvaderXPosition >= invader.Position.X;
             }
 
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+            foreach (Invader invader in this)
             {
-                foreach (Invader invader in rowOfInvaders)
+                if (invader.Vulnerable && invaderIsFurthest(invader))
                 {
-                    if (rowOfInvaders.Count > 0)
-                    {
-                        if (invaderIsFurthest(invader))
-                        {
-                            furthestInvaderXPosition = invader.Position.X;
-                            furthestInvaderXPositionToReturn = invader;
-                        }
-                    }
+                    furthestInvaderXPosition = invader.Position.X;
+                    furthestInvaderXPositionToReturn = invader;
                 }
             }
 
@@ -262,14 +227,11 @@ namespace SpaceInvaders
         {
             bool matrixReachedBottomScreen = false;
 
-            foreach (List<Invader> rowOfInvaders in r_InvadersMatrix)
+            foreach (Invader invader in this)
             {
-                foreach (Invader invader in rowOfInvaders)
+                if (invader.Position.Y + Invader.k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
                 {
-                    if (invader.Position.Y + Invader.k_DefaultInvaderHeight >= Game.GraphicsDevice.Viewport.Height)
-                    {
-                        matrixReachedBottomScreen = true;
-                    }
+                    matrixReachedBottomScreen = true;
                 }
             }
 
@@ -281,43 +243,51 @@ namespace SpaceInvaders
 
         private void OnInvaderDying(object i_Invader)
         {
-            Invader invaderToRemove = i_Invader as Invader;
-            if (invaderToRemove == m_CurrentfurthestInvaderInXPosition)
+            Invader invadrDying = i_Invader as Invader;
+            if (invadrDying == m_CurrentfurthestInvaderInXPosition)
             {
                 m_CurrentfurthestInvaderInXPosition = null;
             }
+        }
 
-            foreach (List<Invader> invaderList in r_InvadersMatrix)
+        private void OnInvaderDied(object i_Invader)
+        {
+            foreach (Invader invader in this)
             {
-                invaderList.Remove(invaderToRemove);
-
-                // While we're here - increase the shooting chance of the enemies to make things more interesting
-                foreach (Invader invader in invaderList)
-                {
-                    invader.ChanceToShoot *= k_ChanceToShootIncrementModifierOnInvaderDeath;
-                }
+                invader.ChanceToShoot *= k_ChanceToShootIncrementModifierOnInvaderDeath;
             }
 
-            m_NumOfDefeatedInvaders++;
-
             // Check if 4 invaders were defeated
-            if (m_NumOfDefeatedInvaders % 4 == 0)
+            if (++m_NumOfDefeatedInvaders % 4 == 0)
             {
                 m_TimerForJumps.Interval *= k_FourInvadersDefeatedAccelerator;
             }
 
-            if (m_NumOfDefeatedInvaders == k_StartingInvadersCount)
+            this.Remove(i_Invader as Invader);
+        }
+
+        protected override void OnComponentRemoved(GameComponentEventArgs<Invader> e)
+        {
+            base.OnComponentRemoved(e);
+            Invader invader = e.GameComponent;
+            invader.Dying -= OnInvaderDying;
+            invader.Died -= OnInvaderDied;
+            invader.Dispose();
+
+            if (this.Count == 0)
             {
                 AllInvadersWereDefeated?.Invoke();
             }
         }
 
-        private void OnInvaderKilled(object i_Invader)
+        public void Reset()
         {
-            Invader invader = i_Invader as Invader;
-            invader.Dying -= OnInvaderDying;
-            invader.Died -= OnInvaderKilled;
-            this.Remove(invader);
+            this.Clear();
+            populateMatrix();
+            m_TimerForJumps.Interval = k_DefaultDelayBetweenJumpsInSeconds;
+            m_NumOfDefeatedInvaders = 0;
+            m_JumpDirection = 1.0f;
+            m_CurrentfurthestInvaderInXPosition = null;
         }
 
         protected override void Dispose(bool disposing)

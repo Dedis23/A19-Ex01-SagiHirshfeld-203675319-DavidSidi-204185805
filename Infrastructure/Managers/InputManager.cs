@@ -78,7 +78,7 @@ namespace Infrastructure.Managers
 
         protected override void RegisterAsService()
         {
-            Game.Services.AddService(typeof(IInputManager), this);
+            AddServiceToGame(typeof(IInputManager));
         }
 
         /// <summary>

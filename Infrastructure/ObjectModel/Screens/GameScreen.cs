@@ -370,6 +370,7 @@ namespace Infrastructure.ObjectModel.Screens
                 }
             }
         }
+
         /// <summary>
         /// Helper for updating the screen transition position.
         /// </summary>

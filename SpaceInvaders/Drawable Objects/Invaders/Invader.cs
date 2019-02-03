@@ -89,6 +89,8 @@ namespace SpaceInvaders
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            /// Look for a better way
             r_RandomShootRoller.Update(gameTime);
         }
 
@@ -110,15 +112,14 @@ namespace SpaceInvaders
                 k_NumOfCyclesPerSecondsInDeathAnimation,
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator(
+            this.DeathAnimation = new CompositeAnimator(
                 "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
                 shrinkAnimator,
                 rotateAnimator);
-            Animations.Resume();
 
-            this.DeathAnimation = deathAnimation;
+            Animations.Resume();
         }
 
         protected override void OnDying()
@@ -141,6 +142,7 @@ namespace SpaceInvaders
         protected override void OnDisposed(object sender, EventArgs args)
         {
             base.OnDisposed(sender, args);
+            r_Gun.Reset();
             r_RandomShootRoller.RollSucceeded -= Shoot;
         }
     }

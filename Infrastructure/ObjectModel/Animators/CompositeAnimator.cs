@@ -110,5 +110,13 @@ namespace Infrastructure.ObjectModel.Animators
                 animation.Update(i_GameTime);
             }
         }
+
+        public void PauseSubAnimations()
+        {
+            foreach (SpriteAnimator animation in m_AnimationsList)
+            {
+                animation.Pause();
+            }
+        }
     }
 }

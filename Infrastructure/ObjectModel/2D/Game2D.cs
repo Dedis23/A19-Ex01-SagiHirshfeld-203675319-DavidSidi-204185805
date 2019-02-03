@@ -4,7 +4,7 @@ using Infrastructure.Managers;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 
-namespace SpaceInvaders
+namespace Infrastructure.ObjectModel
 {
     public class Game2D : Game
     {
@@ -15,8 +15,9 @@ namespace SpaceInvaders
             this.Content.RootDirectory = "Content";
             r_GraphicsDeviceManager = new GraphicsDeviceManager(this);
             Services.AddService(typeof(GraphicsDeviceManager), r_GraphicsDeviceManager);
-            new InputManager(this);
             new CollisionsManager(this);
+
+            new InputManager(this);
         }
 
         private bool m_FitViewportToBackgroundIsNeeded = false;

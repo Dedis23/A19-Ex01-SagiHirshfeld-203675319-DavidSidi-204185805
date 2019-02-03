@@ -2,7 +2,7 @@
 using Infrastructure.ObjectModel;
 using Microsoft.Xna.Framework;
 
-namespace SpaceInvaders
+namespace Infrastructure.ObjectModel
 {
     public class SpriteRow : SpriteRow<Sprite>
     {

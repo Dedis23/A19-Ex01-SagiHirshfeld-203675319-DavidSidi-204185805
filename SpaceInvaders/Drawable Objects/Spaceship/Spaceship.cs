@@ -22,11 +22,12 @@ namespace SpaceInvaders
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
 
-        public event EventHandler<EventArgs> LifeLost;
-
+        public event EventHandler<EventArgs> LivesCountChanged;
         public event EventHandler<EventArgs> ScoreChanged;
 
         private int m_Score;
+        private int m_Lives;
+        private bool m_MovementEnabled = true;
 
         public int Score
         {
@@ -42,9 +43,21 @@ namespace SpaceInvaders
             }
         }
 
-        public Color BulletsColor { get; } = Color.Red;
+        public int Lives
+        {
+            get { return m_Lives; }
 
-        public int Lives { get; set; }
+            set
+            {
+                if (m_Lives != value)
+                {
+                    m_Lives = value;
+                    LivesCountChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public Color BulletsColor { get; } = Color.Red;
 
         public abstract Color ScoreColor { get; }
 
@@ -77,14 +90,13 @@ namespace SpaceInvaders
                 TimeSpan.FromSeconds(k_DeathAnimationLength));
             FaderAnimator faderAnimator = new FaderAnimator(TimeSpan.FromSeconds(k_DeathAnimationLength));
 
-            CompositeAnimator deathAnimation = new CompositeAnimator(
+            this.DeathAnimation = new CompositeAnimator(
                 "DeathAnimation",
                 TimeSpan.FromSeconds(k_DeathAnimationLength),
                 this,
                 rotateAnimator,
                 faderAnimator);
 
-            DeathAnimation = deathAnimation;
             Animations.Resume();
         }
 
@@ -98,27 +110,33 @@ namespace SpaceInvaders
         public override void Update(GameTime i_GameTime)
         {
             base.Update(i_GameTime);
-
             m_Velocity.X = 0;
-
-            // Clamp the position between screen boundries:
-            float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
-            Position = new Vector2(x, Position.Y);
         }
 
         public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
         {
-            Position += new Vector2(i_MousePositionDelta.X, 0);
+            if (m_MovementEnabled)
+            {
+                Position += new Vector2(i_MousePositionDelta.X, 0);
+            }
         }
 
-        public void MoveLeft()
+        protected override void OnPositionChanged()
         {
-            m_Velocity.X = k_VelocityScalar * -1;
+            base.OnPositionChanged();
+
+            // Clamp the position between screen boundries:
+            float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
+            float y = MathHelper.Clamp(Position.Y, 0, this.GameScreenBounds.Height - this.Height);
+            Position = new Vector2(x, y);
         }
 
-        public void MoveRight()
+        public void Move(Vector2 i_DirectionVector)
         {
-            m_Velocity.X = k_VelocityScalar;
+            if (m_MovementEnabled)
+            {
+                m_Velocity += k_VelocityScalar * Vector2.Normalize(i_DirectionVector);
+            }
         }
 
         public void Shoot()
@@ -130,7 +148,6 @@ namespace SpaceInvaders
         {
             this.Vulnerable = false;
             Lives--;
-            LifeLost?.Invoke(this, EventArgs.Empty);
 
             Score -= k_ScorePenaltyForBulletHit;
 
@@ -149,13 +166,34 @@ namespace SpaceInvaders
         protected override void OnDying()
         {
             this.r_Gun.Enabled = false;
+            m_MovementEnabled = false;
             base.OnDying();
+        }
+
+        protected override void OnDeath()
+        {
+            Visible = false;
         }
 
         protected override void OnDisposed(object sender, EventArgs args)
         {
             base.OnDisposed(sender, args);
             Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
+        }
+
+        public void Reset()
+        {
+            Position = DefaultPosition;
+            this.Visible = true;
+            this.Vulnerable = true;
+            m_MovementEnabled = true;
+            r_Gun.Enabled = true;
+            r_Gun.Reset();
+            Animations.Reset();
+            Animations.PauseSubAnimations();
+
+            Lives = k_StartingLivesCount;
+            Score = 0;
         }
     }
 }
