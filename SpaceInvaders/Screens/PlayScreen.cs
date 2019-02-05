@@ -37,6 +37,7 @@ namespace SpaceInvaders
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
 
+        private bool m_FirstLevelHasBeenTransitionedTo = false;
         private bool m_GameOver = false;
         private bool m_LevelCleared = false;
         private int m_CurrentLevel;
@@ -74,12 +75,14 @@ namespace SpaceInvaders
             loadSprites();
         }
 
-        protected override void OnActivated()
+        
+        protected override void  OnActivated()
         {
             base.OnActivated();
-            if (!(PreviousScreen is LevelTransitionScreen))
+            if (!m_FirstLevelHasBeenTransitionedTo)
             {
                 ScreensManager.SetCurrentScreen(m_LevelTransitionScreen);
+                m_FirstLevelHasBeenTransitionedTo = true;
             }
         }
 
@@ -191,17 +194,18 @@ namespace SpaceInvaders
             if (m_GameOver)
             {
                 CurrentLevel = 0;
+                m_FirstLevelHasBeenTransitionedTo = false;
                 m_Player1Spaceship.ResetScoreAndLives();
                 m_Player2Spaceship.ResetScoreAndLives();
             }
 
             if (m_GameOver || m_LevelCleared)
             {
-                resetPlayScreen();
+                reset();
             }
         }
 
-        private void resetPlayScreen()
+        private void reset()
         {
             m_GameOver = false;
             m_LevelCleared = false;

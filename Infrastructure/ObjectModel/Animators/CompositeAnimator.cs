@@ -38,10 +38,13 @@ namespace Infrastructure.ObjectModel.Animators
 
         public void Add(SpriteAnimator i_Animation)
         {
-            i_Animation.BoundSprite = this.BoundSprite;
-            i_Animation.Enabled = true;
-            m_AnimationsDictionary.Add(i_Animation.Name, i_Animation);
-            m_AnimationsList.Add(i_Animation);
+            if (!m_AnimationsDictionary.ContainsKey(i_Animation.Name))
+            {
+                i_Animation.BoundSprite = this.BoundSprite;
+                i_Animation.Enabled = true;
+                m_AnimationsDictionary.Add(i_Animation.Name, i_Animation);
+                m_AnimationsList.Add(i_Animation);
+            }
         }
 
         public void Remove(string i_AnimationName)

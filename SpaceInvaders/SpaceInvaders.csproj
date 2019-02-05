@@ -71,6 +71,7 @@
     <Compile Include="Interfaces\IEnemy.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />
+    <Compile Include="Screens\DummyOptionsScreen.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\LevelTransitionScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />

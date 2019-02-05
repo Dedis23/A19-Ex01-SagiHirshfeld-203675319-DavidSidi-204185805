@@ -11,6 +11,7 @@ namespace SpaceInvaders
             this.IsMouseVisible = true;
             this.Background = new SpaceBG(this);
             ScreensMananger screensMananger = new ScreensMananger(this);
+            screensMananger.Push(new PlayScreen(this));
             screensMananger.SetCurrentScreen(new WelcomeScreen(this));
         }
     }

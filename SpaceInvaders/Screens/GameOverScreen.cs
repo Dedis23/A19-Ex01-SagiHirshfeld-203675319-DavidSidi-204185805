@@ -13,6 +13,7 @@ namespace SpaceInvaders
         private Sprite m_GameOverMsg;
         private Sprite m_InstructionsMsg;
         private TextSprite m_GameOverTextSprite;
+        private bool m_PrevScreenIsOptions;
 
         public GameOverScreen(Game i_Game) : base(i_Game)
         {
@@ -39,6 +40,7 @@ namespace SpaceInvaders
             }
         }
 
+
         public override void Initialize()
         {
             base.Initialize();
@@ -56,6 +58,16 @@ namespace SpaceInvaders
             m_InstructionsMsg.Position = new Vector2(CenterOfViewPort.X, m_GameOverTextSprite.Position.Y + m_GameOverTextSprite.Height * 1.5f);
         }
 
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+
+            if (m_PrevScreenIsOptions)
+            {
+                goBackToPlayScreen();
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -67,13 +79,20 @@ namespace SpaceInvaders
 
             else if (InputManager.KeyPressed(Keys.Home))
             {
-                ScreensManager.SetCurrentScreen(PreviousScreen);
+                goBackToPlayScreen();
             }
 
             else if (InputManager.KeyPressed(Keys.T))
             {
-                /// this.ScreensManager.SetCurrentScreen(new OptionsMenuScreen(Game));
+                ScreensManager.SetCurrentScreen(new DummyOptionsScreen(Game));
+                m_PrevScreenIsOptions = true;
             }
+        }
+        
+        private void goBackToPlayScreen()
+        {
+            ExitScreen();
+            m_PrevScreenIsOptions = false;
         }
     }
 }
