@@ -32,15 +32,21 @@ namespace SpaceInvaders
                 newBullet.Died += onBulletDestroyed;
             }
 
-            r_GameScreensManager.ActiveScreen.Remove(newBullet);
-            r_GameScreensManager.ActiveScreen.Add(newBullet);
+            if (!r_GameScreensManager.ActiveScreen.Contains(newBullet))
+            {
+                r_GameScreensManager.ActiveScreen.Add(newBullet);
+            }
+
             return newBullet;
         }
 
         private void onBulletDestroyed(object i_Bullet)
         {
             Bullet bullet = i_Bullet as Bullet;
-            r_BulletsStack.Push(bullet);
+            if (!r_BulletsStack.Contains(bullet))
+            {
+                r_BulletsStack.Push(bullet);
+            }
         }
     }
 }

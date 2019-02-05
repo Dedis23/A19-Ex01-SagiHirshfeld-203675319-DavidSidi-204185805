@@ -39,6 +39,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/GameOverFont.spritefont;Fonts/GameOverScoreFont.spritefont
 
+#begin Fonts/LevelTransitionFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/LevelTransitionFont.spritefont
+
 #begin Fonts/OptionsFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

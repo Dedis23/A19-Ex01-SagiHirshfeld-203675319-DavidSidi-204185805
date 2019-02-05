@@ -10,8 +10,10 @@ namespace SpaceInvaders
 {
     public class DancingBarriersRow : SpriteRow<Barrier>
     {
-        private const int k_DancingSpeed = 45;
+        private const int k_BaseDancingSpeed = 45;
+        private const float k_DancingSpeedIncreaseModifier = 0.93f;
         private const int k_DefaultBarrierNum = 4;
+        private float m_DancingSpeed;
 
         public DancingBarriersRow(Game i_Game, int i_BarrierNum) : base(i_Game, i_BarrierNum, Game => new Barrier(i_Game))
         {
@@ -27,34 +29,19 @@ namespace SpaceInvaders
         {
             base.LoadContent();
             this.GapBetweenSprites = this.First.Width;
-            dance();
-        }
-
-        public override Vector2 Position
-        {
-            get
-            {
-                return base.Position;
-            }
-
-            set
-            {
-                base.Position = value;
-
-                // Restart the dance when moved
-                dance();
-            }
         }
 
         public Vector2 DefaultPosition { get; set; }
 
-        private void dance()
+        public void Dance(int i_DifficultyLevel)
         {
             bool v_Loop = true;
+            m_DancingSpeed = matchDancingSpeedToDifficultyLevel(i_DifficultyLevel);
+
             foreach (Barrier sprite in this.SpritesLinkedList)
             {
                 SpriteAnimator danceAnimation = new WaypointsAnymator(
-                        k_DancingSpeed,
+                        m_DancingSpeed,
                         TimeSpan.Zero,
                         v_Loop,
                         sprite.Position + new Vector2(sprite.Width, 0),
@@ -64,6 +51,26 @@ namespace SpaceInvaders
                 sprite.Animations.Add(danceAnimation);
                 sprite.Animations.Resume();
             }
+        }
+
+        private float matchDancingSpeedToDifficultyLevel(int i_DifficultyLevel)
+        {
+            float newDancingSpeed;
+
+            switch(i_DifficultyLevel)
+            {
+                case 0:
+                    newDancingSpeed = 0;
+                    break;
+                case 1:
+                    newDancingSpeed = k_BaseDancingSpeed;
+                    break;
+                default:
+                    newDancingSpeed = m_DancingSpeed * k_DancingSpeedIncreaseModifier;
+                    break;
+            }
+
+            return newDancingSpeed;
         }
 
         public void Reset()

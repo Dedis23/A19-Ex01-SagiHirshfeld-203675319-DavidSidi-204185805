@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.Managers;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
+using Microsoft.Xna.Framework.Input;
 
 namespace Infrastructure.ObjectModel
 {
@@ -16,13 +17,11 @@ namespace Infrastructure.ObjectModel
             r_GraphicsDeviceManager = new GraphicsDeviceManager(this);
             Services.AddService(typeof(GraphicsDeviceManager), r_GraphicsDeviceManager);
             new CollisionsManager(this);
-
             new InputManager(this);
         }
 
-        private bool m_FitViewportToBackgroundIsNeeded = false;
-
         private BackgroundSprite m_Background;
+
         public BackgroundSprite Background
         {
             set
@@ -34,7 +33,6 @@ namespace Infrastructure.ObjectModel
 
                 m_Background = value;
                 Components.Add(m_Background);
-                m_FitViewportToBackgroundIsNeeded = true;
             }
         }
 
@@ -47,17 +45,6 @@ namespace Infrastructure.ObjectModel
             }
 
             base.Initialize();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            if (m_FitViewportToBackgroundIsNeeded)
-            {
-                fitViewportToBackground();
-                m_FitViewportToBackgroundIsNeeded = false;
-            }
-
-            base.Update(gameTime);
         }
 
         private void fitViewportToBackground()

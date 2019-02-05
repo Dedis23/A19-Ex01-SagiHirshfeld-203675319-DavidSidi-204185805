@@ -21,7 +21,7 @@ namespace Infrastructure.Utilities
             m_TimeBetweenRollsInSeconds = i_TimeBetweenRollsInSeconds;
             m_RandomGenerator = RandomGenerator.Instance;
             r_Timer = new Timer(i_Game);
-            r_Timer.Interval = i_TimeBetweenRollsInSeconds;
+            r_Timer.IntervalInSeconds = i_TimeBetweenRollsInSeconds;
             r_Timer.Notify += roll;
         }
 
@@ -42,7 +42,7 @@ namespace Infrastructure.Utilities
                 }
 
                 m_TimeBetweenRollsInSeconds = value;
-                r_Timer.Interval = m_TimeBetweenRollsInSeconds;
+                r_Timer.IntervalInSeconds = m_TimeBetweenRollsInSeconds;
             }
         }
 
@@ -61,7 +61,7 @@ namespace Infrastructure.Utilities
 
         public void Deactivate()
         {
-            r_Timer.DeActivate();
+            r_Timer.Deactivate();
         }
 
         private void roll()

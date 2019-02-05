@@ -9,7 +9,7 @@ namespace Infrastructure.Utilities
     {
         private float m_RemainingDelay;
 
-        public float Interval { get; set; }
+        public float IntervalInSeconds { get; set; }
 
         public event Action Notify;
 
@@ -24,7 +24,7 @@ namespace Infrastructure.Utilities
             this.Enabled = true;
         }
 
-        public void DeActivate()
+        public void Deactivate()
         {
             this.Enabled = false;
         }
@@ -40,10 +40,10 @@ namespace Infrastructure.Utilities
             if (Enabled)
             {
                 m_RemainingDelay += (float)i_GameTime.ElapsedGameTime.TotalSeconds;
-                if (m_RemainingDelay >= Interval)
+                if (m_RemainingDelay >= IntervalInSeconds)
                 {
                     Notify?.Invoke();
-                    m_RemainingDelay -= Interval;
+                    m_RemainingDelay -= IntervalInSeconds;
                 }
 
                 base.Update(i_GameTime);

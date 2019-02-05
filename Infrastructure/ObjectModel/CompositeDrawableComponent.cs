@@ -309,7 +309,7 @@ namespace Infrastructure.ObjectModel
             }
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
             for (int i = 0; i < Count; i++)
             {

@@ -10,15 +10,16 @@ namespace SpaceInvaders
 {
     public class Invader : Sprite, ICollidable2D, IShooter, IEnemy
     {
+        public const int k_NumOfCells = 2;
+        public const int k_DefaultInvaderWidth = 32;
+        public const int k_DefaultInvaderHeight = 32;
+
         private const string k_InvadersSpriteSheet = @"Sprites\Enemies";
         private const int k_MaxBulletsInScreen = 1;
         private const int k_MinTimeBetweenShootRolls = 1;
         private const int k_MaxTimeBetweenShootRolls = 3;
         private const float k_DeathAnimationLength = 1.2f;
         private const float k_NumOfCyclesPerSecondsInDeathAnimation = 6.0f;
-        public const int k_NumOfCells = 2;
-        public const int k_DefaultInvaderWidth = 32;
-        public const int k_DefaultInvaderHeight = 32;
         private readonly Gun r_Gun;
         private readonly RandomRoller r_RandomShootRoller;
         private readonly float r_TimeBetweenRollingForShootInSeconds;
@@ -26,7 +27,7 @@ namespace SpaceInvaders
 
         private int m_ColIndexInSpriteSheet;
         private int m_RowIndexInSpriteSheet;
-        private float m_ChanceToShoot = 5;
+        private float m_ChanceToShoot;
 
         public int PointsValue { get; set; }
 
@@ -65,8 +66,6 @@ namespace SpaceInvaders
             r_RandomShootRoller.RollSucceeded += Shoot;
             r_RandomShootRoller.Activate();
         }
-
-
 
         public override void Initialize()
         {
@@ -125,7 +124,6 @@ namespace SpaceInvaders
         protected override void OnDying()
         {
             Vulnerable = false;
-            m_ChanceToShoot++;
             r_RandomShootRoller.RollSucceeded -= Shoot;
         }
 

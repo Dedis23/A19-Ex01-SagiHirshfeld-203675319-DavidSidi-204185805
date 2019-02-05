@@ -57,6 +57,15 @@ namespace SpaceInvaders
             }
         }
 
+        public bool IsAlive
+        {
+            get
+            {
+                return Lives != 0;
+            }
+        }
+
+
         public Color BulletsColor { get; } = Color.Red;
 
         public abstract Color ScoreColor { get; }
@@ -181,17 +190,21 @@ namespace SpaceInvaders
             Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
         }
 
-        public void Reset()
+        public void PrepareForNewLevel()
         {
-            Position = DefaultPosition;
-            this.Visible = true;
-            this.Vulnerable = true;
-            m_MovementEnabled = true;
-            r_Gun.Enabled = true;
             r_Gun.Reset();
             Animations.Reset();
             Animations.PauseSubAnimations();
 
+            Position = DefaultPosition;
+            this.Visible = IsAlive;
+            this.Vulnerable = IsAlive;
+            m_MovementEnabled = IsAlive;
+            r_Gun.Enabled = IsAlive;
+        }
+
+        public void ResetScoreAndLives()
+        {
             Lives = k_StartingLivesCount;
             Score = 0;
         }

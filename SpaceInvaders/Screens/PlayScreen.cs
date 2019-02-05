@@ -18,13 +18,14 @@ namespace SpaceInvaders
         private const float k_LivesGapModifier = 0.7f;
         private const float k_GapBetweenRowsModifier = 1.2f;
         private const int k_LivesDistanceFromHorizontalScreenBound = 15;
+        private const int k_UniqueLevelsCount = 6;
         private readonly Vector2 r_LeftDirectionVector = new Vector2(-1, 0);
         private readonly Vector2 r_RightDirectionVector = new Vector2(1, 0);
-
 
         private CollisionHandler m_CollisionHandler;
         private PauseScreen m_PauseScreen;
         private GameOverScreen m_GameOverScreen;
+        private LevelTransitionScreen m_LevelTransitionScreen;
 
         private Spaceship m_Player1Spaceship;
         private Spaceship m_Player2Spaceship;
@@ -37,7 +38,26 @@ namespace SpaceInvaders
         private DancingBarriersRow m_DancingBarriersRow;
 
         private bool m_GameOver = false;
-        private int m_SpaceshipsKilledCount;
+        private bool m_LevelCleared = false;
+        private int m_CurrentLevel;
+
+        private int CurrentLevel
+        {
+            get { return m_CurrentLevel; }
+            set
+            {
+                m_CurrentLevel = value;
+                m_LevelTransitionScreen.Text = string.Format("Level: {0}", m_CurrentLevel + 1);
+            }
+        }
+
+        private int DifficultyLevel
+        {
+            get
+            {
+                return CurrentLevel % k_UniqueLevelsCount;
+            }
+        }
 
         public PlayScreen(Game i_Game) : base(i_Game)
         {            
@@ -48,8 +68,19 @@ namespace SpaceInvaders
 
             m_PauseScreen = new PauseScreen(i_Game);
             m_GameOverScreen = new GameOverScreen(i_Game);
+            m_LevelTransitionScreen = new LevelTransitionScreen(i_Game);
+            CurrentLevel = 0;
 
             loadSprites();
+        }
+
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+            if (!(PreviousScreen is LevelTransitionScreen))
+            {
+                ScreensManager.SetCurrentScreen(m_LevelTransitionScreen);
+            }
         }
 
         private void loadSprites()
@@ -79,7 +110,8 @@ namespace SpaceInvaders
 
             m_InvadersMatrix = new InvadersMatrix(Game);
             m_InvadersMatrix.invadersMatrixReachedBottomScreen += () => m_GameOver = true;
-            m_InvadersMatrix.AllInvadersWereDefeated += () => m_GameOver = true;
+            m_InvadersMatrix.AllInvadersWereDefeated += () => m_LevelCleared = true;
+
             this.Add(m_InvadersMatrix);
 
             m_DancingBarriersRow = new DancingBarriersRow(Game);
@@ -89,10 +121,12 @@ namespace SpaceInvaders
         public override void Initialize()
         {
             base.Initialize();
-            initializeSpritePositions();
+            initializeDrawablesPositions();
+            m_InvadersMatrix.PopulateMatrix(DifficultyLevel);
+            m_DancingBarriersRow.Dance(DifficultyLevel);
         }
 
-        private void initializeSpritePositions()
+        private void initializeDrawablesPositions()
         {
             // Spaceships
             Vector2 spaceshipsPos = new Vector2(0, GraphicsDevice.Viewport.Height - (m_Player1Spaceship.Height * k_SpaceshipPositionYModifier));
@@ -113,6 +147,9 @@ namespace SpaceInvaders
             // Mothership
             m_Mothership.Position = m_Mothership.DefaultPosition = new Vector2(-m_Mothership.Width, m_Mothership.Height);
 
+            // InvadersMatrix
+            m_InvadersMatrix.DefaultStartingPosition = new Vector2(0, Invader.k_DefaultInvaderHeight * 3);
+
             // Barriers
             Vector2 barriersPos = new Vector2(
                 (GraphicsDevice.Viewport.Width - m_DancingBarriersRow.Width) / 2,
@@ -122,10 +159,9 @@ namespace SpaceInvaders
 
         private void onSpaceshipKilled(object i_Spaceship)
         {
-            if (++m_SpaceshipsKilledCount == 2)
+            if (!m_Player1Spaceship.IsAlive && !m_Player2Spaceship.IsAlive)
             {
                 m_GameOver = true;
-                m_SpaceshipsKilledCount = 0;
             }
         }
 
@@ -135,17 +171,82 @@ namespace SpaceInvaders
 
             takeInput();
 
-            if (m_GameOver)
+            if (m_LevelCleared)
             {
-                transitionToGameOverScreen();
+                CurrentLevel++;
+                ScreensManager.SetCurrentScreen(m_LevelTransitionScreen);
+            }
+
+            else if (m_GameOver)
+            {
+                m_GameOverScreen.Text = buildGameOverMessage();
+                this.ScreensManager.SetCurrentScreen(m_GameOverScreen);
             }
         }
 
-        private void transitionToGameOverScreen()
+        protected override void OnDeactivated()
         {
-            m_GameOverScreen.Text = buildGameOverMessage();
-            this.ScreensManager.SetCurrentScreen(m_GameOverScreen);
-            Reset();
+            base.OnDeactivated();
+
+            if (m_GameOver)
+            {
+                CurrentLevel = 0;
+                m_Player1Spaceship.ResetScoreAndLives();
+                m_Player2Spaceship.ResetScoreAndLives();
+            }
+
+            if (m_GameOver || m_LevelCleared)
+            {
+                resetPlayScreen();
+            }
+        }
+
+        private void resetPlayScreen()
+        {
+            m_GameOver = false;
+            m_LevelCleared = false;
+            clearAllBullets();
+            m_InvadersMatrix.Clear();
+            m_InvadersMatrix.PopulateMatrix(DifficultyLevel);
+            m_DancingBarriersRow.Reset();
+            m_DancingBarriersRow.Dance(DifficultyLevel);
+            m_Mothership.HideAndWaitForNextSpawn();
+            m_Player1Spaceship.PrepareForNewLevel();
+            m_Player2Spaceship.PrepareForNewLevel();
+        }
+        
+        private void clearAllBullets()
+        {
+            List<Bullet> bullets = new List<Bullet>();
+            foreach (Sprite sprite in m_Sprites)
+            {
+                if (sprite is Bullet)
+                {
+                    bullets.Add(sprite as Bullet);
+                }
+            }
+
+            foreach (Bullet bullet in bullets)
+            {
+                bullet.Kill();
+            }
+        }
+
+        private string buildGameOverMessage()
+        {
+            StringBuilder messageBuilder = new StringBuilder();
+
+            string nameOfTheWinner = m_Player1Spaceship.Score >= m_Player2Spaceship.Score ? m_Player1Spaceship.Name : m_Player2Spaceship.Name;        
+            messageBuilder.Append(string.Format("The winner is {0}!", nameOfTheWinner));
+            messageBuilder.Append(Environment.NewLine);
+
+            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player1Spaceship.Name, m_Player1Spaceship.Score));
+            messageBuilder.Append(Environment.NewLine);
+
+            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player2Spaceship.Name, m_Player2Spaceship.Score));
+            messageBuilder.Append(Environment.NewLine);
+
+            return messageBuilder.ToString();
         }
 
         private void takeInput()
@@ -158,7 +259,13 @@ namespace SpaceInvaders
             /// This is here just to enable skipping to the game over screen - remove before submition
             else if (InputManager.KeyPressed(Keys.Delete))
             {
-                transitionToGameOverScreen();
+                m_GameOver = true;
+            }
+
+            /// Similarly, this is here to test level transitions
+            else if (InputManager.KeyPressed(Keys.Insert))
+            {
+                m_LevelCleared = true;
             }
 
             else if (InputManager.KeyPressed(Keys.P))
@@ -209,53 +316,6 @@ namespace SpaceInvaders
             {
                 m_Player2Spaceship.Shoot();
             }
-        }
-
-        private void Reset()
-        {
-            m_SpaceshipsKilledCount = 0;
-            m_Player1Spaceship.Reset();
-            m_Player2Spaceship.Reset();
-
-            m_GameOver = false;
-            m_InvadersMatrix.Reset();
-            m_DancingBarriersRow.Reset();
-            m_Mothership.HideAndWaitForNextSpawn();
-            clearAllBullets();
-        }
-        
-        private void clearAllBullets()
-        {
-            List<Bullet> bullets = new List<Bullet>();
-            foreach (Sprite sprite in m_Sprites)
-            {
-                if (sprite is Bullet)
-                {
-                    bullets.Add(sprite as Bullet);
-                }
-            }
-
-            foreach (Bullet bullet in bullets)
-            {
-                bullet.Kill();
-            }
-        }
-
-        private string buildGameOverMessage()
-        {
-            StringBuilder messageBuilder = new StringBuilder();
-
-            string nameOfTheWinner = m_Player1Spaceship.Score >= m_Player2Spaceship.Score ? m_Player1Spaceship.Name : m_Player2Spaceship.Name;        
-            messageBuilder.Append(string.Format("The winner is {0}!", nameOfTheWinner));
-            messageBuilder.Append(Environment.NewLine);
-
-            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player1Spaceship.Name, m_Player1Spaceship.Score));
-            messageBuilder.Append(Environment.NewLine);
-
-            messageBuilder.Append(string.Format("{0} Score: {1}", m_Player2Spaceship.Name, m_Player2Spaceship.Score));
-            messageBuilder.Append(Environment.NewLine);
-
-            return messageBuilder.ToString();
         }
     }
 }
