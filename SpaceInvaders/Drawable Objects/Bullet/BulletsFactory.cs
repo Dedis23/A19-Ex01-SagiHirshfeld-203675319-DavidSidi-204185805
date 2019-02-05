@@ -9,21 +9,32 @@ namespace SpaceInvaders
     public sealed class BulletsFactory : GameService
     {
         private readonly IScreensMananger r_GameScreensManager;
-        private readonly Stack<Bullet> r_BulletsStack;
+        private readonly Stack<Bullet> r_AvailableBulletsForDeploymentsStack;
+        private readonly Dictionary<Bullet, GameScreen> r_FlyingBulletsToContainingScreensDictionary;
+
 
         public BulletsFactory(Game i_Game) : base(i_Game)
         {
-            r_BulletsStack = new Stack<Bullet>();
+            r_AvailableBulletsForDeploymentsStack = new Stack<Bullet>();
+            r_FlyingBulletsToContainingScreensDictionary = new Dictionary<Bullet, GameScreen>();
             r_GameScreensManager = Game.Services.GetService(typeof(IScreensMananger)) as IScreensMananger;
+        }
+
+        private GameScreen CurrentlyActiveScreen
+        {
+            get
+            {
+                return r_GameScreensManager.ActiveScreen;
+            }
         }
 
         public Bullet GetBullet()
         {
             Bullet newBullet;
 
-            if (r_BulletsStack.Count != 0)
+            if (r_AvailableBulletsForDeploymentsStack.Count != 0)
             {
-                newBullet = r_BulletsStack.Pop();
+                newBullet = r_AvailableBulletsForDeploymentsStack.Pop();
             }
 
             else
@@ -32,10 +43,8 @@ namespace SpaceInvaders
                 newBullet.Died += onBulletDestroyed;
             }
 
-            if (!r_GameScreensManager.ActiveScreen.Contains(newBullet))
-            {
-                r_GameScreensManager.ActiveScreen.Add(newBullet);
-            }
+            r_FlyingBulletsToContainingScreensDictionary.Add(newBullet, CurrentlyActiveScreen);
+            CurrentlyActiveScreen.Add(newBullet); 
 
             return newBullet;
         }
@@ -43,9 +52,12 @@ namespace SpaceInvaders
         private void onBulletDestroyed(object i_Bullet)
         {
             Bullet bullet = i_Bullet as Bullet;
-            if (!r_BulletsStack.Contains(bullet))
+            if (r_FlyingBulletsToContainingScreensDictionary.ContainsKey(bullet))
             {
-                r_BulletsStack.Push(bullet);
+                GameScreen ScreenBulletIsIn = r_FlyingBulletsToContainingScreensDictionary[bullet];
+                ScreenBulletIsIn.Remove(bullet);
+                r_FlyingBulletsToContainingScreensDictionary.Remove(bullet);
+                r_AvailableBulletsForDeploymentsStack.Push(bullet);
             }
         }
     }
