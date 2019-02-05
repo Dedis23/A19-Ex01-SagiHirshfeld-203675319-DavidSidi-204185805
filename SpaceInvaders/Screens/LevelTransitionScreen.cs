@@ -14,10 +14,7 @@ namespace SpaceInvaders
         private TextSprite m_CountDownTextSprite;
         private Timer m_Timer;
 
-        /// private int m_SecondsLeftInCountdown = k_CountdownDurationInSeconds;
-        /// 
-        /// This is here instead of the above code to speed up level transitions while developing
-        private float m_SecondsLeftInCountdown = k_CountdownDurationInSeconds / 3;
+        private int m_SecondsLeftInCountdown = k_CountdownDurationInSeconds;
 
         public LevelTransitionScreen(Game i_Game) : base(i_Game)
         {
