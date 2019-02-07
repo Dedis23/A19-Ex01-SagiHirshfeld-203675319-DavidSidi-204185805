@@ -11,7 +11,7 @@ namespace SpaceInvaders
 
         public DummyOptionsScreen(Game i_Game) : base(i_Game)
         {
-            m_TextSprite = new TextSprite(@"Fonts\OptionsFont", Game);
+            m_TextSprite = new TextSprite(Game, @"Fonts\OptionsFont");
             this.Add(m_TextSprite);
         }
 

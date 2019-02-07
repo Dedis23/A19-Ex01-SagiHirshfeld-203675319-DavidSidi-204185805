@@ -71,15 +71,19 @@
     <Compile Include="Interfaces\IEnemy.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />
+    <Compile Include="Screens\Menus\MainMenu.cs" />
+    <Compile Include="Screens\Menus\ScreenSettings.cs" />
     <Compile Include="Screens\DummyOptionsScreen.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\LevelTransitionScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />
     <Compile Include="Screens\PlayScreen.cs" />
     <Compile Include="Screens\WelcomeScreen.cs" />
+    <Compile Include="Screens\Menus\SoundSettings.cs" />
     <Compile Include="SpaceInvadersGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\Menus\SpaceInvadersMenuScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

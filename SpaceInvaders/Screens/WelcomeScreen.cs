@@ -63,7 +63,7 @@ namespace SpaceInvaders
 
             else if (InputManager.KeyPressed(Keys.T))
             {
-                ScreensManager.SetCurrentScreen(new DummyOptionsScreen(Game));
+                ScreensManager.SetCurrentScreen(new MainMenu(Game));
                 m_PrevScreenIsOptionsScreen = true;
             }
         }
