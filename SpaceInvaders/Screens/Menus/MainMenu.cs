@@ -88,7 +88,7 @@ namespace SpaceInvaders
 
         private void playOperation()
         {
-            ScreensManager.SetCurrentScreen(new PlayScreen(this.Game));
+            this.ExitScreen();
         }
 
         private void exitOperation()

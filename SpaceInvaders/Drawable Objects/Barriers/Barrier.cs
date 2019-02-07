@@ -44,6 +44,7 @@ namespace SpaceInvaders
 
         private float getPreciseHeightOfIntersectionWithBullet(Bullet i_Bullet)
         {
+            float preciseHeightOfIntersection = 0;
             Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Bullet.Bounds);
 
             // Traverse the pixels top-to-bottom or bottom-to-top depending on the direction of the bullet
@@ -91,11 +92,12 @@ namespace SpaceInvaders
                 // Stop the scan when Y has passed the intersection (this works due to the shape of the bullet)                 
                 if (highestCollidedPixelY.HasValue && lowestCollidedPixelY.HasValue && !collisionWasDetectedInRow)
                 {
+                    preciseHeightOfIntersection = Math.Abs(highestCollidedPixelY.Value - lowestCollidedPixelY.Value);
                     break;
                 }
             }
 
-            return Math.Abs(highestCollidedPixelY.Value - lowestCollidedPixelY.Value);
+            return preciseHeightOfIntersection;
         }
 
         public void ErasePixelsThatIntersectWith(Sprite i_CollidedSprite)
