@@ -301,10 +301,18 @@ namespace Infrastructure.ObjectModel
 
         public SpriteBatch SpriteBatch
         {
+            get
+            {
+                return m_SpriteBatch;
+            }
+
             set
             {
-                m_SpriteBatch = value;
-                m_UseSharedBatch = true;
+                if (m_SpriteBatch != value)
+                {
+                    m_SpriteBatch = value;
+                    m_UseSharedBatch = true;
+                }
             }
         }
 

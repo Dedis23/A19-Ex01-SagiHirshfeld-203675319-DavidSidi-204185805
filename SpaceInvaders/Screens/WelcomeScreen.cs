@@ -12,7 +12,7 @@ namespace SpaceInvaders
     {
         private Sprite m_WelcomeMessage;
         private Sprite m_PressEnterMsg;
-        private bool m_PrevScreenIsOptions;
+        private bool m_PrevScreenIsOptionsScreen;
 
         public WelcomeScreen(Game i_Game)
             : base(i_Game)
@@ -41,7 +41,7 @@ namespace SpaceInvaders
         protected override void OnActivated()
         {
             base.OnActivated();
-            if (m_PrevScreenIsOptions)
+            if (m_PrevScreenIsOptionsScreen)
             {
                 transitionToPlayScreen();
             }
@@ -64,13 +64,13 @@ namespace SpaceInvaders
             else if (InputManager.KeyPressed(Keys.T))
             {
                 ScreensManager.SetCurrentScreen(new DummyOptionsScreen(Game));
-                m_PrevScreenIsOptions = true;
+                m_PrevScreenIsOptionsScreen = true;
             }
         }
 
         private void transitionToPlayScreen()
         {
-            m_PrevScreenIsOptions = false;
+            m_PrevScreenIsOptionsScreen = false;
             ExitScreen();
         }
     }
