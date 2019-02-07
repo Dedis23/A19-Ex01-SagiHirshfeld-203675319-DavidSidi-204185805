@@ -18,11 +18,11 @@ namespace SpaceInvaders
 
         public LevelTransitionScreen(Game i_Game) : base(i_Game)
         {
-            m_LevelAnnouncementTextSprite = new TextSprite(@"Fonts\LevelTransitionFont", i_Game);
+            m_LevelAnnouncementTextSprite = new TextSprite(i_Game, @"Fonts\LevelTransitionFont");
             m_LevelAnnouncementTextSprite.Text = string.Format("Level: 1");
             this.Add(m_LevelAnnouncementTextSprite);
 
-            m_CountDownTextSprite = new TextSprite(@"Fonts\LevelTransitionFont", i_Game);
+            m_CountDownTextSprite = new TextSprite(i_Game, @"Fonts\LevelTransitionFont");
             m_CountDownTextSprite.Text = m_SecondsLeftInCountdown.ToString();
             m_CountDownTextSprite.TintColor = Color.White;
             this.Add(m_CountDownTextSprite);

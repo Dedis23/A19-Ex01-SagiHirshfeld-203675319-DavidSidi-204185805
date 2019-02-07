@@ -8,8 +8,8 @@ namespace Infrastructure.ObjectModel
         private SpriteFont m_Font;
         private string m_Text = string.Empty;
 
-        public TextSprite(string i_AssetName, Game i_Game) : base(i_AssetName, i_Game)
-        {            
+        public TextSprite(Game i_Game, string i_AssetName) : base(i_AssetName, i_Game)
+        {
         }
 
         protected override void LoadTexture()
@@ -19,7 +19,7 @@ namespace Infrastructure.ObjectModel
 
         protected override void SpecificSpriteBatchDraw()
         {
-            m_SpriteBatch.DrawString(m_Font, Text, Position, TintColor);
+            m_SpriteBatch.DrawString(m_Font, Text, Position, TintColor, Rotation, PositionOrigin, Scales, SpriteEffects.None, LayerDepth);
         }
 
         protected override void InitBounds()
@@ -34,6 +34,18 @@ namespace Infrastructure.ObjectModel
             {
                 m_Text = value;
                 measureSize();
+            }
+        }
+
+        public Vector2 GetTextSize()
+        {
+            if (m_Font != null)
+            {
+                return m_Font.MeasureString(m_Text);
+            }
+            else
+            {
+                return Vector2.Zero;
             }
         }
 

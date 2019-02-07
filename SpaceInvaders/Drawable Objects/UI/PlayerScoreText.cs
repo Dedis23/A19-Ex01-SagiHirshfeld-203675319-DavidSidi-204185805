@@ -12,7 +12,7 @@ namespace SpaceInvaders
     {
         private IPlayer m_Player;
 
-        public PlayerScoreText(IPlayer i_Player, string i_AssetName) : base(i_AssetName, i_Player.Game)
+        public PlayerScoreText(IPlayer i_Player, string i_AssetName) : base(i_Player.Game, i_AssetName)
         {
             m_Player = i_Player;
             this.TintColor = m_Player.ScoreColor;

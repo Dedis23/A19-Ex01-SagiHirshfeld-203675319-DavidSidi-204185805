@@ -16,18 +16,18 @@ namespace SpaceInvaders
 
         public GameOverScreen(Game i_Game) : base(i_Game)
         {
-            m_Background = new SpaceBG(Game);
+            m_Background = new SpaceBG(i_Game);
             m_Background.TintColor = Color.PaleVioletRed;
             this.Add(m_Background);
 
-            m_GameOverMsg = new Sprite(@"Sprites\Messages\GameOverMsg", Game);
+            m_GameOverMsg = new Sprite(@"Sprites\Messages\GameOverMsg", i_Game);
             this.Add(m_GameOverMsg);
 
-            m_GameOverTextSprite = new TextSprite(@"Fonts\GameOverScoreFont", Game);
+            m_GameOverTextSprite = new TextSprite(i_Game, @"Fonts\GameOverScoreFont");
             m_GameOverTextSprite.TintColor = Color.White;
             this.Add(m_GameOverTextSprite);
 
-            m_InstructionsMsg = new Sprite(@"Sprites\Messages\GameOverOptionsMsg", Game);
+            m_InstructionsMsg = new Sprite(@"Sprites\Messages\GameOverOptionsMsg", i_Game);
             this.Add(m_InstructionsMsg);
         }
 

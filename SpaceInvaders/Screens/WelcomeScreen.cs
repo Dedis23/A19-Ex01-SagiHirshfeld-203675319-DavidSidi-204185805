@@ -1,10 +1,10 @@
-﻿using Infrastructure.ObjectModel;
-using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
-using Infrastructure.ObjectModel.Screens;
+﻿
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-
+using Infrastructure.ObjectModel;
+using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
@@ -53,7 +53,7 @@ namespace SpaceInvaders
 
             else if (InputManager.KeyPressed(Keys.T))
             {
-                /// this.ScreensManager.SetCurrentScreen(new OptionsMenuScreen(Game));
+                this.ScreensManager.SetCurrentScreen(new MainMenu(Game));
             }
         }
     }
