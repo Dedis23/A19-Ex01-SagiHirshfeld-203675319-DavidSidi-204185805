@@ -70,8 +70,8 @@ namespace SpaceInvaders
 
         private void transitionToPlayScreen()
         {
-            m_PrevScreenIsMainMenu = false;
             ExitScreen();
+            m_PrevScreenIsMainMenu = false;
         }
     }
 }

@@ -13,9 +13,30 @@ namespace SpaceInvaders
         private const string k_AssetName = @"Sprites\Barrier_44x32";
         private const float k_BulletDamagePercent = 0.7f;
         private Color[] m_OriginalTextureData;
+        private Color[] m_TextureData;
 
         public Barrier(Game i_Game) : base(k_AssetName, i_Game)
         {
+        }
+
+        private Color[] TextureData
+        {
+            get
+            {
+                if (m_TextureData == null)
+                {
+                    m_TextureData = new Color[Texture.Width * Texture.Height];
+                    Texture.GetData(m_TextureData);
+                }
+
+                return m_TextureData;
+            }
+
+            set
+            {
+                m_TextureData = value;
+                this.Texture.SetData(m_TextureData);
+            }
         }
 
         protected override void LoadTexture()
@@ -46,6 +67,8 @@ namespace SpaceInvaders
         {
             float preciseHeightOfIntersection = 0;
             Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Bullet.Bounds);
+            Color[] bulletTextureData = new Color[i_Bullet.Texture.Width * i_Bullet.Texture.Height];
+            i_Bullet.Texture.GetData(bulletTextureData);
 
             // Traverse the pixels top-to-bottom or bottom-to-top depending on the direction of the bullet
             IEnumerable<int> yTraversalOrder = Enumerable.Range(intersection.Top, intersection.Height);
@@ -67,7 +90,7 @@ namespace SpaceInvaders
                     int barrierPixelIndex = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
                     int bulletPixelIndex = ((y - i_Bullet.Bounds.Top) * i_Bullet.Bounds.Width) + (x - i_Bullet.Bounds.Left);
 
-                    if (this.TextureData[barrierPixelIndex].A != 0 && i_Bullet.TextureData[bulletPixelIndex].A != 0)
+                    if (this.TextureData[barrierPixelIndex].A != 0 && bulletTextureData[bulletPixelIndex].A != 0)
                     {
                         collisionWasDetectedInRow = true;
 

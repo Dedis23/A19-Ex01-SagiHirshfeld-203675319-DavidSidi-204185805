@@ -61,26 +61,6 @@ namespace Infrastructure.ObjectModel
             set { m_Texture = value; }
         }
 
-        public Color[] TextureData
-        {
-            get
-            {
-                if (m_TextureData == null)
-                {
-                    m_TextureData = new Color[Texture.Width * Texture.Height];
-                    Texture.GetData(m_TextureData);
-                }
-
-                return m_TextureData;
-            }
-
-            set
-            {
-                m_TextureData = value;
-                m_Texture.SetData(m_TextureData);
-            }
-        }
-
         public BlendState BlendState
         {
             get { return m_BlendState; }
@@ -436,6 +416,12 @@ namespace Infrastructure.ObjectModel
             bool collisionDetected = false;
             bool done = false;
 
+            Color[] thisTextureData = new Color[Texture.Width * Texture.Height];
+            Color[] sourceTextureData = new Color[i_Source.Texture.Width * i_Source.Texture.Height];
+
+            this.Texture.GetData(thisTextureData);
+            i_Source.Texture.GetData(sourceTextureData);
+
             Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Source.Bounds);
 
             // Scan the pixels of both sprites within their intersection
@@ -449,12 +435,12 @@ namespace Infrastructure.ObjectModel
 
                     // Color.A is the color's alpha component which determines opacity
                     // when a pixel's alpha == 0 that pixel is completely transparent 
-                    if (this.TextureData[pixelIndexA].A != 0 && i_Source.TextureData[pixelIndexB].A != 0)
+                    if (thisTextureData[pixelIndexA].A != 0 && sourceTextureData[pixelIndexB].A != 0)
                     {
                         collisionDetected = true;
                         if (i_ModifyCollidedPixelFunc != null)
                         {
-                            TextureData[pixelIndexA] = i_ModifyCollidedPixelFunc(TextureData[pixelIndexA]);
+                            thisTextureData[pixelIndexA] = i_ModifyCollidedPixelFunc(thisTextureData[pixelIndexA]);
                         }
 
                         done = i_StopAfterFirstDetection;
@@ -465,7 +451,7 @@ namespace Infrastructure.ObjectModel
             // If the data was modified: set it to the texture
             if (i_ModifyCollidedPixelFunc != null)
             {
-                this.Texture.SetData(this.m_TextureData);
+                this.Texture.SetData(thisTextureData);
             }
 
             return collisionDetected;

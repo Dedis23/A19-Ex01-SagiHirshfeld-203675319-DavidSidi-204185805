@@ -33,8 +33,6 @@ namespace Infrastructure.ServiceInterfaces
         Vector2 Velocity { get; }
 
         Texture2D Texture { get; }
-
-        Color[] TextureData { get; }
     }
 
     public interface ICollidable3D : ICollidable
