@@ -1,10 +1,10 @@
-﻿
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Infrastructure.ObjectModel;
+﻿using Infrastructure.ObjectModel;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.ObjectModel.Screens;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System;
+
 
 namespace SpaceInvaders
 {
@@ -12,6 +12,7 @@ namespace SpaceInvaders
     {
         private Sprite m_WelcomeMessage;
         private Sprite m_PressEnterMsg;
+        private bool m_PrevScreenIsOptionsScreen;
 
         public WelcomeScreen(Game i_Game)
             : base(i_Game)
@@ -37,6 +38,15 @@ namespace SpaceInvaders
                 new Vector2(CenterOfViewPort.X, CenterOfViewPort.Y + m_WelcomeMessage.Height);
         }
 
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+            if (m_PrevScreenIsOptionsScreen)
+            {
+                transitionToPlayScreen();
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -48,13 +58,20 @@ namespace SpaceInvaders
 
             else if (InputManager.KeyPressed(Keys.Enter))
             {
-                this.ScreensManager.SetCurrentScreen(new PlayScreen(Game));
+                transitionToPlayScreen();
             }
 
             else if (InputManager.KeyPressed(Keys.T))
             {
-                this.ScreensManager.SetCurrentScreen(new MainMenu(Game));
+                ScreensManager.SetCurrentScreen(new DummyOptionsScreen(Game));
+                m_PrevScreenIsOptionsScreen = true;
             }
+        }
+
+        private void transitionToPlayScreen()
+        {
+            m_PrevScreenIsOptionsScreen = false;
+            ExitScreen();
         }
     }
 }

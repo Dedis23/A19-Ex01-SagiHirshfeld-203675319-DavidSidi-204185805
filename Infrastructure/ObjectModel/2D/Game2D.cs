@@ -4,6 +4,7 @@ using Infrastructure.Managers;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Infrastructure.ObjectModel
 {
@@ -60,7 +61,6 @@ namespace Infrastructure.ObjectModel
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
             base.Draw(gameTime);
         }
     }

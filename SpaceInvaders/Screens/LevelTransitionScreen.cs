@@ -64,7 +64,7 @@ namespace SpaceInvaders
 
             if (m_SecondsLeftInCountdown == 0)
             {
-                ScreensManager.SetCurrentScreen(PreviousScreen);
+                ExitScreen();
             }
         }
 
