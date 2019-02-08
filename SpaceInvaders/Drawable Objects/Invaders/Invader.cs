@@ -5,6 +5,7 @@ using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.Utilities;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpaceInvaders
 {
@@ -14,6 +15,7 @@ namespace SpaceInvaders
         public const int k_DefaultInvaderWidth = 32;
         public const int k_DefaultInvaderHeight = 32;
 
+        private const string k_ShootingSoundEffectAssetName = @"Audio\EnemyGunShot";
         private const string k_InvadersSpriteSheet = @"Sprites\Enemies";
         private const int k_MaxBulletsInScreen = 1;
         private const int k_MinTimeBetweenShootRolls = 1;
@@ -47,6 +49,8 @@ namespace SpaceInvaders
             }
         }
 
+        public SoundEffectInstance ShootingSoundEffectInstance { get; private set; }
+
         public Invader(
             Game i_Game,
             Color i_Tint,
@@ -71,6 +75,12 @@ namespace SpaceInvaders
         {
             base.Initialize();
             initializeAnimations();
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+            ShootingSoundEffectInstance = Game.Content.Load<SoundEffect>(k_ShootingSoundEffectAssetName).CreateInstance();
         }
 
         protected override void InitSourceRectangle()

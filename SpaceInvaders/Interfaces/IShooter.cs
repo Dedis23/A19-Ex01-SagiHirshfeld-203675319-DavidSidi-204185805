@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpaceInvaders
 {
@@ -11,5 +12,7 @@ namespace SpaceInvaders
         Color BulletsColor { get; }
 
         Rectangle Bounds { get; }
+
+        SoundEffectInstance ShootingSoundEffectInstance { get; }
     }
 }

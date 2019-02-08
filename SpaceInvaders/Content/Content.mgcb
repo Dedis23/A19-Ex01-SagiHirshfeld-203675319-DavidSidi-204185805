@@ -13,6 +13,66 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/BarrierHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/BarrierHit.wav;Audio/BarrierHit.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/BGMusic.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/BGMusic.wav;Audio/BGMusic.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/EnemyGunShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/EnemyGunShot.wav;Audio/EnemyGunShot.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/EnemyKill.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/EnemyKill.wav;Audio/EnemyKill.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/GameOver.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/GameOver.wav;Audio/GameOver.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/LevelWin.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/LevelWin.wav;Audio/LevelWin.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/LifeDie.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/LifeDie.wav;Audio/LifeDie.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/MenuMove.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/MenuMove.wav;Audio/MenuMove.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/MotherShipKill.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/MotherShipKill.wav;Audio/MotherShipKill.wav
+
+#begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/SSGunShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/SSGunShot.wav;Audio/SSGunShot.wav
+
 #begin Backgrounds/BG_Space01_1024x768.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

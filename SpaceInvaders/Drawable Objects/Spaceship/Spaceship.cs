@@ -5,11 +5,13 @@ using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.Managers;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpaceInvaders
 {
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
-    {        
+    {
+        private const string k_ShootSoundEffectAssetName = @"Audio\SSGunShot";
         private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_VelocityScalar = 145;
         private const int k_MaxBulletsInScreen = 3;
@@ -65,6 +67,7 @@ namespace SpaceInvaders
             }
         }
 
+        public SoundEffectInstance ShootingSoundEffectInstance { get; private set; }
 
         public Color BulletsColor { get; } = Color.Red;
 
@@ -82,6 +85,12 @@ namespace SpaceInvaders
         {
             base.Initialize();
             initializeAnimations();
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+            ShootingSoundEffectInstance = Game.Content.Load<SoundEffect>(k_ShootSoundEffectAssetName).CreateInstance();
         }
 
         private void initializeAnimations()

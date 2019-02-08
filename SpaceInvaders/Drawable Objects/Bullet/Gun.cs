@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
@@ -29,7 +30,7 @@ namespace SpaceInvaders
         {
             if (r_BulletsFired.Count < r_MaxBulletsInScreen && Enabled)
             { 
-                shootBullet(i_DirectionVector);
+                shootBullet(i_DirectionVector);   
             }
         }
 
@@ -38,6 +39,13 @@ namespace SpaceInvaders
             Bullet newBullet = r_BulletsFactory.GetBullet();
             configureBullet(newBullet);
             newBullet.Fly(i_DirectionVector);
+            playShooterSoundEffect();
+        }
+
+        private void playShooterSoundEffect()
+        {
+            r_Shooter.ShootingSoundEffectInstance.Pause();
+            r_Shooter.ShootingSoundEffectInstance.Play();
         }
 
         private void configureBullet(Bullet i_Bullet)
