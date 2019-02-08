@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Audio;
+using System;
 
 namespace Infrastructure
 {
@@ -17,6 +18,12 @@ namespace Infrastructure
             {
                 throw sr_ArgumentOutOfRangeException;
             }
+        }
+
+        public static void PauseAndThenPlay(this SoundEffectInstance i_SoundEffectInstance)
+        {
+            i_SoundEffectInstance.Pause();
+            i_SoundEffectInstance.Play();
         }
     }
 }

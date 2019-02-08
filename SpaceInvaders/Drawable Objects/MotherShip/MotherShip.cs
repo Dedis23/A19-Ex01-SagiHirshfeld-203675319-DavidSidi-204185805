@@ -1,16 +1,19 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Infrastructure;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.Utilities;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpaceInvaders
 {
     public class Mothership : Sprite, ICollidable2D, IEnemy
     {
         private const string k_AssetName = @"Sprites\MotherShip_32x120";
+        private const string k_DyingSoundEffectAssetName = @"Audio\MotherShipKill";
         private const int k_ChanceToSpawn = 10;
         private const float k_TimeBetweenRolls = 1;
         private const int k_MotherShipVelocity = 110;
@@ -18,6 +21,7 @@ namespace SpaceInvaders
         private const float k_DeathAnimationLength = 2.2f;
         private const float k_NumOfBlinksInASecondInDeathAnimation = 4.0f;
         private readonly RandomRoller r_RandomSpawnRoller;
+        private SoundEffectInstance m_DyingSoundEffectInstance;
 
         public int PointsValue { get; set; }
 
@@ -37,6 +41,12 @@ namespace SpaceInvaders
         {
             base.Initialize();
             initializeAnimations();
+        }
+
+        protected override void LoadTexture()
+        {
+            base.LoadTexture();
+            m_DyingSoundEffectInstance =  Game.Content.Load<SoundEffect>(k_DyingSoundEffectAssetName).CreateInstance();
         }
 
         private void initializeAnimations()
@@ -92,6 +102,7 @@ namespace SpaceInvaders
             Vulnerable = false;
             Animations["DeathAnimation"].Resume();
             Velocity = Vector2.Zero;
+            m_DyingSoundEffectInstance.PauseAndThenPlay();
         }
 
         protected override void OnDeath()

@@ -5,38 +5,27 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Infrastructure;
 
 namespace SpaceInvaders
 {
     public class Barrier : Sprite, ICollidable2D
     {
         private const string k_AssetName = @"Sprites\Barrier_44x32";
+        private const string k_BarrierHitSoundEffectAssetName = @"Audio/BarrierHit";
         private const float k_BulletDamagePercent = 0.7f;
         private Color[] m_OriginalTextureData;
-        private Color[] m_TextureData;
+        private SoundEffectInstance m_BarrierHitSoundEffectInstance;
 
         public Barrier(Game i_Game) : base(k_AssetName, i_Game)
         {
         }
 
-        private Color[] TextureData
+        protected override void LoadContent()
         {
-            get
-            {
-                if (m_TextureData == null)
-                {
-                    m_TextureData = new Color[Texture.Width * Texture.Height];
-                    Texture.GetData(m_TextureData);
-                }
-
-                return m_TextureData;
-            }
-
-            set
-            {
-                m_TextureData = value;
-                this.Texture.SetData(m_TextureData);
-            }
+            base.LoadContent();
+            m_BarrierHitSoundEffectInstance = Game.Content.Load<SoundEffect>(k_BarrierHitSoundEffectAssetName).CreateInstance();
         }
 
         protected override void LoadTexture()
@@ -53,6 +42,7 @@ namespace SpaceInvaders
             i_Bullet.Visible = false;
             moveBulletToMatchRequiredIntersectionPrecent(i_Bullet, k_BulletDamagePercent);
             ErasePixelsThatIntersectWith(i_Bullet);
+            m_BarrierHitSoundEffectInstance.PauseAndThenPlay();
         }
 
         private void moveBulletToMatchRequiredIntersectionPrecent(Bullet i_Bullet, float i_RequiredIntersectionPrecent)
@@ -66,12 +56,15 @@ namespace SpaceInvaders
         private float getPreciseHeightOfIntersectionWithBullet(Bullet i_Bullet)
         {
             float preciseHeightOfIntersection = 0;
-            Rectangle intersection = Rectangle.Intersect(this.Bounds, i_Bullet.Bounds);
+            Rectangle rectanglesIntersection = Rectangle.Intersect(this.Bounds, i_Bullet.Bounds);
+            Color[] barrierTextureData = new Color[this.Texture.Width * this.Texture.Height];
             Color[] bulletTextureData = new Color[i_Bullet.Texture.Width * i_Bullet.Texture.Height];
+
+            this.Texture.GetData(barrierTextureData);
             i_Bullet.Texture.GetData(bulletTextureData);
 
             // Traverse the pixels top-to-bottom or bottom-to-top depending on the direction of the bullet
-            IEnumerable<int> yTraversalOrder = Enumerable.Range(intersection.Top, intersection.Height);
+            IEnumerable<int> yTraversalOrder = Enumerable.Range(rectanglesIntersection.Top, rectanglesIntersection.Height);
             if (i_Bullet.DirectionVector.Y == 1)
             {
                 yTraversalOrder = yTraversalOrder.OrderByDescending(i => i);
@@ -85,12 +78,12 @@ namespace SpaceInvaders
             {
                 collisionWasDetectedInRow = false;
 
-                for (int x = intersection.Left; x < intersection.Right; x++)
+                for (int x = rectanglesIntersection.Left; x < rectanglesIntersection.Right; x++)
                 {
                     int barrierPixelIndex = ((y - this.Bounds.Top) * this.Bounds.Width) + (x - this.Bounds.Left);
                     int bulletPixelIndex = ((y - i_Bullet.Bounds.Top) * i_Bullet.Bounds.Width) + (x - i_Bullet.Bounds.Left);
 
-                    if (this.TextureData[barrierPixelIndex].A != 0 && bulletTextureData[bulletPixelIndex].A != 0)
+                    if (barrierTextureData[barrierPixelIndex].A != 0 && bulletTextureData[bulletPixelIndex].A != 0)
                     {
                         collisionWasDetectedInRow = true;
 
@@ -136,9 +129,7 @@ namespace SpaceInvaders
 
         public void Reset()
         {
-            Color[] newDataArray = new Color[m_OriginalTextureData.Length];
-            Array.Copy(m_OriginalTextureData, newDataArray, m_OriginalTextureData.Length);
-            TextureData = newDataArray;
+            this.Texture.SetData(m_OriginalTextureData);
         }
     }
 }

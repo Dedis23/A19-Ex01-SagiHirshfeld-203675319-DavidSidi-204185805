@@ -7,12 +7,16 @@ using System.Collections.Generic;
 using Infrastructure.ObjectModel;
 using System.Text;
 using Infrastructure.ServiceInterfaces;
+using Microsoft.Xna.Framework.Audio;
+using Infrastructure;
 
 namespace SpaceInvaders
 {
     class PlayScreen : GameScreen
     {
         private const string k_ScoreFontAsset = @"Fonts\ComicSansMS";
+        private const string k_LevelClearedSoundEffectAssetName = @"Audio\LevelWin";
+        private const string k_GameOverSoundEffectAssetName = @"Audio\GameOver";
 
         private const float k_SpaceshipPositionYModifier = 1.5f;
         private const float k_LivesGapModifier = 0.7f;
@@ -36,6 +40,9 @@ namespace SpaceInvaders
         private Mothership m_Mothership;
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
+
+        private SoundEffectInstance m_LevelClearedSoundEffectInstance;
+        private SoundEffectInstance m_GameOverSoundEffectInstance;
 
         private bool m_FirstLevelHasBeenTransitionedTo = false;
         private bool m_GameOver = false;
@@ -129,6 +136,13 @@ namespace SpaceInvaders
             m_DancingBarriersRow.Dance(DifficultyLevel);
         }
 
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+            m_LevelClearedSoundEffectInstance = Game.Content.Load<SoundEffect>(k_LevelClearedSoundEffectAssetName).CreateInstance();
+            m_GameOverSoundEffectInstance = Game.Content.Load<SoundEffect>(k_GameOverSoundEffectAssetName).CreateInstance();
+        }
+
         private void initializeDrawablesPositions()
         {
             // Spaceships
@@ -176,15 +190,27 @@ namespace SpaceInvaders
 
             if (m_LevelCleared)
             {
-                CurrentLevel++;
-                ScreensManager.SetCurrentScreen(m_LevelTransitionScreen);
+                transitionToTheNextLevel();
             }
 
             else if (m_GameOver)
             {
-                m_GameOverScreen.Text = buildGameOverMessage();
-                this.ScreensManager.SetCurrentScreen(m_GameOverScreen);
+                transitionToGameOverScreen();
             }
+        }
+
+        private void transitionToTheNextLevel()
+        {
+            m_LevelClearedSoundEffectInstance.PauseAndThenPlay();
+            CurrentLevel++;
+            ScreensManager.SetCurrentScreen(m_LevelTransitionScreen);
+        }
+
+        private void transitionToGameOverScreen()
+        {
+            m_GameOverSoundEffectInstance.PauseAndThenPlay();
+            m_GameOverScreen.Text = buildGameOverMessage();
+            this.ScreensManager.SetCurrentScreen(m_GameOverScreen);
         }
 
         protected override void OnDeactivated()

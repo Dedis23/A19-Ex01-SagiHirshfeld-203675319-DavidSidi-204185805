@@ -10,7 +10,6 @@ namespace Infrastructure.ObjectModel
     public class Sprite : LoadableDrawableComponent
     {
         private Texture2D m_Texture;
-        private Color[] m_TextureData;
         private ICollisionHandler m_CollisionHandler;
         private bool m_UseSharedBatch = false;
         private BlendState m_BlendState = BlendState.AlphaBlend;

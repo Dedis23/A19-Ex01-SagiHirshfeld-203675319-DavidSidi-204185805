@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure;
 using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
@@ -39,13 +40,7 @@ namespace SpaceInvaders
             Bullet newBullet = r_BulletsFactory.GetBullet();
             configureBullet(newBullet);
             newBullet.Fly(i_DirectionVector);
-            playShooterSoundEffect();
-        }
-
-        private void playShooterSoundEffect()
-        {
-            r_Shooter.ShootingSoundEffectInstance.Pause();
-            r_Shooter.ShootingSoundEffectInstance.Play();
+            r_Shooter.ShootingSoundEffectInstance.PauseAndThenPlay();
         }
 
         private void configureBullet(Bullet i_Bullet)

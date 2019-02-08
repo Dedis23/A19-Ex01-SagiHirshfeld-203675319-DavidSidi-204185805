@@ -73,7 +73,6 @@
     <Compile Include="Interfaces\IShooter.cs" />
     <Compile Include="Screens\Menus\MainMenu.cs" />
     <Compile Include="Screens\Menus\ScreenSettings.cs" />
-    <Compile Include="Screens\DummyOptionsScreen.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\LevelTransitionScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using Infrastructure;
 using Microsoft.Xna.Framework;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
@@ -12,6 +13,7 @@ namespace SpaceInvaders
     public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
     {
         private const string k_ShootSoundEffectAssetName = @"Audio\SSGunShot";
+        private const string k_OnBulletHitSoundEffectAssetName = @"Audio\LifeDie";
         private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_VelocityScalar = 145;
         private const int k_MaxBulletsInScreen = 3;
@@ -30,6 +32,16 @@ namespace SpaceInvaders
         private int m_Score;
         private int m_Lives;
         private bool m_MovementEnabled = true;
+
+        private SoundEffectInstance m_OnBulletHitSoundEffectInstance;
+
+        public SoundEffectInstance ShootingSoundEffectInstance { get; private set; }
+
+        public Color BulletsColor { get; } = Color.Red;
+
+        public abstract Color ScoreColor { get; }
+
+        public abstract string Name { get; set; }
 
         public int Score
         {
@@ -67,13 +79,6 @@ namespace SpaceInvaders
             }
         }
 
-        public SoundEffectInstance ShootingSoundEffectInstance { get; private set; }
-
-        public Color BulletsColor { get; } = Color.Red;
-
-        public abstract Color ScoreColor { get; }
-
-        public abstract string Name { get; set; }
 
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
@@ -91,6 +96,7 @@ namespace SpaceInvaders
         {
             base.LoadContent();
             ShootingSoundEffectInstance = Game.Content.Load<SoundEffect>(k_ShootSoundEffectAssetName).CreateInstance();
+            m_OnBulletHitSoundEffectInstance = Game.Content.Load<SoundEffect>(k_OnBulletHitSoundEffectAssetName).CreateInstance();
         }
 
         private void initializeAnimations()
@@ -166,7 +172,6 @@ namespace SpaceInvaders
         {
             this.Vulnerable = false;
             Lives--;
-
             Score -= k_ScorePenaltyForBulletHit;
 
             if (Lives == 0)
@@ -179,6 +184,8 @@ namespace SpaceInvaders
                 Animations["LoseLifeAnimation"].Resume();
                 this.Position = DefaultPosition;
             }
+
+            m_OnBulletHitSoundEffectInstance.PauseAndThenPlay();
         }
 
         protected override void OnDying()

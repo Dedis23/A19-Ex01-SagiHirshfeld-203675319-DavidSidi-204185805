@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Infrastructure;
 using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
@@ -16,6 +17,7 @@ namespace SpaceInvaders
         public const int k_DefaultInvaderHeight = 32;
 
         private const string k_ShootingSoundEffectAssetName = @"Audio\EnemyGunShot";
+        private const string k_DyingSoundEffectAssetName = @"Audio\EnemyKill";
         private const string k_InvadersSpriteSheet = @"Sprites\Enemies";
         private const int k_MaxBulletsInScreen = 1;
         private const int k_MinTimeBetweenShootRolls = 1;
@@ -27,6 +29,7 @@ namespace SpaceInvaders
         private readonly float r_TimeBetweenRollingForShootInSeconds;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, 1);
 
+        private SoundEffectInstance m_DyingSoundEffectInstance;
         private int m_ColIndexInSpriteSheet;
         private int m_RowIndexInSpriteSheet;
         private float m_ChanceToShoot;
@@ -81,6 +84,7 @@ namespace SpaceInvaders
         {
             base.LoadContent();
             ShootingSoundEffectInstance = Game.Content.Load<SoundEffect>(k_ShootingSoundEffectAssetName).CreateInstance();
+            m_DyingSoundEffectInstance = Game.Content.Load<SoundEffect>(k_DyingSoundEffectAssetName).CreateInstance();
         }
 
         protected override void InitSourceRectangle()
@@ -134,6 +138,7 @@ namespace SpaceInvaders
         protected override void OnDying()
         {
             Vulnerable = false;
+            m_DyingSoundEffectInstance.PauseAndThenPlay();
             r_RandomShootRoller.RollSucceeded -= Shoot;
         }
 
