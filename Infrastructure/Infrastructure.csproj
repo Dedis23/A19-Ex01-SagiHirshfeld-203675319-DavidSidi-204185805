@@ -50,6 +50,7 @@
     <Compile Include="Managers\DummyInputManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\ScreensManager.cs" />
+    <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="Menus\BarMenuItem.cs" />
     <Compile Include="Menus\MenuItem.cs" />
     <Compile Include="Menus\MenuItemsRow.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="ServiceInterfaces\ICollisionsManager.cs" />
     <Compile Include="ServiceInterfaces\IInputManager.cs" />
     <Compile Include="ServiceInterfaces\IScreensMananger.cs" />
+    <Compile Include="ServiceInterfaces\ISoundManager.cs" />
     <Compile Include="Sounds\Sound.cs" />
     <Compile Include="Utilities\RandomGenerator.cs" />
     <Compile Include="Utilities\RandomRoller.cs" />

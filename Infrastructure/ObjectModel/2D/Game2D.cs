@@ -10,15 +10,23 @@ namespace Infrastructure.ObjectModel
 {
     public class Game2D : Game
     {
-        GraphicsDeviceManager r_GraphicsDeviceManager;
+        protected GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
+
+        protected IInputManager InputManager { get;  set; }
+
+        protected ISoundManager SoundManager { get;  set; }
+
+        protected ICollisionsManager CollisionsManager { get;  set; }
+
 
         public Game2D()
         {
             this.Content.RootDirectory = "Content";
-            r_GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            Services.AddService(typeof(GraphicsDeviceManager), r_GraphicsDeviceManager);
-            new CollisionsManager(this);
-            new InputManager(this);
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            Services.AddService(typeof(GraphicsDeviceManager), GraphicsDeviceManager);
+            CollisionsManager = new CollisionsManager(this);
+            SoundManager = new SoundManager(this);
+            InputManager = new InputManager(this);
         }
 
         private BackgroundSprite m_Background;
@@ -50,11 +58,11 @@ namespace Infrastructure.ObjectModel
 
         private void fitViewportToBackground()
         {
-            if (r_GraphicsDeviceManager != null)
+            if (GraphicsDeviceManager != null)
             {
-                r_GraphicsDeviceManager.PreferredBackBufferWidth = (int)m_Background.Width;
-                r_GraphicsDeviceManager.PreferredBackBufferHeight = (int)m_Background.Height;
-                r_GraphicsDeviceManager.ApplyChanges();
+                GraphicsDeviceManager.PreferredBackBufferWidth = (int)m_Background.Width;
+                GraphicsDeviceManager.PreferredBackBufferHeight = (int)m_Background.Height;
+                GraphicsDeviceManager.ApplyChanges();
             }
         }
 

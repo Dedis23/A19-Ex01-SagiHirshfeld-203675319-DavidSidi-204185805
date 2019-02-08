@@ -1,6 +1,8 @@
 ﻿using Infrastructure.Managers;
 using Infrastructure.ObjectModel;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -21,8 +23,17 @@ namespace SpaceInvaders
             base.LoadContent();
             SoundEffectInstance backgroundMusic = Content.Load<SoundEffect>(@"Audio\BGMusic").CreateInstance();
             backgroundMusic.IsLooped = true;
-            backgroundMusic.Volume *= 0.5f;
             backgroundMusic.Play();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (InputManager.KeyPressed(Keys.M))
+            {
+                SoundManager.IsAllSoundMuted = !SoundManager.IsAllSoundMuted;
+            }
         }
     }
 }
