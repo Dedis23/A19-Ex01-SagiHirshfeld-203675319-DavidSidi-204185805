@@ -79,9 +79,8 @@ namespace SpaceInvaders
             m_LevelTransitionScreen = new LevelTransitionScreen(i_Game);
             CurrentLevel = 0;
 
-            loadSprites();
+            loadDrawables();
         }
-
         
         protected override void  OnActivated()
         {
@@ -93,7 +92,7 @@ namespace SpaceInvaders
             }
         }
 
-        private void loadSprites()
+        private void loadDrawables()
         {
             m_Player1Spaceship = new Player1Spaceship(Game);
             m_Player1Spaceship.Died += onSpaceshipKilled;
@@ -301,50 +300,6 @@ namespace SpaceInvaders
             else if (InputManager.KeyPressed(Keys.P))
             {
                 this.ScreensManager.SetCurrentScreen(m_PauseScreen);
-            }
-
-            else
-            {
-                takePlayer1Input();
-                takePlayer2Input();
-            }
-        }
-
-        private void takePlayer1Input()
-        {
-            if (InputManager.KeyboardState.IsKeyDown(Keys.H))
-            {
-                m_Player1Spaceship.Move(r_LeftDirectionVector);
-            }
-
-            if (InputManager.KeyboardState.IsKeyDown(Keys.K))
-            {
-                m_Player1Spaceship.Move(r_RightDirectionVector);
-            }
-
-            if (InputManager.KeyPressed(Keys.U) || InputManager.ButtonPressed(eInputButtons.Left))
-            {
-                m_Player1Spaceship.Shoot();
-            }
-
-            m_Player1Spaceship.MoveAccordingToMousePositionDelta(InputManager.MousePositionDelta);
-        }
-
-        private void takePlayer2Input()
-        {
-            if (InputManager.KeyboardState.IsKeyDown(Keys.A))
-            {
-                m_Player2Spaceship.Move(r_LeftDirectionVector);
-            }
-
-            if (InputManager.KeyboardState.IsKeyDown(Keys.D))
-            {
-                m_Player2Spaceship.Move(r_RightDirectionVector);
-            }
-
-            if (InputManager.KeyPressed(Keys.W))
-            {
-                m_Player2Spaceship.Shoot();
             }
         }
     }

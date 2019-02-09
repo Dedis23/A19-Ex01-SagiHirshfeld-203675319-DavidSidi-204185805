@@ -90,9 +90,7 @@ namespace Infrastructure.ObjectModel
             
             if (this is ICollidable)
             {
-                ICollisionsManager collisionMgr =
-                    this.Game.Services.GetService(typeof(ICollisionsManager))
-                        as ICollisionsManager;
+                ICollisionsManager collisionMgr = this.Game.Services.GetService<ICollisionsManager>();                        
 
                 if (collisionMgr != null)
                 {

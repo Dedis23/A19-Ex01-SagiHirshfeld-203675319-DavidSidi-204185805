@@ -39,7 +39,7 @@ namespace Infrastructure.Menus
             MenuItem i_Increase, MenuItem i_Decrease, int i_BorderThickness = 3) 
             : base(i_GameScreen, i_RowText, new MenuItem[] { i_Increase, i_Decrease })
         {
-            m_InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            m_InputManager = Game.Services.GetService<IInputManager>();
             m_SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             m_Increase = i_Increase;
             m_Decrease = i_Decrease;

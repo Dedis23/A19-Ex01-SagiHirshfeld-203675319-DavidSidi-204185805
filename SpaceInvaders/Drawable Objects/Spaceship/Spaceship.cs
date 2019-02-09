@@ -7,6 +7,7 @@ using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Infrastructure.Managers;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -31,9 +32,15 @@ namespace SpaceInvaders
 
         private int m_Score;
         private int m_Lives;
-        private bool m_MovementEnabled = true;
-
         private SoundEffectInstance m_OnBulletHitSoundEffectInstance;
+
+        protected IInputManager InputManager { get; private set; }
+
+        protected abstract Keys MoveLeftKey { get; }
+
+        protected abstract Keys MoveRightKey { get; }
+
+        protected abstract Keys ShootKey { get; }
 
         public SoundEffectInstance ShootingSoundEffectInstance { get; private set; }
 
@@ -89,6 +96,7 @@ namespace SpaceInvaders
         public override void Initialize()
         {
             base.Initialize();
+            InputManager = Game.Services.GetService<IInputManager>();
             initializeAnimations();
         }
 
@@ -134,14 +142,33 @@ namespace SpaceInvaders
         public override void Update(GameTime i_GameTime)
         {
             base.Update(i_GameTime);
-            m_Velocity.X = 0;
+
+            if (IsAlive)
+            {
+                TakeInput();
+            }            
         }
 
-        public void MoveAccordingToMousePositionDelta(Vector2 i_MousePositionDelta)
+        protected virtual void TakeInput()
         {
-            if (m_MovementEnabled)
+            if (InputManager.KeyboardState.IsKeyDown(MoveLeftKey))
             {
-                Position += new Vector2(i_MousePositionDelta.X, 0);
+                m_Velocity.X = k_VelocityScalar * -1;
+            }
+
+            else if (InputManager.KeyboardState.IsKeyDown(MoveRightKey))
+            {
+                m_Velocity.X = k_VelocityScalar;
+            }
+
+            else
+            {
+                m_Velocity.X = 0;
+            }
+
+            if (InputManager.KeyPressed(ShootKey))
+            {
+                Shoot();
             }
         }
 
@@ -153,14 +180,6 @@ namespace SpaceInvaders
             float x = MathHelper.Clamp(Position.X, 0, this.GameScreenBounds.Width - this.Width);
             float y = MathHelper.Clamp(Position.Y, 0, this.GameScreenBounds.Height - this.Height);
             Position = new Vector2(x, y);
-        }
-
-        public void Move(Vector2 i_DirectionVector)
-        {
-            if (m_MovementEnabled)
-            {
-                m_Velocity += k_VelocityScalar * Vector2.Normalize(i_DirectionVector);
-            }
         }
 
         public void Shoot()
@@ -190,20 +209,13 @@ namespace SpaceInvaders
 
         protected override void OnDying()
         {
-            this.r_Gun.Enabled = false;
-            m_MovementEnabled = false;
+            this.Velocity = Vector2.Zero;
             base.OnDying();
         }
 
         protected override void OnDeath()
         {
             Visible = false;
-        }
-
-        protected override void OnDisposed(object sender, EventArgs args)
-        {
-            base.OnDisposed(sender, args);
-            Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
         }
 
         public void PrepareForNewLevel()
@@ -215,14 +227,18 @@ namespace SpaceInvaders
             Position = DefaultPosition;
             this.Visible = IsAlive;
             this.Vulnerable = IsAlive;
-            m_MovementEnabled = IsAlive;
-            r_Gun.Enabled = IsAlive;
         }
 
         public void ResetScoreAndLives()
         {
             Lives = k_StartingLivesCount;
             Score = 0;
+        }
+
+        protected override void OnDisposed(object sender, EventArgs args)
+        {
+            base.OnDisposed(sender, args);
+            Animations["LoseLifeAnimation"].Finished -= onFinishedLoseLifeAnimation;
         }
     }
 }

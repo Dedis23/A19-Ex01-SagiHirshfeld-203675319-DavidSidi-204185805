@@ -11,7 +11,7 @@ namespace SpaceInvaders
         public ScreenSettings(Game i_Game) : base(i_Game, "Screen Settings")
         {
             r_GraphicsDevice =
-                this.Game.Services.GetService(typeof(IGraphicsDeviceManager)) as GraphicsDeviceManager;
+                this.Game.Services.GetService<GraphicsDeviceManager>();
         }
 
         protected override void BuildMenuItems()

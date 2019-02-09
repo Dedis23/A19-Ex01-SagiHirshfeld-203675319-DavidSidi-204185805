@@ -12,8 +12,44 @@ namespace SpaceInvaders
 
         public override string Name { get; set; } = "P1";
 
+        protected override Keys MoveLeftKey
+        {
+            get
+            {
+                return Keys.H;
+            }
+        }
+
+        protected override Keys MoveRightKey
+        {
+            get
+            {
+                return Keys.K;
+            }
+        }
+
+        protected override Keys ShootKey
+        {
+            get
+            {
+                return Keys.U;
+            }
+        }
+
         public Player1Spaceship(Game i_Game) : base(k_AssetName, i_Game)
         {
+        }
+
+        protected override void TakeInput()
+        {
+            base.TakeInput();
+
+            if (!InputManager.KeyPressed(ShootKey) && InputManager.ButtonPressed(eInputButtons.Left))
+            {
+                Shoot();
+            }
+
+            Position += new Vector2(InputManager.MousePositionDelta.X, 0);
         }
     }
 }

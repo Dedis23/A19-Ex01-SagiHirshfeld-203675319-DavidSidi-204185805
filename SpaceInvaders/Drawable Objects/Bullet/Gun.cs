@@ -12,15 +12,13 @@ namespace SpaceInvaders
         private readonly int r_MaxBulletsInScreen;
         private readonly BulletsFactory r_BulletsFactory;
 
-        public bool Enabled { get; set; } = true;
-
         public Gun(IShooter i_Shooter, int i_MaxBulletsInScreen)
         {
             r_BulletsFired = new HashSet<Bullet>();
             r_Shooter = i_Shooter;
             r_MaxBulletsInScreen = i_MaxBulletsInScreen;
 
-            r_BulletsFactory = r_Shooter.Game.Services.GetService(typeof(BulletsFactory)) as BulletsFactory;
+            r_BulletsFactory = r_Shooter.Game.Services.GetService<BulletsFactory>();
             if (r_BulletsFactory == null)
             {
                 r_BulletsFactory = new BulletsFactory(r_Shooter.Game);
@@ -28,10 +26,10 @@ namespace SpaceInvaders
         }
 
         public void Shoot(Vector2 i_DirectionVector)
-        {
-            if (r_BulletsFired.Count < r_MaxBulletsInScreen && Enabled)
-            { 
-                shootBullet(i_DirectionVector);   
+        {            
+            if (r_BulletsFired.Count < r_MaxBulletsInScreen)
+            {
+                shootBullet(i_DirectionVector);
             }
         }
 

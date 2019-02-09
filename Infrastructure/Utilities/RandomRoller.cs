@@ -50,7 +50,6 @@ namespace Infrastructure.Utilities
         {
             base.Update(gameTime);
 
-            ///// Look for a better way
             r_Timer.Update(gameTime);
         }
 

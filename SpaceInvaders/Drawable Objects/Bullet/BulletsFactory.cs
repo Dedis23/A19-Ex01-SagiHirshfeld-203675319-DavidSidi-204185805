@@ -17,7 +17,7 @@ namespace SpaceInvaders
         {
             r_AvailableBulletsForDeploymentsStack = new Stack<Bullet>();
             r_FlyingBulletsToContainingScreensDictionary = new Dictionary<Bullet, GameScreen>();
-            r_GameScreensManager = Game.Services.GetService(typeof(IScreensMananger)) as IScreensMananger;
+            r_GameScreensManager = Game.Services.GetService<IScreensMananger>();
         }
 
         private GameScreen CurrentlyActiveScreen

@@ -103,7 +103,6 @@ namespace SpaceInvaders
         {
             base.Update(gameTime);
 
-            /// Look for a better way
             r_RandomShootRoller.Update(gameTime);
         }
 

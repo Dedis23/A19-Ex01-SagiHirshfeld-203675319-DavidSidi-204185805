@@ -314,8 +314,7 @@ namespace Infrastructure.ObjectModel
 
         private void takeSpriteBatchFromGameServices()
         {
-
-            m_SpriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
+            m_SpriteBatch = Game.Services.GetService<SpriteBatch>();
 
             if (m_SpriteBatch != null)
             {
@@ -461,7 +460,7 @@ namespace Infrastructure.ObjectModel
             base.Initialize();
             if (this is ICollidable2D)
             {
-                m_CollisionHandler = this.Game.Services.GetService(typeof(ICollisionHandler)) as ICollisionHandler;
+                m_CollisionHandler = this.Game.Services.GetService<ICollisionHandler>();
             }
         }
 

@@ -35,7 +35,7 @@ namespace Infrastructure.Menus
         {
             r_Items = new List<MenuItem>(i_Items);
             m_GameScreen = i_GameScreen;
-            m_InputManager = Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            m_InputManager = Game.Services.GetService<IInputManager>();
             m_LastItem = m_CurrentItem = i_DefaultItem;
             m_NonSelectedColor = i_NonSelectedColor;
             m_SelectedColor = i_SelectedColor;

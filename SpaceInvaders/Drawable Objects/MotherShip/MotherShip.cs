@@ -80,7 +80,6 @@ namespace SpaceInvaders
         {
             base.Update(i_GameTime);
 
-            /// Look for a better way
             r_RandomSpawnRoller.Update(i_GameTime);
 
             if (this.Position.X >= this.GraphicsDevice.Viewport.Width)

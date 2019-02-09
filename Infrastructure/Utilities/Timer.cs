@@ -36,7 +36,6 @@ namespace Infrastructure.Utilities
 
         public override void Update(GameTime i_GameTime)
         {
-            ///// Look for a better way
             if (Enabled)
             {
                 m_RemainingDelay += (float)i_GameTime.ElapsedGameTime.TotalSeconds;

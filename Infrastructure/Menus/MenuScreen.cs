@@ -25,7 +25,7 @@ namespace Infrastructure.Menus
         {
             r_MenuRows = new List<MenuItemsRow>();
             m_Selected = m_LastSelected = 0;
-            m_InputManager = i_Game.Services.GetService(typeof(IInputManager)) as IInputManager;
+            m_InputManager = i_Game.Services.GetService<IInputManager>();
             m_NonSelectedRowColor = i_NonSelectedRowColor;
             m_SelectedRowColor = i_SelectedRowColor;
             m_MenuUpKey = i_MenuUpKey;
