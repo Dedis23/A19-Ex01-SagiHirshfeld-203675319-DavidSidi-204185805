@@ -52,7 +52,6 @@ namespace Infrastructure.ObjectModel
                 m_Background.Initialize();
                 fitViewportToBackground();
             }
-
             base.Initialize();
         }
 

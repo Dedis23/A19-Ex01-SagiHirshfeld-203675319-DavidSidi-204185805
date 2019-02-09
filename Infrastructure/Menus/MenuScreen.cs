@@ -12,8 +12,9 @@ namespace Infrastructure.Menus
         private readonly List<MenuItemsRow> r_MenuRows;
         private Color m_NonSelectedRowColor;
         private Color m_SelectedRowColor;
-        private int m_LastSelected;
-        private int m_Selected;
+        private int m_PrevSelected;
+        private int m_CurrSelected;
+        private MouseState m_PrevMouseState;
         protected Keys m_MenuUpKey;
         protected Keys m_MenuDownKey;
 
@@ -24,8 +25,9 @@ namespace Infrastructure.Menus
             Keys i_MenuDownKey = Keys.Down) : base(i_Game)
         {
             r_MenuRows = new List<MenuItemsRow>();
-            m_Selected = m_LastSelected = 0;
-            m_InputManager = i_Game.Services.GetService<IInputManager>();
+            m_InputManager = Game.Services.GetService<IInputManager>();
+            m_PrevSelected = m_CurrSelected = -1;
+            m_PrevMouseState = m_InputManager.MouseState;
             m_NonSelectedRowColor = i_NonSelectedRowColor;
             m_SelectedRowColor = i_SelectedRowColor;
             m_MenuUpKey = i_MenuUpKey;
@@ -36,75 +38,176 @@ namespace Infrastructure.Menus
 
         protected void AddMenuItem(MenuItemsRow i_MenuRow)
         {
-            if (r_MenuRows.Count == 0)
-            {
-                i_MenuRow.MenuText.TintColor = m_SelectedRowColor;
-                i_MenuRow.MenuText.StartAnimation();
-                i_MenuRow.Active = true;
-            }
             r_MenuRows.Add(i_MenuRow);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            m_PrevSelected = m_CurrSelected;
             if (r_MenuRows.Count != 0)
             {
-                if (m_InputManager.KeyPressed(m_MenuUpKey))
+                if (m_InputManager.MouseState != m_PrevMouseState
+                    && this.Game.IsMouseVisible)
                 {
-                    m_LastSelected = m_Selected--;
-                    if (m_Selected < 0)
-                    {
-                        m_Selected = r_MenuRows.Count - 1;
-                    }
+                    handleMouseInput();
                 }
-
-                if (m_InputManager.KeyPressed(m_MenuDownKey))
+                else
                 {
-                    m_LastSelected = m_Selected++;
-                    if (m_Selected >= r_MenuRows.Count)
-                    {
-                        m_Selected = 0;
-                    }
+                    handleKeyboardInput();
                 }
+                handleMenuSoundEffects();
+            }
+        }
 
-                if (!r_MenuRows[m_Selected].IsEmpty)
+        private void handleMenuSoundEffects()
+        {
+            if (m_CurrSelected != -1)
+            {
+                if(r_MenuRows[m_CurrSelected].IsThereAChangeInTheRow())
                 {
-                    if (r_MenuRows[m_Selected].IsLoopedItems)
-                    {
-                        foreach (MenuItem menuItem in r_MenuRows[m_Selected].Items)
-                        {
-                            if (m_InputManager.KeyPressed(menuItem.Key))
-                            {
-                                r_MenuRows[m_Selected].InvokeCurrentSelected();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (r_MenuRows[m_Selected].Items.Count == 1 &&
-                            m_InputManager.KeyPressed(r_MenuRows[m_Selected].GetSelectedKey()))
-                        {
-                            r_MenuRows[m_Selected].InvokeCurrentSelected();
-                        }
-                    }
+                    PlayMenuMoveSoundEffect();
                 }
-
-                if (m_LastSelected != m_Selected)
+                if (m_CurrSelected != m_PrevSelected)
                 {
-                    updateSelected();
+                    PlayMenuMoveSoundEffect();
                 }
             }
         }
 
-        private void updateSelected()
+        private void handleKeyboardInput()
         {
-            r_MenuRows[m_LastSelected].Active = false;
-            r_MenuRows[m_Selected].Active = true;
-            r_MenuRows[m_LastSelected].MenuText.TintColor = m_NonSelectedRowColor;
-            r_MenuRows[m_LastSelected].StopTitleAnimation();
-            r_MenuRows[m_Selected].MenuText.TintColor = m_SelectedRowColor;
-            r_MenuRows[m_Selected].StartTitleAnimation();
+            if (m_InputManager.KeyPressed(m_MenuUpKey))
+            {
+                m_CurrSelected--;
+                if (m_CurrSelected < 0)
+                {
+                    m_CurrSelected = r_MenuRows.Count - 1;
+                }
+            }
+
+            if (m_InputManager.KeyPressed(m_MenuDownKey))
+            {
+                m_CurrSelected++;
+                if (m_CurrSelected >= r_MenuRows.Count)
+                {
+                    m_CurrSelected = 0;
+                }
+            }
+
+            if (m_CurrSelected != -1)
+            {
+                UpdateSelected(m_CurrSelected);
+                checkForInputOperationsInvokes(m_CurrSelected);
+            }
         }
+
+        private void handleMouseInput()
+        {
+            int i;
+            m_CurrSelected = -1;
+            bool isMouseOnARow = false;
+            Point mousePosition = new Point(m_InputManager.MouseState.Position.X, m_InputManager.MouseState.Position.Y);
+            for (i = 0; i < r_MenuRows.Count; i++)
+            {
+                if (r_MenuRows[i].MenuText.GetTextRectangle().Contains(mousePosition))
+                {
+                    isMouseOnARow = true;
+                    m_CurrSelected = i;
+                    UpdateSelected(m_CurrSelected);
+                    checkForInputOperationsInvokes(i);
+                    break;
+                }
+            }
+            checkScrollWheel();
+            if (!isMouseOnARow)
+            {
+                UpdateSelected(m_CurrSelected);
+            }
+            m_PrevMouseState = m_InputManager.MouseState;
+        }
+
+        private void checkForInputOperationsInvokes(int i_IndexToInvoke)
+        {
+            if (r_MenuRows[i_IndexToInvoke].IsLoopedItems)
+            {
+                bool isThereAnInvokationInput = false;
+                foreach (MenuItem menuItem in r_MenuRows[i_IndexToInvoke].Items)
+                {
+                    if (m_InputManager.KeyPressed(menuItem.Key))
+                    {
+                        isThereAnInvokationInput = true;
+                        break;
+                    }
+                    else if (m_InputManager.ButtonPressed(eInputButtons.Right) &&
+                        this.Game.IsMouseVisible)
+                    {
+                        isThereAnInvokationInput = true;
+                        break;
+                    }
+                }
+                if (isThereAnInvokationInput)
+                {
+                    r_MenuRows[i_IndexToInvoke].IncreaseCurrentItem();
+                    r_MenuRows[i_IndexToInvoke].UpdateSelectedColor();
+                    r_MenuRows[i_IndexToInvoke].InvokeCurrentSelected();
+                }
+            }
+            else
+            {
+                if (r_MenuRows[i_IndexToInvoke].Items.Count == 1 &&
+                    (m_InputManager.KeyPressed(r_MenuRows[i_IndexToInvoke].GetSelectedKey())
+                    || m_InputManager.ButtonPressed(eInputButtons.Left)))
+                {
+                    r_MenuRows[i_IndexToInvoke].InvokeCurrentSelected();
+                }
+            }
+        }
+
+        private void checkScrollWheel()
+        {
+            bool scrollWheelActivity = false;
+            if (m_CurrSelected != -1 &&
+                r_MenuRows[m_CurrSelected].Active &&
+                r_MenuRows[m_CurrSelected].IsLoopedItems)
+            {
+                if (m_InputManager.ScrollWheelDelta > 0)
+                {
+                    scrollWheelActivity = true;
+                    r_MenuRows[m_CurrSelected].IncreaseCurrentItem();
+                }
+                else if (m_InputManager.ScrollWheelDelta < 0)
+                {
+                    scrollWheelActivity = true;
+                    r_MenuRows[m_CurrSelected].DecreaseCurrentItem();
+                }
+            }
+            if (scrollWheelActivity)
+            {
+                r_MenuRows[m_CurrSelected].UpdateSelectedColor();
+                r_MenuRows[m_CurrSelected].InvokeCurrentSelected();
+            }
+        }
+
+        protected virtual void UpdateSelected(int i_IndexToMark)
+        {
+            for (int i = 0; i < r_MenuRows.Count; i++)
+            {
+                if (i == i_IndexToMark)
+                {
+                    r_MenuRows[i].Active = true;
+                    r_MenuRows[i].MenuText.TintColor = m_SelectedRowColor;
+                    r_MenuRows[i].StartTitleAnimation();
+                }
+                else
+                {
+                    r_MenuRows[i].Active = false;
+                    r_MenuRows[i].MenuText.TintColor = m_NonSelectedRowColor;
+                    r_MenuRows[i].StopTitleAnimation();
+                }
+            }
+        }
+
+        protected abstract void PlayMenuMoveSoundEffect();
     }
 }

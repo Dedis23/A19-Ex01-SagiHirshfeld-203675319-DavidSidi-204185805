@@ -3,7 +3,6 @@ using Infrastructure.ObjectModel.Screens;
 using Infrastructure.ServiceInterfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Infrastructure.Menus
 {
@@ -11,6 +10,8 @@ namespace Infrastructure.Menus
     {
         private IInputManager m_InputManager;
         private SpriteBatch m_SpriteBatch;
+        private float m_LastValue;
+        private float m_CurrentValue;
         protected MenuItem m_Increase;
         protected MenuItem m_Decrease;
         protected Rectangle m_BorderRect;
@@ -27,8 +28,6 @@ namespace Infrastructure.Menus
         protected float m_Max;
         protected float m_GrowthValue;
         protected float m_CurrentPercent;
-        private float m_LastValue;
-        private float m_CurrentValue;
 
         public BarMenuItem(GameScreen i_GameScreen, AnimatedTextSprite i_RowText,
             Color i_BorderColor,
@@ -36,7 +35,7 @@ namespace Infrastructure.Menus
             Color i_FillColor,
             Rectangle i_Bar,
             float i_Min, float i_Max, float i_GrowthValue, float i_InitialPercentValue,
-            MenuItem i_Increase, MenuItem i_Decrease, int i_BorderThickness = 3) 
+            MenuItem i_Increase, MenuItem i_Decrease, int i_BorderThickness = 3)
             : base(i_GameScreen, i_RowText, new MenuItem[] { i_Increase, i_Decrease })
         {
             m_InputManager = Game.Services.GetService<IInputManager>();
@@ -72,23 +71,31 @@ namespace Infrastructure.Menus
 
         public override void Update(GameTime gameTime)
         {
+            m_ChangeInTheRow = false;
             if (Active)
             {
                 m_LastValue = m_CurrentValue;
-                if (m_InputManager.KeyPressed(m_Increase.Key))
+                if (m_InputManager.KeyPressed(m_Increase.Key) ||
+                    (this.Game.IsMouseVisible &&
+                    (m_InputManager.ScrollWheelDelta > 0 ||
+                    m_InputManager.ButtonPressed(eInputButtons.Right))))
                 {
                     m_CurrentValue += m_GrowthValue;
                     if (m_LastValue < 100)
                     {
                         m_Increase.Operation?.Invoke();
+                        m_ChangeInTheRow = true;
                     }
                 }
-                if (m_InputManager.KeyPressed(m_Decrease.Key))
+                if (m_InputManager.KeyPressed(m_Decrease.Key) ||
+                    (this.Game.IsMouseVisible &&
+                    m_InputManager.ScrollWheelDelta < 0))
                 {
                     m_CurrentValue -= m_GrowthValue;
                     if (m_LastValue > 0)
                     {
                         m_Decrease.Operation?.Invoke();
+                        m_ChangeInTheRow = true;
                     }
                 }
                 m_CurrentValue = MathHelper.Clamp(m_CurrentValue, m_Min, m_Max);

@@ -14,13 +14,14 @@ namespace Infrastructure.Menus
         private int m_CurrentItem;
         private GameScreen m_GameScreen;
         private readonly List<MenuItem> r_Items;
-        protected AnimatedTextSprite m_MenuTextSprite;
+        protected AnimatedTextSprite m_MainRowTextSprite;
         private Color m_NonSelectedColor;
         private Color m_SelectedColor;
         protected Vector2 m_RowPosition;
         protected Vector2 m_NextPositionInTheRow;
         protected Keys m_RightKey;
         protected Keys m_LeftKey;
+        protected bool m_ChangeInTheRow ;
         private bool m_IsActive;
         private bool m_IsLoopedItems;
 
@@ -39,9 +40,10 @@ namespace Infrastructure.Menus
             m_LastItem = m_CurrentItem = i_DefaultItem;
             m_NonSelectedColor = i_NonSelectedColor;
             m_SelectedColor = i_SelectedColor;
-            m_MenuTextSprite = i_RowText;
+            m_MainRowTextSprite = i_RowText;
             m_RightKey = i_RightKey;
             m_LeftKey = i_LeftKey;
+            m_ChangeInTheRow = false;
             m_IsActive = false;
             m_IsLoopedItems = r_Items.Count > 1;
             loadMenuSpritesToGameScreen();
@@ -89,34 +91,17 @@ namespace Infrastructure.Menus
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (r_Items.Count != 0 && Active)
-            {
-                if (m_InputManager.KeyPressed(m_LeftKey))
-                {
-                    m_LastItem = m_CurrentItem--;
-                    if (m_CurrentItem < 0)
-                    {
-                        m_CurrentItem = r_Items.Count - 1;
-                    }
-                }
-
-                if (m_InputManager.KeyPressed(m_RightKey))
-                {
-                    m_LastItem = m_CurrentItem++;
-                    if (m_CurrentItem >= r_Items.Count)
-                    {
-                        m_CurrentItem = 0;
-                    }
-                }
-                if (m_LastItem != m_CurrentItem)
-                {
-                    updateSelectedColor();
-                }
-            }
+            m_ChangeInTheRow = false;
         }
 
-        private void updateSelectedColor()
+        public bool IsThereAChangeInTheRow()
         {
+            return m_ChangeInTheRow;
+        }
+
+        public void UpdateSelectedColor()
+        {
+            m_ChangeInTheRow = true;
             if (r_Items[m_LastItem].Sprite != null)
             {
                 r_Items[m_LastItem].Sprite.TintColor = m_NonSelectedColor;
@@ -129,8 +114,7 @@ namespace Infrastructure.Menus
 
         public AnimatedTextSprite MenuText
         {
-            get { return m_MenuTextSprite; }
-            set { m_MenuTextSprite = value; }
+            get { return m_MainRowTextSprite; }
         }
 
         public Vector2 RowPosition
@@ -139,7 +123,7 @@ namespace Infrastructure.Menus
             set
             {
                 m_RowPosition = value;
-                m_MenuTextSprite.Position = value;
+                m_MainRowTextSprite.Position = value;
             }
         }
 
@@ -149,9 +133,27 @@ namespace Infrastructure.Menus
             {
                 m_GameScreen.Add(item.Sprite);
             }
-            m_GameScreen.Add(m_MenuTextSprite);
+            m_GameScreen.Add(m_MainRowTextSprite);
             m_GameScreen.Add(this);
-            updateSelectedColor();
+            UpdateSelectedColor();
+        }
+
+        public void IncreaseCurrentItem()
+        {
+            m_LastItem = m_CurrentItem++;
+            if (m_CurrentItem >= r_Items.Count)
+            {
+                m_CurrentItem = 0;
+            }
+        }
+
+        public void DecreaseCurrentItem()
+        {
+            m_LastItem = m_CurrentItem--;
+            if (m_CurrentItem < 0)
+            {
+                m_CurrentItem = r_Items.Count - 1;
+            }
         }
 
         public Keys GetSelectedKey()
@@ -164,19 +166,14 @@ namespace Infrastructure.Menus
             r_Items[m_CurrentItem].Operation?.Invoke();
         }
 
-        public bool IsEmpty
-        {
-            get { return r_Items.Count == 0; }
-        }
-
         public void StartTitleAnimation()
         {
-            m_MenuTextSprite.StartAnimation();
+            m_MainRowTextSprite.StartAnimation();
         }
 
         public void StopTitleAnimation()
         {
-            m_MenuTextSprite.StopAnimation();
+            m_MainRowTextSprite.StopAnimation();
         }
     }
 }

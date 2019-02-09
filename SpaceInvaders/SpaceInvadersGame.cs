@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Input;
 namespace SpaceInvaders
 {
     public class SpaceInvadersGame : Game2D
-    {  
+    {
+        private const float k_InitialMediaVolume = 0.5f;
+        private const float k_InitialSoundEffectsVolume = 0.5f;
         public SpaceInvadersGame()
         {
             this.Window.Title = "Space Invaders";
@@ -16,6 +18,13 @@ namespace SpaceInvaders
             ScreensMananger screensMananger = new ScreensMananger(this);
             screensMananger.Push(new PlayScreen(this));
             screensMananger.SetCurrentScreen(new WelcomeScreen(this));
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+            SoundManager.MediaVolume = k_InitialMediaVolume;
+            SoundManager.SoundEffectsVolume = k_InitialSoundEffectsVolume;
         }
 
         protected override void LoadContent()

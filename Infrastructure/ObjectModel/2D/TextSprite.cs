@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Infrastructure.ObjectModel
@@ -35,6 +36,15 @@ namespace Infrastructure.ObjectModel
                 m_Text = value;
                 measureSize();
             }
+        }
+
+        public Rectangle GetTextRectangle()
+        {
+            return new Rectangle(
+                    (int)Position.X,
+                    (int)Position.Y,
+                    (int)GetTextSize().X,
+                    (int)GetTextSize().Y);
         }
 
         public Vector2 GetTextSize()
