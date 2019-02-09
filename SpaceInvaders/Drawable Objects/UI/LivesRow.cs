@@ -5,13 +5,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public class LivesRow : SpriteRow
+    public class LivesRow : SpriteRow<Sprite>
     {
         private int m_VisibleSpritesCount;
         private LinkedListNode<Sprite> m_LastVisibleSpriteNode;
 
         public LivesRow(Game i_Game, int i_LivesNum, string i_IconAssetName )
-            : base(i_Game, i_LivesNum, i_IconAssetName)
+            : base(i_Game, i_LivesNum, (Game) => new Sprite(i_IconAssetName, Game))
         {
             BlendState = BlendState.NonPremultiplied;
             this.Opacity /= 2;
