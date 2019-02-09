@@ -88,6 +88,13 @@ namespace Infrastructure.Menus
             get { return r_Items; }
         }
 
+        public void MarkASpecificItem(int i_ItemToMark)
+        {
+            m_LastItem = m_CurrentItem;
+            m_CurrentItem = i_ItemToMark;
+            UpdateSelectedColor();
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

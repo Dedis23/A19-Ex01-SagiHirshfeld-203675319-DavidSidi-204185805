@@ -87,5 +87,22 @@ namespace SpaceInvaders
         {
             ExitScreen();
         }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (InputManager.KeyPressed(Keys.M))
+            {
+                if (m_SoundManager.MuteAllSound)
+                {
+                    MarkASpecificItemInTheRow(0, 0);
+                }
+                else
+                {
+                    MarkASpecificItemInTheRow(0, 1);
+                }
+            }
+        }
+
     }
 }

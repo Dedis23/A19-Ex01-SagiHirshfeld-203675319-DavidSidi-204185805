@@ -41,14 +41,18 @@ namespace Infrastructure.Menus
             r_MenuRows.Add(i_MenuRow);
         }
 
+        public void MarkASpecificItemInTheRow(int i_Row, int i_ItemInTheRowToMark)
+        {
+            r_MenuRows[i_Row].MarkASpecificItem(i_ItemInTheRowToMark);
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
             m_PrevSelected = m_CurrSelected;
             if (r_MenuRows.Count != 0)
             {
-                if (m_InputManager.MouseState != m_PrevMouseState
-                    && this.Game.IsMouseVisible)
+                if (m_InputManager.MouseState != m_PrevMouseState)
                 {
                     handleMouseInput();
                 }
@@ -139,8 +143,7 @@ namespace Infrastructure.Menus
                         isThereAnInvokationInput = true;
                         break;
                     }
-                    else if (m_InputManager.ButtonPressed(eInputButtons.Right) &&
-                        this.Game.IsMouseVisible)
+                    else if (m_InputManager.ButtonPressed(eInputButtons.Right))
                     {
                         isThereAnInvokationInput = true;
                         break;

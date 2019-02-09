@@ -86,7 +86,6 @@
     <Compile Include="ServiceInterfaces\IInputManager.cs" />
     <Compile Include="ServiceInterfaces\IScreensMananger.cs" />
     <Compile Include="ServiceInterfaces\ISoundManager.cs" />
-    <Compile Include="Sounds\Sound.cs" />
     <Compile Include="Utilities\RandomGenerator.cs" />
     <Compile Include="Utilities\RandomRoller.cs" />
     <Compile Include="Utilities\Timer.cs" />
