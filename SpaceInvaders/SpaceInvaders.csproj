@@ -66,10 +66,10 @@
     <Compile Include="Drawable Objects\Bullet\Gun.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Drawable Objects\UI\PlayerLivesRow.cs" />
-    <Compile Include="Drawable Objects\UI\PlayerScoreText.cs" />
+    <Compile Include="Drawable Objects\UI\LivesRow.cs" />
+    <Compile Include="Drawable Objects\UI\ScoreText.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Interfaces\IEnemy.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IShooter.cs" />
     <Compile Include="Screens\Menus\MainMenu.cs" />
     <Compile Include="Screens\Menus\ScreenSettings.cs" />

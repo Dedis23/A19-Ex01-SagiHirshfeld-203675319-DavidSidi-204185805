@@ -7,10 +7,6 @@ namespace SpaceInvaders
     {
         private const string k_AssetName = @"Sprites\Ship02_32x32";
 
-        public override Color ScoreColor { get; } = Color.Green;
-
-        public override string Name { get; set; } = "P2";
-
         protected override Keys MoveLeftKey
         {
             get

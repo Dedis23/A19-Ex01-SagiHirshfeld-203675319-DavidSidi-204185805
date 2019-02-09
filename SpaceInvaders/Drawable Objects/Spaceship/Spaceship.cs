@@ -11,11 +11,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    public abstract class Spaceship : Sprite, ICollidable2D, IShooter, IPlayer
+    public abstract class Spaceship : Sprite, ICollidable2D, IShooter
     {
         private const string k_ShootSoundEffectAssetName = @"Audio\SSGunShot";
         private const string k_OnBulletHitSoundEffectAssetName = @"Audio\LifeDie";
-        private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_VelocityScalar = 145;
         private const int k_MaxBulletsInScreen = 3;
         private const int k_StartingLivesCount = 3;
@@ -27,10 +26,8 @@ namespace SpaceInvaders
         private readonly Gun r_Gun;
         private readonly Vector2 r_ShootingDirectionVector = new Vector2(0, -1);
 
-        public event EventHandler<EventArgs> LivesCountChanged;
-        public event EventHandler<EventArgs> ScoreChanged;
+        public event Action<int> LivesCountChanged;
 
-        private int m_Score;
         private int m_Lives;
         private SoundEffectInstance m_OnBulletHitSoundEffectInstance;
 
@@ -46,24 +43,6 @@ namespace SpaceInvaders
 
         public Color BulletsColor { get; } = Color.Red;
 
-        public abstract Color ScoreColor { get; }
-
-        public abstract string Name { get; set; }
-
-        public int Score
-        {
-            get
-            {
-                return m_Score;
-            }
-
-            set
-            {
-                m_Score = value > 0 ? value : 0;
-                ScoreChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public int Lives
         {
             get { return m_Lives; }
@@ -73,7 +52,7 @@ namespace SpaceInvaders
                 if (m_Lives != value)
                 {
                     m_Lives = value;
-                    LivesCountChanged?.Invoke(this, EventArgs.Empty);
+                    LivesCountChanged?.Invoke(value);
                 }
             }
         }
@@ -191,7 +170,6 @@ namespace SpaceInvaders
         {
             this.Vulnerable = false;
             Lives--;
-            Score -= k_ScorePenaltyForBulletHit;
 
             if (Lives == 0)
             {
@@ -218,7 +196,7 @@ namespace SpaceInvaders
             Visible = false;
         }
 
-        public void PrepareForNewLevel()
+        public void ResetEverythingButLives()
         {
             r_Gun.Reset();
             Animations.Reset();
@@ -229,10 +207,9 @@ namespace SpaceInvaders
             this.Vulnerable = IsAlive;
         }
 
-        public void ResetScoreAndLives()
+        public void ResetLives()
         {
             Lives = k_StartingLivesCount;
-            Score = 0;
         }
 
         protected override void OnDisposed(object sender, EventArgs args)

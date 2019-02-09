@@ -17,20 +17,20 @@ namespace Infrastructure.Managers
             AddServiceToGame((typeof(ISoundManager)));
         }
 
-        public bool IsAllSoundMuted
+        public bool MuteAllSound
         {
             get
             {
-                return IsMediaMuted && AreSoundEffectsMuted;
+                return MuteMedia && MuteSoundEffects;
             }
 
             set
             {
-                IsMediaMuted = AreSoundEffectsMuted = value;
+                MuteMedia = MuteSoundEffects = value;
             }
         }
 
-        public bool IsMediaMuted
+        public bool MuteMedia
         {
             get
             {
@@ -43,30 +43,30 @@ namespace Infrastructure.Managers
             }
         }
 
-        private float m_SoundEffectsMasterVolumeBeforeMute;
-        private bool m_AreSoundEffectsMuted;
+        private float m_SoundEffectsVolumeWhenMuted;
+        private bool m_MuteSoundEffects;
 
-        public bool AreSoundEffectsMuted
+        public bool MuteSoundEffects
         {
             get
             {
-                return m_AreSoundEffectsMuted;
+                return m_MuteSoundEffects;
             }
 
             set
             {
-                if (m_AreSoundEffectsMuted != value)
+                if (m_MuteSoundEffects != value)
                 {
-                    m_AreSoundEffectsMuted = value;
-                    if (m_AreSoundEffectsMuted)
+                    m_MuteSoundEffects = value;
+                    if (m_MuteSoundEffects)
                     {
-                        m_SoundEffectsMasterVolumeBeforeMute = SoundEffect.MasterVolume;
+                        m_SoundEffectsVolumeWhenMuted = SoundEffect.MasterVolume;
                         SoundEffect.MasterVolume = 0;
                     }
 
                     else
                     {
-                        SoundEffect.MasterVolume = m_SoundEffectsMasterVolumeBeforeMute;
+                        SoundEffect.MasterVolume = m_SoundEffectsVolumeWhenMuted;
                     }
                 }
             }
@@ -90,12 +90,22 @@ namespace Infrastructure.Managers
         {
             get
             {
-                return SoundEffect.MasterVolume;
+                return MuteSoundEffects ? m_SoundEffectsVolumeWhenMuted : SoundEffect.MasterVolume;
             }
 
             set
             {
-                SoundEffect.MasterVolume = MathHelper.Clamp(value, 0, 1);
+                value = MathHelper.Clamp(value, 0, 1);
+
+                if (MuteSoundEffects)
+                {
+                    m_SoundEffectsVolumeWhenMuted = value;
+                }
+
+                else
+                {
+                    SoundEffect.MasterVolume = value;
+                }
             }
 
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace Infrastructure
@@ -24,6 +25,12 @@ namespace Infrastructure
         {
             i_SoundEffectInstance.Pause();
             i_SoundEffectInstance.Play();
+        }
+
+        public static void Play(this Song i_Song, bool i_PlayLooped)
+        {
+            MediaPlayer.Play(i_Song);
+            MediaPlayer.IsRepeating = i_PlayLooped;
         }
     }
 }

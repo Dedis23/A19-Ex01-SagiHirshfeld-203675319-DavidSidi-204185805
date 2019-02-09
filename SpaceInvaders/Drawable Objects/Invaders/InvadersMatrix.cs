@@ -53,7 +53,6 @@ namespace SpaceInvaders
         {
             base.Update(gameTime);
 
-            /// Look for a better way
             m_TimerForJumps.Update(gameTime);
         }
 

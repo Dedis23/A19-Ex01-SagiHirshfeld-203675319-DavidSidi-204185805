@@ -21,7 +21,7 @@
 
 #begin ../../../../../../../temp/XNA_Assets/Ex03/Sounds/BGMusic.wav
 /importer:WavImporter
-/processor:SoundEffectProcessor
+/processor:SongProcessor
 /processorParam:Quality=Best
 /build:../../../../../../../temp/XNA_Assets/Ex03/Sounds/BGMusic.wav;Audio/BGMusic.wav
 

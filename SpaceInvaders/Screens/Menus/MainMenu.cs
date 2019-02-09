@@ -7,6 +7,8 @@ namespace SpaceInvaders
 {
     public class MainMenu : SpaceInvadersMenuScreen
     {
+        private GameState m_GameState;
+
         public MainMenu(Game i_Game) : base(i_Game, "Main Menu")
         {
         }
@@ -21,10 +23,14 @@ namespace SpaceInvaders
                new MenuItem(activateTwoPlayerMode, Keys.PageDown, new TextSprite(this.Game, k_MenuItemFontAsset)
                { Text = "Two", Position = new Vector2(m_NextRowPosition.X + 700, m_NextRowPosition.Y) })
             };
+
+            m_GameState = Game.Services.GetService<GameState>();
+            int multiplayerItemToMark = m_GameState.IsMultiplayer ? 1 : 0;
+
             AddNextRow(new MenuItemsRow(
                 this, 
                 new AnimatedTextSprite(this.Game, k_MenuItemFontAsset) { Text = "Players:" },
-                Color.White, Color.Orange, 0,
+                Color.White, Color.Orange, multiplayerItemToMark,
                 multiplayerMenuItem));
 
             // Screen Settings
@@ -62,18 +68,12 @@ namespace SpaceInvaders
 
         private void activateOnePlayerMode()
         {
-            // TODO
-            // DEBUG
-            Game.Window.Title = "in: one";
-            // DEBUG
+            m_GameState.IsMultiplayer = false;
         }
 
         private void activateTwoPlayerMode()
         {
-            // TODO
-            // DEBUG
-            Game.Window.Title = "in: two";
-            // DEBUG
+            m_GameState.IsMultiplayer = true;
         }
 
         private void screenSettingsOperation()

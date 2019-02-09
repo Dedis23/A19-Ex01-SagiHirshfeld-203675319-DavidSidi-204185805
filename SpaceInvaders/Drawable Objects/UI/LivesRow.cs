@@ -9,14 +9,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
 {
-    public class PlayerLivesRow : SpriteRow
+    public class LivesRow : SpriteRow
     {
-        private IPlayer m_Player;
         private int m_VisibleSpritesCount;
         private LinkedListNode<Sprite> m_LastVisibleSpriteNode;
 
-        public PlayerLivesRow(IPlayer i_Player)
-            : base(i_Player.Game, i_Player.Lives, i_Player.AssetName)
+        public LivesRow(Game i_Game, int i_LivesNum, string i_IconAssetName )
+            : base(i_Game, i_LivesNum, i_IconAssetName)
         {
             BlendState = BlendState.NonPremultiplied;
             this.Opacity /= 2;
@@ -24,28 +23,24 @@ namespace SpaceInvaders
             InsertionOrder = Order.RightToLeft;
             RemovalOrder = Order.LeftToRight;
 
-            m_Player = i_Player;
-            m_Player.LivesCountChanged += onPlayerLivesCountChanged;
-            m_Player.Disposed += onPlayerDispose;
-
-            m_VisibleSpritesCount = m_Player.Lives;
+            m_VisibleSpritesCount = i_LivesNum;
             m_LastVisibleSpriteNode = r_SpritesLinkedList.Last;
         }
 
-        private void onPlayerLivesCountChanged(object sender, EventArgs e)
+        public void UpdateLivesCount(int i_NewLivesCount)
         {
-            if (m_Player.Lives < m_VisibleSpritesCount)
+            if (i_NewLivesCount < m_VisibleSpritesCount)
             {
-                for (int i = 0; i < m_VisibleSpritesCount - m_Player.Lives; i++)
+                for (int i = 0; i < m_VisibleSpritesCount - i_NewLivesCount; i++)
                 {
                     m_LastVisibleSpriteNode.Value.Visible = false;
                     m_LastVisibleSpriteNode = m_LastVisibleSpriteNode.Previous;
                 }
             }
 
-            else if (m_Player.Lives > m_VisibleSpritesCount)
+            else if (i_NewLivesCount > m_VisibleSpritesCount)
             {
-                for (int i = 0; i < m_Player.Lives - m_VisibleSpritesCount; i++)
+                for (int i = 0; i < i_NewLivesCount - m_VisibleSpritesCount; i++)
                 {
                     if (m_LastVisibleSpriteNode == null)
                     {
@@ -61,13 +56,7 @@ namespace SpaceInvaders
                 }
             }
 
-            m_VisibleSpritesCount = m_Player.Lives;
-        }
-
-        private void onPlayerDispose(object sender, EventArgs e)
-        {
-            m_Player.LivesCountChanged -= onPlayerLivesCountChanged;
-            m_Player.Disposed -= onPlayerDispose;
+            m_VisibleSpritesCount = i_NewLivesCount;
         }
     }
 }

@@ -9,15 +9,17 @@ namespace SpaceInvaders
 {
     public class CollisionHandler : GameService, ICollisionHandler
     {
+        private const int k_ScorePenaltyForBulletHit = 1100;
         private const int k_ChanceToDestroyEnemyBullet = 50;
         private readonly Queue<Sprite> r_KillQueue;
+        private readonly Random r_RandomGenerator;
+        private readonly GameState r_GameState;
 
         public event Action EnemyCollidedWithSpaceship;
 
-        private readonly Random r_RandomGenerator;
-
         public CollisionHandler(Game i_Game) : base(i_Game)
         {
+            r_GameState = Game.Services.GetService<GameState>();
             r_KillQueue = new Queue<Sprite>();
             r_RandomGenerator = RandomGenerator.Instance;
         }
@@ -106,14 +108,33 @@ namespace SpaceInvaders
                 {
                     r_KillQueue.Enqueue(i_Enemy as Sprite);
                 }
-                
-                (i_Bullet.Shooter as Spaceship).Score += i_Enemy.PointsValue;
+
+                if (i_Bullet.Shooter is Player1Spaceship)
+                {
+                    r_GameState.Player1Score += i_Enemy.PointsValue;
+                }
+
+                else if (i_Bullet.Shooter is Player2Spaceship)
+                {
+                    r_GameState.Player2Score += i_Enemy.PointsValue;
+                }
             }
         }
 
         private void handleBulletHitsSpaceship(Bullet i_Bullet, Spaceship i_Spaceship)
         {
             r_KillQueue.Enqueue(i_Bullet);
+
+            if (i_Spaceship is Player1Spaceship)
+            {
+                r_GameState.Player1Score -= k_ScorePenaltyForBulletHit;
+            }
+
+            else if (i_Spaceship is Player2Spaceship)
+            {
+                r_GameState.Player2Score -= k_ScorePenaltyForBulletHit;
+            }
+
             i_Spaceship.TakeBulletHit();
         }
 

@@ -1,8 +1,11 @@
-﻿using Infrastructure.Managers;
+﻿using System;
+using Infrastructure;
+using Infrastructure.Managers;
 using Infrastructure.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace SpaceInvaders
 {
@@ -10,11 +13,15 @@ namespace SpaceInvaders
     {
         private const float k_InitialMediaVolume = 0.5f;
         private const float k_InitialSoundEffectsVolume = 0.5f;
+
+        public GameState GameState { get; set; }
+
         public SpaceInvadersGame()
         {
             this.Window.Title = "Space Invaders";
             this.IsMouseVisible = true;
             this.Background = new SpaceBG(this);
+            this.GameState = new GameState(this);
             ScreensMananger screensMananger = new ScreensMananger(this);
             screensMananger.Push(new PlayScreen(this));
             screensMananger.SetCurrentScreen(new WelcomeScreen(this));
@@ -30,9 +37,14 @@ namespace SpaceInvaders
         protected override void LoadContent()
         {
             base.LoadContent();
-            SoundEffectInstance backgroundMusic = Content.Load<SoundEffect>(@"Audio\BGMusic").CreateInstance();
-            backgroundMusic.IsLooped = true;
-            backgroundMusic.Play();
+            playBackgroundMusic();
+        }
+
+        private void playBackgroundMusic()
+        {
+            const bool v_Looped = true;
+            Song bgMusic = Content.Load<Song>(@"Audio\BGMusic");
+            bgMusic.Play(v_Looped);
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,7 +53,7 @@ namespace SpaceInvaders
 
             if (InputManager.KeyPressed(Keys.M))
             {
-                SoundManager.IsAllSoundMuted = !SoundManager.IsAllSoundMuted;
+                SoundManager.MuteAllSound = !SoundManager.MuteAllSound;
             }
         }
     }
