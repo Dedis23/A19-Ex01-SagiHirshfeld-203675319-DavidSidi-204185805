@@ -76,7 +76,9 @@
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\LevelTransitionScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />
-    <Compile Include="Screens\PlayScreen.cs" />
+    <Compile Include="Screens\PlayScreen.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Screens\WelcomeScreen.cs" />
     <Compile Include="Screens\Menus\SoundSettings.cs" />
     <Compile Include="SpaceInvadersGame.cs" />

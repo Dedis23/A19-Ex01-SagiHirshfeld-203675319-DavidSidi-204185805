@@ -5,7 +5,6 @@ using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-
 namespace SpaceInvaders
 {
     public class DancingBarriersRow : SpriteRow<Barrier>

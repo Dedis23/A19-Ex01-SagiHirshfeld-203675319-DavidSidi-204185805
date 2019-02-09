@@ -17,12 +17,11 @@ namespace SpaceInvaders
         private const float k_MenuTitleY = 25.0f;
         protected Vector2 m_NextRowPosition;
         protected TextSprite m_TitleText;
+        private bool m_ShowTitle;
         protected readonly GraphicsDeviceManager r_GraphicsDevice;
         protected ISoundManager m_SoundManager;
         private SoundEffectInstance m_MenuMoveSoundEffectInstance;
-
         private Vector2 m_ScreenSize;
-        bool m_ShowTitle;
 
         public SpaceInvadersMenuScreen(Game i_Game, string i_MenuTitle) : base(i_Game, Color.White, Color.Orange)
         {

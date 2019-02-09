@@ -1,10 +1,6 @@
-﻿using Infrastructure.ObjectModel;
+﻿using System.Collections.Generic;
+using Infrastructure.ObjectModel;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders
@@ -37,7 +33,6 @@ namespace SpaceInvaders
                     m_LastVisibleSpriteNode = m_LastVisibleSpriteNode.Previous;
                 }
             }
-
             else if (i_NewLivesCount > m_VisibleSpritesCount)
             {
                 for (int i = 0; i < i_NewLivesCount - m_VisibleSpritesCount; i++)
@@ -52,7 +47,6 @@ namespace SpaceInvaders
                     }
 
                     m_LastVisibleSpriteNode.Value.Visible = true;
-
                 }
             }
 

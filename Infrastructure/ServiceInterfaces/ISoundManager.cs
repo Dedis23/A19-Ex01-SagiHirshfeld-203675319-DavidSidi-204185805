@@ -10,9 +10,13 @@ namespace Infrastructure.ServiceInterfaces
     public interface ISoundManager
     {
         bool MuteAllSound { get; set; }
+
         bool MuteMedia { get; set; }
+
         bool MuteSoundEffects { get; set; }
+
         float MediaVolume { get; set; }
+
         float SoundEffectsVolume { get; set; }
     }
 }

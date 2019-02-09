@@ -14,7 +14,7 @@ namespace Infrastructure.Managers
 
         protected override void RegisterAsService()
         {
-            AddServiceToGame((typeof(ISoundManager)));
+            AddServiceToGame(typeof(ISoundManager));
         }
 
         public bool MuteAllSound
@@ -63,14 +63,12 @@ namespace Infrastructure.Managers
                         m_SoundEffectsVolumeWhenMuted = SoundEffect.MasterVolume;
                         SoundEffect.MasterVolume = 0;
                     }
-
                     else
                     {
                         SoundEffect.MasterVolume = m_SoundEffectsVolumeWhenMuted;
                     }
                 }
             }
-            
         }
 
         public float MediaVolume
@@ -101,13 +99,11 @@ namespace Infrastructure.Managers
                 {
                     m_SoundEffectsVolumeWhenMuted = value;
                 }
-
                 else
                 {
                     SoundEffect.MasterVolume = value;
                 }
             }
-
         }
     }
 }

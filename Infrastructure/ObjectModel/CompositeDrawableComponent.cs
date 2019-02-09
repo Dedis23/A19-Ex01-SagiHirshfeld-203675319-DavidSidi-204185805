@@ -1,4 +1,4 @@
-﻿//*** Guy Ronen © 2008-2011 ***//
+﻿////*** Guy Ronen © 2008-2011 ***////
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace Infrastructure.ObjectModel
         where ComponentType : IGameComponent
     {
         // the entire collection, for general collection methods (count, foreach, etc.):
-        Collection<ComponentType> m_Components = new Collection<ComponentType>();
+        private Collection<ComponentType> m_Components = new Collection<ComponentType>();
 
         #region Selective Collections
         // selective holders for specific operations each frame:
@@ -32,6 +32,7 @@ namespace Infrastructure.ObjectModel
 
         #region Events
         public event EventHandler<GameComponentEventArgs<ComponentType>> ComponentAdded;
+
         public event EventHandler<GameComponentEventArgs<ComponentType>> ComponentRemoved;
         #endregion //Events
 
@@ -94,7 +95,6 @@ namespace Infrastructure.ObjectModel
                 m_Sprites.Remove(sprite);
                 sprite.DrawOrderChanged -= childDrawOrderChanged;
             }
-
             else
             {
                 IDrawable drawable = e.GameComponent as IDrawable;
@@ -147,7 +147,8 @@ namespace Infrastructure.ObjectModel
 
         public CompositeDrawableComponent(Game i_Game)
             : base(i_Game)
-        { }
+        {
+        }
 
         private void insertSorted(IUpdateable i_Updatable)
         {
@@ -156,6 +157,7 @@ namespace Infrastructure.ObjectModel
             {
                 idx = ~idx;
             }
+
             m_UpdateableComponents.Insert(idx, i_Updatable);
         }
 
@@ -172,7 +174,6 @@ namespace Infrastructure.ObjectModel
 
                 m_Sprites.Insert(idx, sprite);
             }
-
             else
             {
                 int idx = m_DrawableComponents.BinarySearch(i_Drawable, DrawableComparer<IDrawable>.Default);
@@ -180,6 +181,7 @@ namespace Infrastructure.ObjectModel
                 {
                     idx = ~idx;
                 }
+
                 m_DrawableComponents.Insert(idx, i_Drawable);
             }
         }
@@ -254,8 +256,13 @@ namespace Infrastructure.ObjectModel
             }
 
             m_SpriteBatch.Begin(
-                this.SpritesSortMode, this.BlendState, this.SamplerState,
-                this.DepthStencilState, this.RasterizerState, this.Shader, this.TransformMatrix);
+                this.SpritesSortMode,
+                this.BlendState,
+                this.SamplerState,
+                this.DepthStencilState,
+                this.RasterizerState,
+                this.Shader,
+                this.TransformMatrix);
 
             foreach (Sprite sprite in m_Sprites)
             {
@@ -364,7 +371,9 @@ namespace Infrastructure.ObjectModel
         #endregion ICollection<ComponentType> Implementations
 
         #region SpriteBatch Advanced Support
+
         protected SpriteBatch m_SpriteBatch;
+
         public SpriteBatch SpriteBatch
         {
             get { return m_SpriteBatch; }
@@ -372,6 +381,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected BlendState m_BlendState = BlendState.AlphaBlend;
+
         public BlendState BlendState
         {
             get { return m_BlendState; }
@@ -379,6 +389,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected SpriteSortMode m_SpritesSortMode = SpriteSortMode.Deferred;
+
         public SpriteSortMode SpritesSortMode
         {
             get { return m_SpritesSortMode; }
@@ -386,6 +397,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected SamplerState m_SamplerState = null;
+
         public SamplerState SamplerState
         {
             get { return m_SamplerState; }
@@ -393,6 +405,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected DepthStencilState m_DepthStencilState = null;
+
         public DepthStencilState DepthStencilState
         {
             get { return m_DepthStencilState; }
@@ -400,6 +413,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected RasterizerState m_RasterizerState = null;
+
         public RasterizerState RasterizerState
         {
             get { return m_RasterizerState; }
@@ -407,6 +421,7 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Effect m_Shader = null;
+
         public Effect Shader
         {
             get { return m_Shader; }
@@ -414,14 +429,16 @@ namespace Infrastructure.ObjectModel
         }
 
         protected Matrix m_TransformMatrix = Matrix.Identity;
+
         public Matrix TransformMatrix
         {
             get { return m_TransformMatrix; }
             set { m_TransformMatrix = value; }
         }
-        #endregion SpriteBatch Advanced Support
 
+        #endregion SpriteBatch Advanced Support
         #region Helping Properties
+
         protected Vector2 CenterOfViewPort
         {
             get
@@ -434,6 +451,7 @@ namespace Infrastructure.ObjectModel
         {
             get { return this.Game.Content; }
         }
+
         #endregion Helping Properties
     }
 
@@ -447,8 +465,14 @@ namespace Infrastructure.ObjectModel
         /// </summary>
         public static readonly UpdateableComparer Default;
 
-        static UpdateableComparer() { Default = new UpdateableComparer(); }
-        private UpdateableComparer() { }
+        static UpdateableComparer()
+        {
+            Default = new UpdateableComparer();
+        }
+
+        private UpdateableComparer()
+        {
+        }
 
         public int Compare(IUpdateable x, IUpdateable y)
         {
@@ -493,8 +517,14 @@ namespace Infrastructure.ObjectModel
         /// </summary>
         public static readonly DrawableComparer<TDrawble> Default;
 
-        static DrawableComparer() { Default = new DrawableComparer<TDrawble>(); }
-        private DrawableComparer() { }
+        static DrawableComparer()
+        {
+            Default = new DrawableComparer<TDrawble>();
+        }
+
+        private DrawableComparer()
+        {
+        }
 
         #region IComparer<IDrawable> Members
 

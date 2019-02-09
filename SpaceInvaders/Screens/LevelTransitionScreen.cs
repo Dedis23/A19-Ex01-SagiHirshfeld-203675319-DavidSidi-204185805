@@ -41,7 +41,6 @@ namespace SpaceInvaders
             m_Timer.Notify += onTimerNotification;
             m_Timer.Activate();
             this.Add(m_Timer);
-
         }
 
         public override void Initialize()

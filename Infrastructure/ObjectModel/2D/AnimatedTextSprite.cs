@@ -20,7 +20,7 @@ namespace Infrastructure.ObjectModel
 
         public override void Initialize()
         {
-            base.LoadContent();
+            this.LoadContent();
         }
 
         public void StartAnimation()

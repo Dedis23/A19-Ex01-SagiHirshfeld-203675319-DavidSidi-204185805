@@ -1,30 +1,21 @@
-﻿using Infrastructure.ObjectModel.Screens;
+﻿using System.Collections.Generic;
+using Infrastructure.ObjectModel;
+using Infrastructure.ObjectModel.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using Infrastructure.ObjectModel;
-using System.Text;
-using Infrastructure.ServiceInterfaces;
-using Microsoft.Xna.Framework.Audio;
-using Infrastructure;
 
 namespace SpaceInvaders
 {
-    class PlayScreen : GameScreen
+    public class PlayScreen : GameScreen
     {
         private const string k_ScoreFontAsset = @"Fonts\ComicSansMS";
-
         private const float k_SpaceshipPositionYModifier = 1.5f;
         private const float k_LivesGapModifier = 0.7f;
         private const float k_GapBetweenRowsModifier = 1.2f;
         private const int k_LivesDistanceFromHorizontalScreenBound = 15;
-
         private GameState m_GameState;
-
         private CollisionHandler m_CollisionHandler;
-
         private Spaceship m_Player1Spaceship;
         private Spaceship m_Player2Spaceship;
         private LivesRow m_Player1Lives;
@@ -34,7 +25,6 @@ namespace SpaceInvaders
         private Mothership m_Mothership;
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
-
         private bool m_FirstLevelHasBeenTransitionedTo = false;
         private bool m_GameOver = false;
         private bool m_LevelCleared = false;
@@ -42,19 +32,15 @@ namespace SpaceInvaders
         public PlayScreen(Game i_Game) : base(i_Game)
         {            
             this.BlendState = BlendState.NonPremultiplied;
-
             m_GameState = Game.Services.GetService<GameState>();
-
             m_CollisionHandler = new CollisionHandler(i_Game);
             m_CollisionHandler.EnemyCollidedWithSpaceship += () => m_GameOver = true;
-
             loadDrawables();
         }
-        
-        protected override void  OnActivated()
+
+        protected override void OnActivated()
         {
             base.OnActivated();
-
             if (!m_FirstLevelHasBeenTransitionedTo)
             {
                 ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
@@ -162,7 +148,6 @@ namespace SpaceInvaders
                 m_GameState.LevelNumber++;
                 ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
             }
-
             else if (m_GameOver)
             {
                 this.ScreensManager.SetCurrentScreen(new GameOverScreen(Game));
@@ -224,19 +209,16 @@ namespace SpaceInvaders
             {
                 Game.Exit();
             }
-
-            /// This is here just to enable skipping to the game over screen - remove before submition
             else if (InputManager.KeyPressed(Keys.Delete))
             {
+                /// This is here just to enable skipping to the game over screen - remove before submition
                 m_GameOver = true;
             }
-
-            /// Similarly, this is here to test level transitions
             else if (InputManager.KeyPressed(Keys.Insert))
             {
+                /// Similarly, this is here to test level transitions
                 m_LevelCleared = true;
             }
-
             else if (InputManager.KeyPressed(Keys.P))
             {
                 this.ScreensManager.SetCurrentScreen(new PauseScreen(Game));

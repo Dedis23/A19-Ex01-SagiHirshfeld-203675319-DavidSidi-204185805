@@ -473,12 +473,18 @@ namespace Infrastructure.ObjectModel
         }
 
         public event Action<object> Dying;
+
         public event Action<object> Died;
 
         private SpriteAnimator m_DeathAnimation;
 
         public SpriteAnimator DeathAnimation
         {
+            get
+            {
+                return m_DeathAnimation;
+            }
+
             set
             {
                 if (m_DeathAnimation != null)
@@ -492,11 +498,6 @@ namespace Infrastructure.ObjectModel
                     m_DeathAnimation.Finished += onDeathAnimationFinished;
                     m_DeathAnimation.Pause();
                 }
-            }
-
-            get
-            {
-                return m_DeathAnimation;
             }
         }
 

@@ -9,11 +9,11 @@ namespace Infrastructure.Menus
 {
     public class MenuItemsRow : DrawableGameComponent
     {
+        private readonly List<MenuItem> r_Items;
         private IInputManager m_InputManager;
         private int m_LastItem;
         private int m_CurrentItem;
         private GameScreen m_GameScreen;
-        private readonly List<MenuItem> r_Items;
         protected AnimatedTextSprite m_MainRowTextSprite;
         private Color m_NonSelectedColor;
         private Color m_SelectedColor;
@@ -21,11 +21,13 @@ namespace Infrastructure.Menus
         protected Vector2 m_NextPositionInTheRow;
         protected Keys m_RightKey;
         protected Keys m_LeftKey;
-        protected bool m_ChangeInTheRow ;
+        protected bool m_ChangeInTheRow;
         private bool m_IsActive;
         private bool m_IsLoopedItems;
 
-        public MenuItemsRow(GameScreen i_GameScreen, AnimatedTextSprite i_RowText,
+        public MenuItemsRow(
+            GameScreen i_GameScreen,
+            AnimatedTextSprite i_RowText,
             Color i_NonSelectedColor,
             Color i_SelectedColor,
             int i_DefaultItem = 0,
@@ -49,7 +51,9 @@ namespace Infrastructure.Menus
             loadMenuSpritesToGameScreen();
         }
 
-        public MenuItemsRow(GameScreen i_GameScreen, AnimatedTextSprite i_RowText,
+        public MenuItemsRow(
+            GameScreen i_GameScreen,
+            AnimatedTextSprite i_RowText,
             Color i_NonSelectedColor,
             Color i_SelectedColor,
             MenuItem i_Items)
@@ -57,7 +61,9 @@ namespace Infrastructure.Menus
         {
         }
 
-        public MenuItemsRow(GameScreen i_GameScreen, AnimatedTextSprite i_RowText,
+        public MenuItemsRow(
+            GameScreen i_GameScreen,
+            AnimatedTextSprite i_RowText,
             Color i_NonSelectedColor,
             Color i_SelectedColor,
             int i_DefaultItem,
@@ -113,6 +119,7 @@ namespace Infrastructure.Menus
             {
                 r_Items[m_LastItem].Sprite.TintColor = m_NonSelectedColor;
             }
+
             if (r_Items[m_CurrentItem].Sprite != null)
             {
                 r_Items[m_CurrentItem].Sprite.TintColor = m_SelectedColor;
@@ -140,6 +147,7 @@ namespace Infrastructure.Menus
             {
                 m_GameScreen.Add(item.Sprite);
             }
+
             m_GameScreen.Add(m_MainRowTextSprite);
             m_GameScreen.Add(this);
             UpdateSelectedColor();

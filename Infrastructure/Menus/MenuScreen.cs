@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Screens;
@@ -18,7 +18,8 @@ namespace Infrastructure.Menus
         protected Keys m_MenuUpKey;
         protected Keys m_MenuDownKey;
 
-        public MenuScreen(Game i_Game,
+        public MenuScreen(
+            Game i_Game,
             Color i_NonSelectedRowColor,
             Color i_SelectedRowColor,
             Keys i_MenuUpKey = Keys.Up,
@@ -60,6 +61,7 @@ namespace Infrastructure.Menus
                 {
                     handleKeyboardInput();
                 }
+
                 handleMenuSoundEffects();
             }
         }
@@ -72,6 +74,7 @@ namespace Infrastructure.Menus
                 {
                     PlayMenuMoveSoundEffect();
                 }
+
                 if (m_CurrSelected != m_PrevSelected)
                 {
                     PlayMenuMoveSoundEffect();
@@ -123,11 +126,13 @@ namespace Infrastructure.Menus
                     break;
                 }
             }
+
             checkScrollWheel();
             if (!isMouseOnARow)
             {
                 UpdateSelected(m_CurrSelected);
             }
+
             m_PrevMouseState = m_InputManager.MouseState;
         }
 
@@ -149,6 +154,7 @@ namespace Infrastructure.Menus
                         break;
                     }
                 }
+
                 if (isThereAnInvokationInput)
                 {
                     r_MenuRows[i_IndexToInvoke].IncreaseCurrentItem();
@@ -185,6 +191,7 @@ namespace Infrastructure.Menus
                     r_MenuRows[m_CurrSelected].DecreaseCurrentItem();
                 }
             }
+
             if (scrollWheelActivity)
             {
                 r_MenuRows[m_CurrSelected].UpdateSelectedColor();

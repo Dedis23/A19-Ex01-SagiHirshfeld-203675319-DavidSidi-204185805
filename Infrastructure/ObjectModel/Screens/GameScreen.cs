@@ -1,4 +1,4 @@
-﻿//*** Guy Ronen © 2008-2011 ***//
+﻿////*** Guy Ronen © 2008-2011 ***////
 using System;
 using Infrastructure.Managers;
 using Infrastructure.ServiceInterfaces;
@@ -44,7 +44,7 @@ namespace Infrastructure.ObjectModel.Screens
 
     public abstract class GameScreen : CompositeDrawableComponent<IGameComponent>
     {
-        //CTOR:
+        ////CTOR:
         public GameScreen(Game i_Game)
             : base(i_Game)
         {
@@ -69,6 +69,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         public event EventHandler<StateChangedEventArgs> StateChanged;
+
         private void OnStateChanged(StateChangedEventArgs args)
         {
             switch (args.CurrentState)
@@ -97,8 +98,9 @@ namespace Infrastructure.ObjectModel.Screens
             }
         }
 
-        //PROPS:
+        ////PROPS:
         protected IScreensMananger m_ScreensManager;
+
         public IScreensMananger ScreensManager
         {
             get { return m_ScreensManager; }
@@ -106,6 +108,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         protected bool m_IsModal = true;
+
         public bool IsModal // background screen should not be updated
         {
             get { return m_IsModal; }
@@ -113,6 +116,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         protected bool m_IsOverlayed;
+
         public bool IsOverlayed // background screen should be drawn
         {
             get { return m_IsOverlayed; }
@@ -120,6 +124,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         protected GameScreen m_PreviousScreen;
+
         public GameScreen PreviousScreen
         {
             get { return m_PreviousScreen; }
@@ -127,6 +132,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         protected bool m_HasFocus;
+
         public bool HasFocus // should handle input
         {
             get { return m_HasFocus; }
@@ -134,6 +140,7 @@ namespace Infrastructure.ObjectModel.Screens
         }
 
         protected float m_BlackTintAlpha = 0;
+
         public float BlackTintAlpha
         {
             get { return m_BlackTintAlpha; }
@@ -232,8 +239,9 @@ namespace Infrastructure.ObjectModel.Screens
             m_TransitionPosition = 0;
         }
 
-        Texture2D m_GradientTexture;
-        Texture2D m_BlankTexture;
+        private Texture2D m_GradientTexture;
+        private Texture2D m_BlankTexture;
+
         protected override void LoadContent()
         {
             base.LoadContent();
@@ -283,9 +291,10 @@ namespace Infrastructure.ObjectModel.Screens
 
             SpriteBatch.Begin();
             byte zeroByte = 0;
-            SpriteBatch.Draw(background,
-                             new Rectangle(0, 0, viewport.Width, viewport.Height),
-                             new Color(zeroByte, zeroByte, zeroByte, i_Alpha));
+            SpriteBatch.Draw(
+                background,
+                new Rectangle(0, 0, viewport.Width, viewport.Height),
+                new Color(zeroByte, zeroByte, zeroByte, i_Alpha));
             SpriteBatch.End();
         }
 
@@ -299,6 +308,7 @@ namespace Infrastructure.ObjectModel.Screens
             get { return m_ActivationLength; }
             protected set { m_ActivationLength = value; }
         }
+
         private TimeSpan m_ActivationLength = TimeSpan.Zero;
 
         /// <summary>
@@ -310,10 +320,11 @@ namespace Infrastructure.ObjectModel.Screens
             get { return m_DeactivationLength; }
             protected set { m_DeactivationLength = value; }
         }
+
         private TimeSpan m_DeactivationLength = TimeSpan.Zero;
 
-
         private float m_TransitionPosition = 0;
+
         /// <summary>
         /// Gets the current position of the screen transition, ranging
         /// from 0 (deactive, no transition) to 1 (active, no transition).
@@ -374,7 +385,7 @@ namespace Infrastructure.ObjectModel.Screens
         /// <summary>
         /// Helper for updating the screen transition position.
         /// </summary>
-        void UpdateTransition(GameTime i_GameTime)
+        public void UpdateTransition(GameTime i_GameTime)
         {
             bool transionEnded = false;
 
@@ -433,7 +444,10 @@ namespace Infrastructure.ObjectModel.Screens
 
         protected byte TransitionAlpha
         {
-            get { return (byte)(Byte.MaxValue * m_TransitionPosition * m_BlackTintAlpha); }
+            get
+            {
+                return (byte)(byte.MaxValue * m_TransitionPosition * m_BlackTintAlpha);
+            }
         }
 
         protected bool m_UseFadeTransition = true;
@@ -447,4 +461,3 @@ namespace Infrastructure.ObjectModel.Screens
         #endregion Transitions Support
     }
 }
-

@@ -68,7 +68,7 @@ namespace SpaceInvaders
                 for (int col = 0; col < columnCount; col++)
                 {
                     currentInvader = createAndAddNewInvader(row);
-                    currentInvader.ChanceToShoot = k_BaseChanceToShootPerInvader + i_DifficultyLevel * k_ChanceToShootLevelMultiplier;
+                    currentInvader.ChanceToShoot = k_BaseChanceToShootPerInvader + (i_DifficultyLevel * k_ChanceToShootLevelMultiplier);
                     currentInvader.PointsValue += i_DifficultyLevel * k_ScoreBonusPerDifficultyLevel;
                     currentInvader.Position = nextInvaderPosition;
                     nextInvaderPosition.X += k_XGapBetweenInvaders;
@@ -87,12 +87,10 @@ namespace SpaceInvaders
             {
                 newInvader = new InvaderPink(this.Game, startingCell);
             }
-
             else if (i_RowInMatrix < k_NumOfRowsWithPinkInvaders + k_NumOfRowsWithLightBlueInvaders)
             {
                 newInvader = new InvaderLightBlue(this.Game, startingCell);
             }
-
             else
             {
                 newInvader = new InvaderLightYellow(this.Game, startingCell);

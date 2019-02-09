@@ -113,7 +113,6 @@ namespace SpaceInvaders
                 {
                     r_GameState.Player1Score += i_Enemy.PointsValue;
                 }
-
                 else if (i_Bullet.Shooter is Player2Spaceship)
                 {
                     r_GameState.Player2Score += i_Enemy.PointsValue;
@@ -129,7 +128,6 @@ namespace SpaceInvaders
             {
                 r_GameState.Player1Score -= k_ScorePenaltyForBulletHit;
             }
-
             else if (i_Spaceship is Player2Spaceship)
             {
                 r_GameState.Player2Score -= k_ScorePenaltyForBulletHit;

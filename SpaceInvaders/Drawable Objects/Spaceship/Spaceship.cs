@@ -65,7 +65,6 @@ namespace SpaceInvaders
             }
         }
 
-
         public Spaceship(string k_AssetName, Game i_Game) : base(k_AssetName, i_Game)
         {
             Lives = k_StartingLivesCount;
@@ -134,12 +133,10 @@ namespace SpaceInvaders
             {
                 m_Velocity.X = k_VelocityScalar * -1;
             }
-
             else if (InputManager.KeyboardState.IsKeyDown(MoveRightKey))
             {
                 m_Velocity.X = k_VelocityScalar;
             }
-
             else
             {
                 m_Velocity.X = 0;
@@ -175,7 +172,6 @@ namespace SpaceInvaders
             {
                 this.Kill();
             }
-
             else
             {
                 Animations["LoseLifeAnimation"].Resume();

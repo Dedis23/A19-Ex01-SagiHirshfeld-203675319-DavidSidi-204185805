@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using System;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using System;
 
 namespace Infrastructure
 {

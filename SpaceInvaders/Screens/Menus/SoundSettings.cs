@@ -16,45 +16,83 @@ namespace SpaceInvaders
             // Toggle Sound
             MenuItem[] toggleSoundMenuItem = new MenuItem[]
             {
-               new MenuItem(toggleAllSound, Keys.PageUp, new TextSprite(this.Game, k_MenuItemFontAsset)
-               { Text = "On",
-                   Position = new Vector2(m_NextRowPosition.X + 575, m_NextRowPosition.Y) }),
-               new MenuItem(toggleAllSound, Keys.PageDown, new TextSprite(this.Game, k_MenuItemFontAsset)
-               { Text = "Off", Position = new Vector2(m_NextRowPosition.X + 725, m_NextRowPosition.Y) })
+               new MenuItem(
+                   toggleAllSound,
+                   Keys.PageUp,
+                   new TextSprite(this.Game, k_MenuItemFontAsset)
+                   {
+                       Text = "On", Position = new Vector2(m_NextRowPosition.X + 575, m_NextRowPosition.Y)
+                   }),
+               new MenuItem(
+                   toggleAllSound,
+                   Keys.PageDown,
+                   new TextSprite(this.Game, k_MenuItemFontAsset)
+                   {
+                       Text = "Off", Position = new Vector2(m_NextRowPosition.X + 725, m_NextRowPosition.Y)
+                   })
             };
             int allSoundStateItemToMark = m_SoundManager.MuteAllSound ? 1 : 0;
-            AddNextRow(new MenuItemsRow(
+            AddNextRow(
+                new MenuItemsRow(
                 this,
-                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset) { Text = "Toggle Sound:" },
-                Color.White, Color.Orange, allSoundStateItemToMark,
+                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset)
+                {
+                    Text = "Toggle Sound:"
+                },
+                Color.White,
+                Color.Orange,
+                allSoundStateItemToMark,
                 toggleSoundMenuItem));
 
             // Background Music Volume
-            AddNextRow(new BarMenuItem(
+            AddNextRow(
+                new BarMenuItem(
                 this,
-                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset) { Text = "Background Music Volume:" },
-                Color.LightYellow, Color.White, Color.Orange,
+                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset)
+                {
+                    Text = "Background Music Volume:"
+                },
+                Color.LightYellow,
+                Color.White,
+                Color.Orange,
                 new Rectangle((int)m_NextRowPosition.X + 575, (int)m_NextRowPosition.Y + 25, 250, 25),
-                0.0f, 100.0f, 10.0f, m_SoundManager.MediaVolume * 100,
+                0.0f,
+                100.0f,
+                10.0f,
+                m_SoundManager.MediaVolume * 100,
                 new MenuItem(increaseBackgroundMusicVolume, Keys.PageUp),
                 new MenuItem(decreaseBackgroundMusicVolume, Keys.PageDown)));
 
             // Sounds Effect Volume
-            AddNextRow(new BarMenuItem(
+            AddNextRow(
+                new BarMenuItem(
                 this,
-                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset) { Text = "Sounds Effects Volume:" },
-                Color.LightYellow, Color.White, Color.Orange,
+                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset)
+                {
+                    Text = "Sounds Effects Volume:"
+                },
+                Color.LightYellow,
+                Color.White,
+                Color.Orange,
                 new Rectangle((int)m_NextRowPosition.X + 575, (int)m_NextRowPosition.Y + 25, 250, 25),
-                0.0f, 100.0f, 10.0f, m_SoundManager.SoundEffectsVolume * 100,
+                0.0f,
+                100.0f,
+                10.0f,
+                m_SoundManager.SoundEffectsVolume * 100,
                 new MenuItem(increaseSoundsEffectsVolume, Keys.PageUp),
                 new MenuItem(decreaseSoundsEffectsVolume, Keys.PageDown)));
 
             // Done
             MenuItem doneMenuItem = new MenuItem(doneOperation, Keys.Enter);
-            AddNextRow(new MenuItemsRow(
+            AddNextRow(
+                new MenuItemsRow(
                 this,
-                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset) { Text = "Done" },
-                Color.White, Color.Orange,
+                new AnimatedTextSprite(this.Game, k_MenuItemFontAsset)
+                {
+                    Text = "Done"
+                },
+                Color.White,
+                Color.Orange,
                 doneMenuItem));
         }
 
@@ -87,22 +125,24 @@ namespace SpaceInvaders
         {
             ExitScreen();
         }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
+            const int v_ToggleSoundRow = 0;
+            const int v_OffItem = 0;
+            const int v_OnItem = 1;
             if (InputManager.KeyPressed(Keys.M))
             {
                 if (m_SoundManager.MuteAllSound)
                 {
-                    MarkASpecificItemInTheRow(0, 0);
+                    MarkASpecificItemInTheRow(v_ToggleSoundRow, v_OffItem);
                 }
                 else
                 {
-                    MarkASpecificItemInTheRow(0, 1);
+                    MarkASpecificItemInTheRow(v_ToggleSoundRow, v_OnItem);
                 }
             }
         }
-
     }
 }

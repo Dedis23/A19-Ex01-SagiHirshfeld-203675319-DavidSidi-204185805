@@ -15,11 +15,13 @@ namespace Infrastructure.Menus
             get { return m_Operation; }
             set { m_Operation = value; }
         }
+
         public Keys Key
         {
             get { return m_Key; }
             set { m_Key = value; }
         }
+
         public Sprite Sprite
         {
             get { return m_Sprite; }

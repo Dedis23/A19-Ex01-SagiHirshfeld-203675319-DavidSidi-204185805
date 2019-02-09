@@ -29,13 +29,20 @@ namespace Infrastructure.Menus
         protected float m_GrowthValue;
         protected float m_CurrentPercent;
 
-        public BarMenuItem(GameScreen i_GameScreen, AnimatedTextSprite i_RowText,
+        public BarMenuItem(
+            GameScreen i_GameScreen,
+            AnimatedTextSprite i_RowText,
             Color i_BorderColor,
             Color i_BackgroundColor,
             Color i_FillColor,
             Rectangle i_Bar,
-            float i_Min, float i_Max, float i_GrowthValue, float i_InitialPercentValue,
-            MenuItem i_Increase, MenuItem i_Decrease, int i_BorderThickness = 3)
+            float i_Min,
+            float i_Max,
+            float i_GrowthValue,
+            float i_InitialPercentValue,
+            MenuItem i_Increase,
+            MenuItem i_Decrease,
+            int i_BorderThickness = 3)
             : base(i_GameScreen, i_RowText, new MenuItem[] { i_Increase, i_Decrease })
         {
             m_InputManager = Game.Services.GetService<IInputManager>();
@@ -54,6 +61,7 @@ namespace Infrastructure.Menus
             IsLoopedItems = false;
             Initialize();
         }
+
         public override void Initialize()
         {
             m_BorderTexture = new Texture2D(Game.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
@@ -87,6 +95,7 @@ namespace Infrastructure.Menus
                         m_ChangeInTheRow = true;
                     }
                 }
+
                 if (m_InputManager.KeyPressed(m_Decrease.Key) ||
                     (this.Game.IsMouseVisible &&
                     m_InputManager.ScrollWheelDelta < 0))
@@ -98,6 +107,7 @@ namespace Infrastructure.Menus
                         m_ChangeInTheRow = true;
                     }
                 }
+
                 m_CurrentValue = MathHelper.Clamp(m_CurrentValue, m_Min, m_Max);
                 m_FillRect.Width = m_InnerRect.Width * (int)m_CurrentValue / (int)m_Max;
             }

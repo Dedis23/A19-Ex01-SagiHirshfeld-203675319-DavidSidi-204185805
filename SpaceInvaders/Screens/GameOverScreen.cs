@@ -1,11 +1,11 @@
-﻿using Infrastructure.ObjectModel;
-using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
-using Infrastructure.ObjectModel.Screens;
+﻿using System;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Text;
+using Infrastructure.ObjectModel;
+using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
@@ -45,8 +45,8 @@ namespace SpaceInvaders
             m_GameOverTextSprite.Text = buildGameOverMessage();
 
             m_GameOverTextSprite.Position = new Vector2(
-                CenterOfViewPort.X - m_GameOverTextSprite.Width / 2,
-                CenterOfViewPort.Y - m_GameOverTextSprite.Height / 2);
+                CenterOfViewPort.X - (m_GameOverTextSprite.Width / 2),
+                CenterOfViewPort.Y - (m_GameOverTextSprite.Height / 2));
 
             m_GameOverMsg.Animations.Add(new PulseAnimator("Pulse", TimeSpan.Zero, 1.15f, 0.7f));
             m_GameOverMsg.Animations.Enabled = true;
@@ -54,7 +54,7 @@ namespace SpaceInvaders
             m_GameOverMsg.Position = new Vector2(CenterOfViewPort.X, m_GameOverMsg.Height / 2);
 
             m_InstructionsMsg.PositionOrigin = m_InstructionsMsg.SourceRectangleCenter;            
-            m_InstructionsMsg.Position = new Vector2(CenterOfViewPort.X, this.GraphicsDevice.Viewport.Height - m_InstructionsMsg.Height / 2);
+            m_InstructionsMsg.Position = new Vector2(CenterOfViewPort.X, this.GraphicsDevice.Viewport.Height - (m_InstructionsMsg.Height / 2));
         }
 
         protected override void LoadContent()
@@ -71,7 +71,6 @@ namespace SpaceInvaders
             {
                 goBackToPlayScreen();
             }
-
             else
             {
                 m_GameOverSoundEffectInstance.Play();
@@ -86,12 +85,10 @@ namespace SpaceInvaders
             {
                 Game.Exit();
             }
-
             else if (InputManager.KeyPressed(Keys.Home))
             {
                 goBackToPlayScreen();
             }
-
             else if (InputManager.KeyPressed(Keys.T))
             {
                 ScreensManager.SetCurrentScreen(new MainMenu(Game));
@@ -112,7 +109,6 @@ namespace SpaceInvaders
             {
                 gameOverMessage = buildMultiplayerGameOverMessage();
             }
-
             else
             {
                 gameOverMessage = buildSoloGameOverMessage();

@@ -1,10 +1,9 @@
-﻿using Infrastructure.ObjectModel;
-using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
-using Infrastructure.ObjectModel.Screens;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-
+using Infrastructure.ObjectModel;
+using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
+using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
@@ -55,12 +54,10 @@ namespace SpaceInvaders
             {
                 Game.Exit();
             }
-
             else if (InputManager.KeyPressed(Keys.Enter))
             {
                 transitionToPlayScreen();
             }
-
             else if (InputManager.KeyPressed(Keys.T))
             {
                 ScreensManager.SetCurrentScreen(new MainMenu(Game));

@@ -18,7 +18,7 @@ namespace Infrastructure.Managers
 
         protected override void RegisterAsService()
         {
-            AddServiceToGame((typeof(ICollisionsManager)));
+            AddServiceToGame(typeof(ICollisionsManager));
         }
 
         public void AddObjectToMonitor(ICollidable i_Collidable)
@@ -83,7 +83,6 @@ namespace Infrastructure.Managers
                     {
                         break;
                     }
-
                     else if (target.Visible && target.Vulnerable)
                     {
                         target.Collided(i_Source);

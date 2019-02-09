@@ -1,8 +1,8 @@
-﻿using Infrastructure.ObjectModel;
+﻿using System;
+using Infrastructure.ObjectModel;
 using Infrastructure.ObjectModel.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace SpaceInvaders
 {

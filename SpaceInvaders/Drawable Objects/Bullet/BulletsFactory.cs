@@ -12,7 +12,6 @@ namespace SpaceInvaders
         private readonly Stack<Bullet> r_AvailableBulletsForDeploymentsStack;
         private readonly Dictionary<Bullet, GameScreen> r_FlyingBulletsToContainingScreensDictionary;
 
-
         public BulletsFactory(Game i_Game) : base(i_Game)
         {
             r_AvailableBulletsForDeploymentsStack = new Stack<Bullet>();
@@ -36,7 +35,6 @@ namespace SpaceInvaders
             {
                 newBullet = r_AvailableBulletsForDeploymentsStack.Pop();
             }
-
             else
             {
                 newBullet = new Bullet(this.Game);

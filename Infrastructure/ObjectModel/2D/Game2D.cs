@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Infrastructure.Managers;
-using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
-using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace Infrastructure.ObjectModel
 {
@@ -17,7 +14,6 @@ namespace Infrastructure.ObjectModel
         protected ISoundManager SoundManager { get;  set; }
 
         protected ICollisionsManager CollisionsManager { get;  set; }
-
 
         public Game2D()
         {
@@ -52,6 +48,7 @@ namespace Infrastructure.ObjectModel
                 m_Background.Initialize();
                 fitViewportToBackground();
             }
+
             base.Initialize();
         }
 

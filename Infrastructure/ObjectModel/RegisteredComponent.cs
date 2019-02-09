@@ -1,5 +1,4 @@
-
-/*** Guy Ronen © 2008-2011 ***////
+////*** Guy Ronen © 2008-2011 ***////
 using Microsoft.Xna.Framework;
 
 namespace Infrastructure.ObjectModel

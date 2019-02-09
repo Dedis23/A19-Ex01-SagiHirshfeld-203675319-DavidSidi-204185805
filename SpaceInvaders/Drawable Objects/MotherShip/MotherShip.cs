@@ -46,7 +46,8 @@ namespace SpaceInvaders
         protected override void LoadTexture()
         {
             base.LoadTexture();
-            m_DyingSoundEffectInstance =  Game.Content.Load<SoundEffect>(k_DyingSoundEffectAssetName).CreateInstance();
+            m_DyingSoundEffectInstance =  
+                Game.Content.Load<SoundEffect>(k_DyingSoundEffectAssetName).CreateInstance();
         }
 
         private void initializeAnimations()

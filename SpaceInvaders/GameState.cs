@@ -1,6 +1,6 @@
-﻿using Infrastructure.ObjectModel;
+﻿using System;
+using Infrastructure.ObjectModel;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace SpaceInvaders
 {
@@ -11,6 +11,7 @@ namespace SpaceInvaders
         private int m_Player2Score = 0;
 
         public event Action<int> Player1ScoreChanged;
+
         public event Action<int> Player2ScoreChanged;
 
         public GameState(Game i_Game) : base(i_Game)

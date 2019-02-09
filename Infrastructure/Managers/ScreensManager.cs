@@ -1,4 +1,4 @@
-﻿//*** Guy Ronen © 2008-2015 ***//
+﻿////*** Guy Ronen © 2008-2015 ***////
 using System;
 using System.Collections.Generic;
 using Infrastructure.ObjectModel;
@@ -116,6 +116,7 @@ namespace Infrastructure.Managers
         }
 
         public event EventHandler<StateChangedEventArgs> ScreenStateChanged;
+
         protected virtual void OnScreenStateChanged(object sender, StateChangedEventArgs e)
         {
             if (ScreenStateChanged != null)
