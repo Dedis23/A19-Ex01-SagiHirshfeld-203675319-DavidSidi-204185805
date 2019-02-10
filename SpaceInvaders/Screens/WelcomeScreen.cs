@@ -40,6 +40,7 @@ namespace SpaceInvaders
         protected override void OnActivated()
         {
             base.OnActivated();
+
             if (m_PrevScreenIsMainMenu)
             {
                 transitionToPlayScreen();
@@ -68,7 +69,7 @@ namespace SpaceInvaders
         private void transitionToPlayScreen()
         {
             ExitScreen();
-            m_PrevScreenIsMainMenu = false;
+            ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
         }
     }
 }

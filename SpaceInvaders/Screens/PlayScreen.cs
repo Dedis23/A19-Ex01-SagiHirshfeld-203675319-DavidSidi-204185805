@@ -25,7 +25,6 @@ namespace SpaceInvaders
         private Mothership m_Mothership;
         private InvadersMatrix m_InvadersMatrix;
         private DancingBarriersRow m_DancingBarriersRow;
-        private bool m_FirstLevelHasBeenTransitionedTo = false;
         private bool m_GameOver = false;
         private bool m_LevelCleared = false;
 
@@ -42,14 +41,9 @@ namespace SpaceInvaders
         {
             base.OnActivated();
 
-            if (!m_FirstLevelHasBeenTransitionedTo)
-            {
-                ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
-                m_FirstLevelHasBeenTransitionedTo = true;
-            }
-
-            m_Player2Spaceship.Enabled = m_Player2Spaceship.Visible = m_GameState.IsMultiplayer;
             m_Player2Lives.Visible = m_Player2ScoreText.Visible = m_GameState.IsMultiplayer;
+            m_Player2Spaceship.Enabled &= m_GameState.IsMultiplayer;
+            m_Player2Spaceship.Visible &= m_GameState.IsMultiplayer;
         }
 
         private void loadDrawables()
@@ -166,7 +160,6 @@ namespace SpaceInvaders
             if (m_GameOver)
             {
                 m_GameState.ResetLevelAndScore();
-                m_FirstLevelHasBeenTransitionedTo = false;
                 m_Player1Spaceship.ResetLives();
                 m_Player2Spaceship.ResetLives();
             }

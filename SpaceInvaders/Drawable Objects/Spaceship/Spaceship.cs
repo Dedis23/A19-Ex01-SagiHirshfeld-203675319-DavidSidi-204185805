@@ -188,7 +188,7 @@ namespace SpaceInvaders
 
         protected override void OnDeath()
         {
-            Visible = false;
+            this.Visible = this.Enabled = false;
         }
 
         public void ResetEverythingButLives()
@@ -198,8 +198,7 @@ namespace SpaceInvaders
             Animations.PauseSubAnimations();
 
             Position = DefaultPosition;
-            this.Visible = IsAlive;
-            this.Vulnerable = IsAlive;
+            this.Visible = this.Enabled = this.Vulnerable = IsAlive;
         }
 
         public void ResetLives()

@@ -69,7 +69,7 @@ namespace SpaceInvaders
 
             if (m_PrevScreenIsMainMenu)
             {
-                goBackToPlayScreen();
+                transitionToPlayScreen();
             }
             else
             {
@@ -87,7 +87,7 @@ namespace SpaceInvaders
             }
             else if (InputManager.KeyPressed(Keys.Home))
             {
-                goBackToPlayScreen();
+                transitionToPlayScreen();
             }
             else if (InputManager.KeyPressed(Keys.T))
             {
@@ -95,7 +95,13 @@ namespace SpaceInvaders
                 m_PrevScreenIsMainMenu = true;
             }
         }
-        
+
+        private void transitionToPlayScreen()
+        {
+            ExitScreen();
+            ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
+        }
+
         private void goBackToPlayScreen()
         {
             ExitScreen();
@@ -129,7 +135,6 @@ namespace SpaceInvaders
             {
                 stringBuilder.AppendLine("It's a tie!");
             }
-
             else
             {
                 stringBuilder.AppendLine(string.Format("The winner is {0}!", p1Score >= p2Score ? p1Name : p2Name));
