@@ -207,16 +207,6 @@ namespace SpaceInvaders
             {
                 Game.Exit();
             }
-            else if (InputManager.KeyPressed(Keys.Delete))
-            {
-                /// This is here just to enable skipping to the game over screen - remove before submition
-                m_GameOver = true;
-            }
-            else if (InputManager.KeyPressed(Keys.Insert))
-            {
-                /// Similarly, this is here to test level transitions
-                m_LevelCleared = true;
-            }
             else if (InputManager.KeyPressed(Keys.P))
             {
                 this.ScreensManager.SetCurrentScreen(new PauseScreen(Game));
