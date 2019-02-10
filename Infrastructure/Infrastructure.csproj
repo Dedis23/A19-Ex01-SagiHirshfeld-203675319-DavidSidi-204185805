@@ -72,7 +72,6 @@
     <Compile Include="ObjectModel\GameService.cs" />
     <Compile Include="ObjectModel\2D\SpriteRow.cs" />
     <Compile Include="ObjectModel\LoadableDrawbleComponent.cs" />
-    <Compile Include="ObjectModel\NonPremultipliedSpriteBatch.cs" />
     <Compile Include="ObjectModel\RegisteredComponent.cs" />
     <Compile Include="ObjectModel\Screens\GameScreen.cs" />
     <Compile Include="ObjectModel\2D\Sprite.cs">
