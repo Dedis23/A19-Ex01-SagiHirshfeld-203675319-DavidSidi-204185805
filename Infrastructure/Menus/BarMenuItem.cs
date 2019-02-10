@@ -84,9 +84,8 @@ namespace Infrastructure.Menus
             {
                 m_LastValue = m_CurrentValue;
                 if (m_InputManager.KeyPressed(m_Increase.Key) ||
-                    (this.Game.IsMouseVisible &&
-                    (m_InputManager.ScrollWheelDelta > 0 ||
-                    m_InputManager.ButtonPressed(eInputButtons.Right))))
+                    m_InputManager.ScrollWheelDelta > 0 ||
+                    m_InputManager.ButtonPressed(eInputButtons.Right))
                 {
                     m_CurrentValue += m_GrowthValue;
                     if (m_LastValue < 100)
@@ -97,8 +96,7 @@ namespace Infrastructure.Menus
                 }
 
                 if (m_InputManager.KeyPressed(m_Decrease.Key) ||
-                    (this.Game.IsMouseVisible &&
-                    m_InputManager.ScrollWheelDelta < 0))
+                    m_InputManager.ScrollWheelDelta < 0)
                 {
                     m_CurrentValue -= m_GrowthValue;
                     if (m_LastValue > 0)
