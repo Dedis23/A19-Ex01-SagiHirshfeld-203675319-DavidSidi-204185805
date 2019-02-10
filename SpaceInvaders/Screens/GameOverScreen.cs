@@ -120,19 +120,25 @@ namespace SpaceInvaders
         private string buildMultiplayerGameOverMessage()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            int p1Score = m_GameState.Player1Score;
+            int p2Score = m_GameState.Player2Score;
+            string p1Name = m_GameState.Player1Name;
+            string p2Name = m_GameState.Player2Name;
 
-            string nameOfTheWinner = m_GameState.Player1Score >= m_GameState.Player2Score ? m_GameState.Player1Name : m_GameState.Player2Name;
-            stringBuilder.Append(string.Format("The winner is {0}!", nameOfTheWinner));
-            stringBuilder.Append(Environment.NewLine);
+            if (p1Score == p2Score)
+            {
+                stringBuilder.AppendLine("It's a tie!");
+            }
 
-            stringBuilder.Append(string.Format("{0} Score: {1}", m_GameState.Player1Name, m_GameState.Player1Score));
-            stringBuilder.Append(Environment.NewLine);
+            else
+            {
+                stringBuilder.AppendLine(string.Format("The winner is {0}!", p1Score >= p2Score ? p1Name : p2Name));
+            }
 
-            stringBuilder.Append(string.Format("{0} Score: {1}", m_GameState.Player2Name, m_GameState.Player2Score));
-            stringBuilder.Append(Environment.NewLine);
+            stringBuilder.AppendLine(string.Format("{0} Score: {1}", p1Name, p1Score));
+            stringBuilder.AppendLine(string.Format("{0} Score: {1}", p2Name, p2Score));
 
             return stringBuilder.ToString();
-            throw new NotImplementedException();
         }
 
         private string buildSoloGameOverMessage()

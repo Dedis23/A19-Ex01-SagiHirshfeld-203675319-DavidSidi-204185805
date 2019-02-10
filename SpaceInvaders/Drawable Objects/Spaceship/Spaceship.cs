@@ -5,7 +5,6 @@ using Infrastructure.ObjectModel;
 using Infrastructure.ServiceInterfaces;
 using Infrastructure.ObjectModel.Animators;
 using Infrastructure.ObjectModel.Animators.ConcreteAnimators;
-using Infrastructure.Managers;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 

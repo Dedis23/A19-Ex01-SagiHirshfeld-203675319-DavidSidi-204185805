@@ -41,6 +41,7 @@ namespace SpaceInvaders
         protected override void OnActivated()
         {
             base.OnActivated();
+
             if (!m_FirstLevelHasBeenTransitionedTo)
             {
                 ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
@@ -131,10 +132,14 @@ namespace SpaceInvaders
 
         private void onSpaceshipKilled(object i_Spaceship)
         {
-            if (!m_Player1Spaceship.IsAlive && !m_Player2Spaceship.IsAlive)
+            if (m_GameState.IsMultiplayer)
             {
-                m_GameOver = true;
+                m_GameOver = !m_Player1Spaceship.IsAlive && !m_Player2Spaceship.IsAlive;
             }
+            else
+            {
+                m_GameOver = !m_Player1Spaceship.IsAlive;
+            } 
         }
 
         public override void Update(GameTime gameTime)
