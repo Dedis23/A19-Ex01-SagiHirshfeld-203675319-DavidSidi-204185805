@@ -16,7 +16,7 @@ namespace SpaceInvaders
         private const float k_InvadersReachedEdgeAccelerator = 0.92f;
         private const float k_FourInvadersDefeatedAccelerator = 0.96f;
         private const float k_BaseChanceToShootPerInvader = 5;
-        private const float k_ChanceToShootMultiplierOnInvaderDeath = 1.02f;
+        private const float k_ChanceToShootMultiplierOnInvaderDeath = 1.05f;
         private const float k_ChanceToShootLevelMultiplier = 2;
         private const int k_ScoreBonusPerDifficultyLevel = 120;
         private const float k_XGapBetweenInvaders = Invader.k_DefaultInvaderWidth + (Invader.k_DefaultInvaderWidth * k_DistanceBetweenEachInvader);
@@ -160,8 +160,7 @@ namespace SpaceInvaders
             float furthestInvaderXPosition = 0.0f;
             if (m_CurrentfurthestInvaderInXPosition == null)
             {
-
-                check only when needed
+                // check only when needed
                 m_CurrentfurthestInvaderInXPosition = getFurthestInvaderXPosition();
             }
 
