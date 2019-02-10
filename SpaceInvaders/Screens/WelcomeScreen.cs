@@ -7,11 +7,16 @@ using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
-    public class WelcomeScreen : GameScreen
+    public class WelcomeScreen : ScreenForkingToPlayScreenAndMenuScreen
     {
         private Sprite m_WelcomeMessage;
         private Sprite m_PressEnterMsg;
-        private bool m_PrevScreenIsMainMenu;
+
+        protected override Keys ExitKey => Keys.Escape;
+
+        protected override Keys TransitionToPlayScreenKey => Keys.Enter;
+
+        protected override Keys TransitionToMenuScreenKey => Keys.T;
 
         public WelcomeScreen(Game i_Game)
             : base(i_Game)
@@ -35,41 +40,6 @@ namespace SpaceInvaders
             m_PressEnterMsg.PositionOrigin = m_PressEnterMsg.SourceRectangleCenter;
             m_PressEnterMsg.Position =
                 new Vector2(CenterOfViewPort.X, CenterOfViewPort.Y + m_WelcomeMessage.Height);
-        }
-
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-
-            if (m_PrevScreenIsMainMenu)
-            {
-                transitionToPlayScreen();
-            }
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            if (InputManager.KeyPressed(Keys.Escape))
-            {
-                Game.Exit();
-            }
-            else if (InputManager.KeyPressed(Keys.Enter))
-            {
-                transitionToPlayScreen();
-            }
-            else if (InputManager.KeyPressed(Keys.T))
-            {
-                ScreensManager.SetCurrentScreen(new MainMenu(Game));
-                m_PrevScreenIsMainMenu = true;
-            }
-        }
-
-        private void transitionToPlayScreen()
-        {
-            ExitScreen();
-            ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
         }
     }
 }

@@ -9,15 +9,20 @@ using Infrastructure.ObjectModel.Screens;
 
 namespace SpaceInvaders
 {
-    public class GameOverScreen : GameScreen
+    public class GameOverScreen : ScreenForkingToPlayScreenAndMenuScreen
     {
         private BackgroundSprite m_Background;
         private Sprite m_GameOverMsg;
         private Sprite m_InstructionsMsg;
         private TextSprite m_GameOverTextSprite;
         private SoundEffectInstance m_GameOverSoundEffectInstance;
-        private bool m_PrevScreenIsMainMenu;
         private GameState m_GameState;
+
+        protected override Keys ExitKey => Keys.Escape;
+
+        protected override Keys TransitionToPlayScreenKey => Keys.Home;
+
+        protected override Keys TransitionToMenuScreenKey => Keys.T;
 
         public GameOverScreen(Game i_Game) : base(i_Game)
         {
@@ -63,48 +68,10 @@ namespace SpaceInvaders
             m_GameOverSoundEffectInstance = Game.Content.Load<SoundEffect>(@"Audio\GameOver").CreateInstance();
         }
 
-        protected override void OnActivated()
+        protected override void OnFocused()
         {
-            base.OnActivated();
-
-            if (m_PrevScreenIsMainMenu)
-            {
-                transitionToPlayScreen();
-            }
-            else
-            {
-                m_GameOverSoundEffectInstance.Play();
-            }
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            if (InputManager.KeyPressed(Keys.Escape))
-            {
-                Game.Exit();
-            }
-            else if (InputManager.KeyPressed(Keys.Home))
-            {
-                transitionToPlayScreen();
-            }
-            else if (InputManager.KeyPressed(Keys.T))
-            {
-                ScreensManager.SetCurrentScreen(new MainMenu(Game));
-                m_PrevScreenIsMainMenu = true;
-            }
-        }
-
-        private void transitionToPlayScreen()
-        {
-            ExitScreen();
-            ScreensManager.SetCurrentScreen(new LevelTransitionScreen(Game));
-        }
-
-        private void goBackToPlayScreen()
-        {
-            ExitScreen();
+            base.OnFocused();
+            m_GameOverSoundEffectInstance.Play();
         }
 
         private string buildGameOverMessage()
