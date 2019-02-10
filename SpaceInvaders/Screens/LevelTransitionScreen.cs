@@ -32,12 +32,7 @@ namespace SpaceInvaders
             this.Add(m_CountDownTextSprite);
 
             m_Timer = new Timer(i_Game);
-
-            /// m_Timer.IntervalInSeconds = 1;
-            ///         
-            /// This is here instead of the above code to speed up level transitions while developing
-            m_Timer.IntervalInSeconds = 0.33f;
-
+            m_Timer.IntervalInSeconds = 1;
             m_Timer.Notify += onTimerNotification;
             m_Timer.Activate();
             this.Add(m_Timer);
